@@ -24,5 +24,15 @@ namespace ChessBoardUI
         {
             InitializeComponent();
         }
+
+        private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void ComboBoxItem_Selected(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
