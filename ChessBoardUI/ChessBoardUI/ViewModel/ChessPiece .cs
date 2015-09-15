@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using GalaSoft.MvvmLight;
 
+
 namespace ChessBoardUI.ViewModel
 {
     public enum PieceType
@@ -31,16 +32,20 @@ namespace ChessBoardUI.ViewModel
         private PieceType _Type;
         private Player _Player;
 
+        public ChessPiece(){
+         
+            }
+
         public Point Pos
         {
             get { return this._Pos; }
-            set { this._Pos = value; RaisePropertyChanged(() => this.Pos); }
+            set { value.X = value.X * Constants.CELL_EDGE_LENGTH; value.Y=value.Y* Constants.CELL_EDGE_LENGTH; this._Pos = value; RaisePropertyChanged(() => this.Pos); }
         }
 
         public PieceType Type
         {
             get { return this._Type; }
-            set { this._Type = value; RaisePropertyChanged(() => this.Type); }
+            set { this._Type = value; RaisePropertyChanged(() => this.Type); }  //RaisePropertyChanged Called from a property setter to notify the framework that an Entity member has changed.
         }
 
         public Player Player
