@@ -5,6 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChessBoardUI"
         xmlns:pieceviewmodel="clr-namespace:ChessBoardUI.ViewModel"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+        xmlns:attach="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
         mc:Ignorable="d"
        Title="Chess Danchi" Height="850" Width="825" ResizeMode="NoResize" WindowStyle="ThreeDBorderWindow" BorderBrush="Black">
     <Window.Resources>
@@ -145,7 +148,9 @@
         
     </Window.Resources>
 
-    
+    <Window.DataContext>
+        <pieceviewmodel:ChessPiece/>
+    </Window.DataContext>
     
 
     <Grid>
@@ -164,13 +169,17 @@
         <ItemsControl Name="ChessBoard">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas HorizontalAlignment="Left" Height="560" Margin="35,45,0,0" VerticalAlignment="Top" Width="560" Background="{StaticResource Checkerboard}"/>
+                    <Canvas Name="chess_canvas" HorizontalAlignment="Left" Height="560" Margin="35,45,0,0" VerticalAlignment="Top" Width="560" Background="{StaticResource Checkerboard}" MouseMove="TestMouseHandler"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="70" Height="70">
-                        <Image Width="60" Height="60" Style="{StaticResource ChessPieceStyle}" />
+                        <Image Width="60" Height="60" Style="{StaticResource ChessPieceStyle}">
+                            <attach:CommandBehaviorCollection.Behaviors>
+                                <attach:BehaviorBinding Event="MouseLeftButtonDown" Command="{Binding PieceMoveCommand}"/>
+                            </attach:CommandBehaviorCollection.Behaviors>
+                        </Image>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -189,7 +198,7 @@
         <!--<WrapPanel Orientation="Vertical" HorizontalAlignment="Left" Height="560" Margin="619,43,0,0" VerticalAlignment="Top" Width="189"/>-->
         <WrapPanel Orientation="Vertical" HorizontalAlignment="Center" Height="200" Margin="654,45,84.4,0" VerticalAlignment="Top" Width="80" ItemHeight="40">
             <!--<Label x:Name="label" Content="Set difficulty" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-0.508,0.66"/>-->
-            <ComboBox x:Name="ChooseColor" HorizontalAlignment="Center" IsEditable="True" IsReadOnly="True" Text="Color" Width="80" Height="20">
+            <ComboBox x:Name="ChooseColor"  HorizontalAlignment="Center" IsEditable="True" IsReadOnly="True" Text="Color" Width="80" Height="20">
                 <ComboBoxItem Content="White" HorizontalAlignment="Left" Width="80"/>
                 <ComboBoxItem Content="Black" HorizontalAlignment="Left" Width="80"/>
             </ComboBox>
@@ -198,8 +207,9 @@
                 <ComboBoxItem Content="Normal" HorizontalAlignment="Left" Width="80"/>
                 <ComboBoxItem Content="Hard" HorizontalAlignment="Left" Width="80"/>
             </ComboBox>
-            <Button x:Name="button" Content="Start" Width="80" Height="20" HorizontalAlignment="center"/>
-            <Button x:Name="button2"  Content="Pause" Width="80" Height="20" HorizontalAlignment="Center"/>
+            <Button x:Name="StartButton" Content="Start" Click="StartGame_Click" Width="80" Height="20" HorizontalAlignment="center"/>
+            <!--<Button x:Name="button" Content="Start" Command="{Binding Path=PlaySetupCommand}" Width="80" Height="20" HorizontalAlignment="center"/>-->
+            <!--<Button x:Name="button2"  Content="Pause" Width="80" Height="20" HorizontalAlignment="Center"/>-->
         </WrapPanel>
         <Grid Height="200" Margin="76,624,48.4,0">
             <Grid.ColumnDefinitions>

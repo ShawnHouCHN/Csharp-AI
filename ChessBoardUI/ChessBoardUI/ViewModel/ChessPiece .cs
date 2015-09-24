@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Windows;
 using GalaSoft.MvvmLight;
-
+using GalaSoft.MvvmLight.Command;
+using System.Windows.Input;
 
 namespace ChessBoardUI.ViewModel
 {
@@ -31,10 +32,8 @@ namespace ChessBoardUI.ViewModel
         private Point _Pos;
         private PieceType _Type;
         private Player _Player;
-
-        public ChessPiece(){
-         
-            }
+        private bool _Ownership;
+        private RelayCommand _PieceMoveCommand;
 
         public Point Pos
         {
@@ -54,7 +53,26 @@ namespace ChessBoardUI.ViewModel
             set { this._Player = value; RaisePropertyChanged(() => this.Player); }
         }
 
+        public bool Ownership
+        {
+            get { return this._Ownership; }
+            set { this._Ownership = value; RaisePropertyChanged(() => this.Ownership); }
+        }
 
+        public RelayCommand PieceMoveCommand
+        {
+            get { return this._PieceMoveCommand; }
+            set { this._PieceMoveCommand = new RelayCommand(this.testExecute) ;}
+        }
+
+        public void testExecute()
+        {
+            if (this._Ownership)
+            {
+                this.Pos=Mouse.GetPosition();
+                RaisePropertyChanged(() => this.Pos);
+            }
+        }
 
     }
 }
