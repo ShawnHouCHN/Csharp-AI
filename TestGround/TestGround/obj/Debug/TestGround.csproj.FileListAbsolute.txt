@@ -4,3 +4,6 @@ c:\users\houxiaoshen\documents\visual studio 2015\Projects\TestGround\TestGround
 c:\users\houxiaoshen\documents\visual studio 2015\Projects\TestGround\TestGround\bin\Debug\TestGround.pdb
 c:\users\houxiaoshen\documents\visual studio 2015\Projects\TestGround\TestGround\obj\Debug\TestGround.exe
 c:\users\houxiaoshen\documents\visual studio 2015\Projects\TestGround\TestGround\obj\Debug\TestGround.pdb
+D:\6th semester\C# programming\Github Repository\Csharp-AI\TestGround\TestGround\bin\Debug\TestGround.exe.config
+D:\6th semester\C# programming\Github Repository\Csharp-AI\TestGround\TestGround\obj\Debug\TestGround.exe
+D:\6th semester\C# programming\Github Repository\Csharp-AI\TestGround\TestGround\obj\Debug\TestGround.pdb
