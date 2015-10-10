@@ -14,91 +14,84 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ChessBoardUI.ViewModel;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
+using ChessBoardUI.Players;
 
 namespace ChessBoardUI
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-
-    public static class Constants
-    {
-        internal const int CELL_EDGE_LENGTH = 70;
-        internal const int CANVAS_MARGIN_LEFT = 35;  //to pinpoint the cursor position in the canvas 
-        internal const int CANVAS_MARGIN_TOP = 45;   //to pinpoint the cursor position in the canvas 
-
-    }
-
-
-
     public partial class MainWindow : Window
     {
+
+        
+        //HMPlayer human_player;
+        //MCPlayer machine_player;
+        Dictionary<int, ChessPiece> board_layout; //generic hashtable
+        MainControl board;
+
+
+
         public MainWindow()
         {
             InitializeComponent();
+
+            board_layout = new Dictionary<int, ChessPiece>();
+
+            board = new MainControl();
+            //test
+            //SPCapturedViewModel test = new SPCapturedViewModel { CapturedPiecesCollection = new ObservableCollection<Image>() };
+            //PlayerCapStack.ItemsSource = test.CapturedPiecesCollection;
+            //Uri uri = new Uri("/PieceImg/chess_piece_white_bishop.png", UriKind.Relative);
+            //BitmapImage source = new BitmapImage();
+            //source.BeginInit();
+            //source.UriSource = uri;
+            //source.DecodePixelHeight = 70;
+            //source.DecodePixelWidth = 70;
+            //source.EndInit();
+
+            //Uri uri2 = new Uri("/PieceImg/chess_piece_white_queen.png", UriKind.Relative);
+            //BitmapImage source2 = new BitmapImage();
+            //source2.BeginInit();
+            //source2.UriSource = uri2;
+            //source2.DecodePixelHeight = 70;
+            //source2.DecodePixelWidth = 70;
+            //source2.EndInit();
+
+            //Image a = new Image();
+            //a.Source = source;
+            //a.Width = 40;
+            //a.Height = 40;
+
+            //Image b = new Image();
+            //b.Source = source2;
+            //b.Width = 40;
+            //b.Height = 40;
+
+            //test.CapturedPiecesCollection.Add(a);
+            //test.CapturedPiecesCollection.Add(b);
+
         }
 
         private void StartGame_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("{0},{1}", ((ComboBoxItem)ChooseColor.SelectedItem).Content, ((ComboBoxItem)ChooseLevel.SelectedItem).Content);
+            //Console.WriteLine("{0},{1}", ((ComboBoxItem)ChooseColor.SelectedItem).Content, ((ComboBoxItem)ChooseLevel.SelectedItem).Content);
             StartButton.IsEnabled = false;
-            ChooseColor.IsEnabled = false;
             ChooseLevel.IsEnabled = false;
 
-            Player selected_color = (Player)Enum.Parse(typeof(Player), ((ComboBoxItem)ChooseColor.SelectedItem).Content.ToString());
-            Player unselected_color;
+            player_timer.DataContext = board.HumanPlayer.HumanTimer;
+            pc_timer.DataContext = board.MachinePlayer.MachineTimer;
 
-            if (selected_color.Equals(Player.White))
-            {
-                unselected_color = Player.Black;
-            }
-            else
-            {
-                unselected_color = Player.White;
-            }
+
+            board.HumanPlayer.HumanTimer.startClock();
+
             
 
-            this.ChessBoard.ItemsSource = new ObservableCollection<ChessPiece>
-            {
-            new ChessPiece{Pos=new Point(0, 6), Type=PieceType.Pawn, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(1, 6), Type=PieceType.Pawn, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(2, 6), Type=PieceType.Pawn, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(3, 6), Type=PieceType.Pawn, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(4, 6), Type=PieceType.Pawn, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(5, 6), Type=PieceType.Pawn, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(6, 6), Type=PieceType.Pawn, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(7, 6), Type=PieceType.Pawn, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(0, 7), Type=PieceType.Rook, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(1, 7), Type=PieceType.Knight, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(2, 7), Type=PieceType.Bishop, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(3, 7), Type=PieceType.King, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(4, 7), Type=PieceType.Queen, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(5, 7), Type=PieceType.Bishop, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(6, 7), Type=PieceType.Knight, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(7, 7), Type=PieceType.Rook, Player=selected_color, Ownership=true, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(0, 1), Type=PieceType.Pawn, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(1, 1), Type=PieceType.Pawn, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(2, 1), Type=PieceType.Pawn, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(3, 1), Type=PieceType.Pawn, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(4, 1), Type=PieceType.Pawn, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(5, 1), Type=PieceType.Pawn, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(6, 1), Type=PieceType.Pawn, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(7, 1), Type=PieceType.Pawn, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(0, 0), Type=PieceType.Rook, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(1, 0), Type=PieceType.Knight, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(2, 0), Type=PieceType.Bishop, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(3, 0), Type=PieceType.King, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(4, 0), Type=PieceType.Queen, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(5, 0), Type=PieceType.Bishop, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(6, 0), Type=PieceType.Knight, Player=unselected_color, Ownership=false, PieceMoveCommand=null},
-            new ChessPiece{Pos=new Point(7, 0), Type=PieceType.Rook, Player=unselected_color, Ownership=false, PieceMoveCommand=null}
-        };
-        }
+            PlayerCapStack.ItemsSource = board.HumanPlayer.HumanCaptureStack.CapturedPiecesCollection;
+            MachineCapStack.ItemsSource = board.MachinePlayer.MachineCaptureStack.CapturedPiecesCollection;
 
-        private void TestMouseHandler(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Mouse position is ( {0},{1} )", ((int)Mouse.GetPosition(this).X-Constants.CANVAS_MARGIN_LEFT)/ Constants.CELL_EDGE_LENGTH, ((int)Mouse.GetPosition(this).Y- Constants.CANVAS_MARGIN_TOP) / Constants.CELL_EDGE_LENGTH);
+
+            this.ChessBoard.ItemsSource = board.BoardCollection;
+
+
         }
-        
     }
 }
