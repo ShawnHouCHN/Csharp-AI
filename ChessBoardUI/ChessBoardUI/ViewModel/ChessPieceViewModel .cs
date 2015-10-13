@@ -67,13 +67,13 @@ namespace ChessBoardUI.ViewModel
         public double Pos_X
         {
             get { return this._Pos.X; }
-            set { this._Pos.X = value* Constants.Constants.CELL_EDGE_LENGTH; }
+            set { this._Pos.X = value* Constants.Constants.CELL_EDGE_LENGTH; RaisePropertyChanged(() => this.Pos); }
         }
 
         public double Pos_Y
         {
             get { return this._Pos.Y; }
-            set { this._Pos.Y = value * Constants.Constants.CELL_EDGE_LENGTH;}
+            set { this._Pos.Y = value * Constants.Constants.CELL_EDGE_LENGTH; RaisePropertyChanged(() => this.Pos); }
         }
 
 
@@ -133,13 +133,12 @@ namespace ChessBoardUI.ViewModel
                 {
                     this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
                     this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
-                    RaisePropertyChanged(() => this.Pos);
                     this.Chose = false;
 
-                    Console.WriteLine("new pos value is {0} , {1}", this.Pos.X, this.Pos.Y);
+                    Console.WriteLine("new COOR value is {0} , {1}", this.Coor_X, this.Coor_Y);
 
                     //if(this.priv_coor_x!=this.Coor_X || this.priv_coor_y!=this.Coor_Y ) check whether use has moved a piece to a new place or not. 
-                    Messenger.Default.Send(new MoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(this.Coor_X, this.Coor_Y) });
+                    Messenger.Default.Send(new HumanMoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(this.Coor_X, this.Coor_Y) });
 
                 }
 

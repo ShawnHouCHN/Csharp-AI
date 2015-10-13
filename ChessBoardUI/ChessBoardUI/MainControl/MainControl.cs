@@ -21,15 +21,13 @@ namespace ChessBoardUI.ViewModel
     {
         private ObservableCollection<ChessPiece> pieces_collection;
         HMPlayer human_player;
-        MCPlayer machine_player;
-        Dictionary<int, ChessPiece> pieces_dict;
+        AIPlayer machine_player;
+        private Dictionary<int, ChessPiece> pieces_dict;
 
 
 
         public MainControl()
         {
-            this.human_player = new HMPlayer();
-            this.machine_player = new MCPlayer();
             this.pieces_dict = new Dictionary<int, ChessPiece>();
 
             ChessPiece player_pawn0 = new ChessPiece { Pos = new Point(0, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
@@ -74,11 +72,27 @@ namespace ChessBoardUI.ViewModel
                 machine_pawn0,machine_pawn1,machine_pawn2,machine_pawn3,machine_pawn4,machine_pawn5,machine_pawn6,machine_pawn7
             };
 
-            this.pieces_dict.Add(6, player_pawn0);
+            this.pieces_dict.Add(player_pawn0.Coor_X * 10 + player_pawn0.Coor_Y, player_pawn0);             this.pieces_dict.Add(machine_pawn0.Coor_X * 10 + machine_pawn0.Coor_Y, machine_pawn0);
+            this.pieces_dict.Add(player_pawn1.Coor_X * 10 + player_pawn1.Coor_Y, player_pawn1);             this.pieces_dict.Add(machine_pawn1.Coor_X * 10 + machine_pawn1.Coor_Y, machine_pawn1);
+            this.pieces_dict.Add(player_pawn2.Coor_X * 10 + player_pawn2.Coor_Y, player_pawn2);             this.pieces_dict.Add(machine_pawn2.Coor_X * 10 + machine_pawn2.Coor_Y, machine_pawn2);
+            this.pieces_dict.Add(player_pawn3.Coor_X * 10 + player_pawn3.Coor_Y, player_pawn3);             this.pieces_dict.Add(machine_pawn3.Coor_X * 10 + machine_pawn3.Coor_Y, machine_pawn3);
+            this.pieces_dict.Add(player_pawn4.Coor_X * 10 + player_pawn4.Coor_Y, player_pawn4);             this.pieces_dict.Add(machine_pawn4.Coor_X * 10 + machine_pawn4.Coor_Y, machine_pawn4);
+            this.pieces_dict.Add(player_pawn5.Coor_X * 10 + player_pawn5.Coor_Y, player_pawn5);             this.pieces_dict.Add(machine_pawn5.Coor_X * 10 + machine_pawn5.Coor_Y, machine_pawn5);
+            this.pieces_dict.Add(player_pawn6.Coor_X * 10 + player_pawn6.Coor_Y, player_pawn6);             this.pieces_dict.Add(machine_pawn6.Coor_X * 10 + machine_pawn6.Coor_Y, machine_pawn6);
+            this.pieces_dict.Add(player_pawn7.Coor_X * 10 + player_pawn7.Coor_Y, player_pawn7);             this.pieces_dict.Add(machine_pawn7.Coor_X * 10 + machine_pawn7.Coor_Y, machine_pawn7);
+            this.pieces_dict.Add(player_rook0.Coor_X * 10 + player_rook0.Coor_Y, player_rook0);             this.pieces_dict.Add(machine_rook0.Coor_X * 10 + machine_rook0.Coor_Y, machine_rook0);
+            this.pieces_dict.Add(player_rook1.Coor_X * 10 + player_rook1.Coor_Y, player_rook1);             this.pieces_dict.Add(machine_rook1.Coor_X * 10 + machine_rook1.Coor_Y, machine_rook1);
+            this.pieces_dict.Add(player_knight0.Coor_X * 10 + player_knight0.Coor_Y, player_knight0);       this.pieces_dict.Add(machine_knight0.Coor_X * 10 + machine_knight0.Coor_Y, machine_knight0);
+            this.pieces_dict.Add(player_knight1.Coor_X * 10 + player_knight1.Coor_Y, player_knight1);       this.pieces_dict.Add(machine_knight1.Coor_X * 10 + machine_knight1.Coor_Y, machine_knight1);
+            this.pieces_dict.Add(player_bishop0.Coor_X * 10 + player_bishop0.Coor_Y, player_bishop0);       this.pieces_dict.Add(machine_bishop0.Coor_X * 10 + machine_bishop0.Coor_Y, machine_bishop0);
+            this.pieces_dict.Add(player_bishop1.Coor_X * 10 + player_bishop1.Coor_Y, player_bishop1);       this.pieces_dict.Add(machine_bishop1.Coor_X * 10 + machine_bishop1.Coor_Y, machine_bishop1);
+            this.pieces_dict.Add(player_queen.Coor_X * 10 + player_queen.Coor_Y, player_queen);             this.pieces_dict.Add(machine_queen.Coor_X * 10 + machine_queen.Coor_Y, machine_queen);
+            this.pieces_dict.Add(player_king.Coor_X * 10 + player_king.Coor_Y, player_king);                this.pieces_dict.Add(machine_king.Coor_X * 10 + machine_king.Coor_Y, machine_king);
+
+            this.human_player = new HMPlayer(this.pieces_collection, this.pieces_dict);
+            this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict);
 
 
-
-            Messenger.Default.Register<MoveMessage>(this, (action) => PiecePositionChangeHandler(action));
             // this.boardlayout = Boardlayout;
         }
 
@@ -88,25 +102,14 @@ namespace ChessBoardUI.ViewModel
             get { return this.pieces_collection; }
            
         }
-
-
-        public void PiecePositionChangeHandler(MoveMessage action)
-        {
-            Console.WriteLine("Meesage received From {0}  to {1}", action.FromPoint, action.ToPoint);
-            Console.WriteLine("In dictionaty, the value is {0}", this.pieces_dict[6].Type);
-
-            
-            
-            //this.pieces_collection.Remove(this.pieces_dict[6]);
-            //thisces_collection.Remove(this.pieces_dict[6]);
-        }
+       
 
         public HMPlayer HumanPlayer
         {
             get {return this.human_player; }
         }
 
-        public MCPlayer MachinePlayer
+        public AIPlayer MachinePlayer
         {
             get { return this.machine_player; }
         }

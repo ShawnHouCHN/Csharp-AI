@@ -11,7 +11,7 @@ using ChessBoardUI.Constants;
 
 namespace ChessBoardUI.ViewModel
 {
-    class MoveMessage
+    class HumanMoveMessage
     {
         private Point from_point;
         private Point to_point;
@@ -29,5 +29,22 @@ namespace ChessBoardUI.ViewModel
         }
     }
 
-    
+    class MachineMoveMessage
+    {
+        private bool turn;
+       
+
+        public bool Turn
+        {
+            get { return turn; }
+            set { turn = value; }
+        }
+
+      
+    }
+
+
+
+
+
 }
