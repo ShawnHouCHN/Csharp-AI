@@ -11,8 +11,9 @@ namespace Chessgamelogic
         static void Main(string[] args)
         {
             ChessBoard CB = new ChessBoard();
-
-
+            Console.WriteLine("Evalution for black = "+ CB.evaluateBoard());
+            Console.WriteLine("Occupied: " + CB.occupied);
+            Console.ReadLine();
         }
 
 
@@ -21,35 +22,145 @@ namespace Chessgamelogic
         {
             ulong WP = 0L, WN = 0L, WB = 0L, WQ = 0L, WR = 0L, WK = 0L,
                     BP = 0L, BN = 0L, BB = 0L, BQ = 0L, BR = 0L, BK = 0L;
+            public ulong fullboard, occupied, empty, enemy, enemyAndEmpty;
+
+            int[] PawnTable, KnightTable, BishopTable, RookTable, QueenTable, KingTableO, KingTableE, Mirror64;
+      
 
             public ChessBoard()
             {
+                WP = 0x000000000000ff00;
+                BP = 0x00ff000000000000;
+                WN = 0x0000000000000042;
+                BN = 0x4200000000000000;
+                WB = 0x0000000000000024;
+                BB = 0x2400000000000000;
+                WR = 0x0000000000000081;
+                BR = 0x8100000000000000;
+                WQ = 0x0000000000000008;
+                BQ = 0x0800000000000000;
+                WK = 0x0000000000000010;
+                BK = 0x1000000000000000;
 
-                string[,] chessboard = new string[8, 8] {
-            {"r","n","b","q","k","b","n","r"},   //black
-            {"p","p","p","p","p","p","p","p"},
-            {" "," "," "," "," "," "," "," "},
-            {" "," "," "," "," "," "," "," "},
-            {" "," "," "," "," "," "," "," "},
-            {" "," "," "," "," "," "," "," "},
-            {"P","P","P","P","P","P","P","P"},   //white
-            {"R","N","B","Q","K","B","N","R"}
-            };
-                arrayToBitBoard(chessboard);
-                // Console.Write(Convert.ToString(WR+WK, 2)[3]);
+                createUsefullBitboards();
+
+
+                drawArray();
+
+
+
+                //    string[,] chessboard = new string[8, 8] {
+                //{"r","n","b","q","k","b","n","r"},   //black
+                //{"p","p","p","p","p","p","p","p"},
+                //{" "," "," "," "," "," "," "," "},
+                //{" "," "," "," "," "," "," "," "},
+                //{" "," "," "," "," "," "," "," "},
+                //{" "," "," "," "," "," "," "," "},
+                //{"P","P","P","P","P","P","P","P"},   //white
+                //{"R","N","B","Q","K","B","N","R"}
+                //};
+                //    arrayToBitBoard(chessboard);
+                // Console.Write(Convert.ToString(WR+WK, 2));
                 // Console.WriteLine();
                 //Console.Write(BP | WP);
                 // Console.Write(Convert.ToString(WN, 2));
                 // Console.WriteLine();
 
                 // Console.Write(Convert.ToString(BQ, 2));
-                drawArray();
+
                 //drawWhiteQueenArray(WQ);
-                Console.ReadLine();
+
 
             }
 
+            private void createUsefullBitboards()
+            {
+                fullboard = 0xffffffffffffffff;
+                occupied = WP | BP | WR | BR | WN | BN | WB | BB | WQ | BQ | WK | BK;
+                empty = occupied ^ fullboard;
+                enemy = WP | WR | WN | WB | WQ | WK;
+                enemyAndEmpty = empty | enemy;
 
+
+                PawnTable = new int[] {
+                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
+                10  ,   10  ,   0   ,   -10 ,   -10 ,   0   ,   10  ,   10  ,
+                5   ,   0   ,   0   ,   5   ,   5   ,   0   ,   0   ,   5   ,
+                0   ,   0   ,   10  ,   20  ,   20  ,   10  ,   0   ,   0   ,
+                5   ,   5   ,   5   ,   10  ,   10  ,   5   ,   5   ,   5   ,
+                10  ,   10  ,   10  ,   20  ,   20  ,   10  ,   10  ,   10  ,
+                20  ,   20  ,   20  ,   30  ,   30  ,   20  ,   20  ,   20  ,
+                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                };
+
+                KnightTable = new int[] {
+                0   ,   -10 ,   0   ,   0   ,   0   ,   0   ,   -10 ,   0   ,
+                0   ,   0   ,   0   ,   5   ,   5   ,   0   ,   0   ,   0   ,
+                0   ,   0   ,   10  ,   10  ,   10  ,   10  ,   0   ,   0   ,
+                0   ,   0   ,   10  ,   20  ,   20  ,   10  ,   5   ,   0   ,
+                5   ,   10  ,   15  ,   20  ,   20  ,   15  ,   10  ,   5   ,
+                5   ,   10  ,   10  ,   20  ,   20  ,   10  ,   10  ,   5   ,
+                0   ,   0   ,   5   ,   10  ,   10  ,   5   ,   0   ,   0   ,
+                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                };
+
+                BishopTable = new int[] {
+                0   ,   0   ,   -10 ,   0   ,   0   ,   -10 ,   0   ,   0   ,
+                0   ,   0   ,   0   ,   10  ,   10  ,   0   ,   0   ,   0   ,
+                0   ,   0   ,   10  ,   15  ,   15  ,   10  ,   0   ,   0   ,
+                0   ,   10  ,   15  ,   20  ,   20  ,   15  ,   10  ,   0   ,
+                0   ,   10  ,   15  ,   20  ,   20  ,   15  ,   10  ,   0   ,
+                0   ,   0   ,   10  ,   15  ,   15  ,   10  ,   0   ,   0   ,
+                0   ,   0   ,   0   ,   10  ,   10  ,   0   ,   0   ,   0   ,
+                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                };
+
+                RookTable = new int[] {
+                0   ,   0   ,   5   ,   10  ,   10  ,   5   ,   0   ,   0   ,
+                0   ,   0   ,   5   ,   10  ,   10  ,   5   ,   0   ,   0   ,
+                0   ,   0   ,   5   ,   10  ,   10  ,   5   ,   0   ,   0   ,
+                0   ,   0   ,   5   ,   10  ,   10  ,   5   ,   0   ,   0   ,
+                0   ,   0   ,   5   ,   10  ,   10  ,   5   ,   0   ,   0   ,
+                0   ,   0   ,   5   ,   10  ,   10  ,   5   ,   0   ,   0   ,
+                25  ,   25  ,   25  ,   25  ,   25  ,   25  ,   25  ,   25  ,
+                0   ,   0   ,   5   ,   10  ,   10  ,   5   ,   0   ,   0
+                };
+
+                KingTableO = new int[] {
+                0   ,   5   ,   5   ,   -10 ,   -10 ,   0   ,   10  ,   5   ,
+                -30 ,   -30 ,   -30 ,   -30 ,   -30 ,   -30 ,   -30 ,   -30 ,
+                -50 ,   -50 ,   -50 ,   -50 ,   -50 ,   -50 ,   -50 ,   -50 ,
+                -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,
+                -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,
+                -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,
+                -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,
+                -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70 ,   -70
+                };
+
+                KingTableE = new int[] {
+                -50 ,   -10 ,   0   ,   0   ,   0   ,   0   ,   -10 ,   -50 ,
+                -10,    0   ,   10  ,   10  ,   10  ,   10  ,   0   ,   -10 ,
+                0   ,   10  ,   20  ,   20  ,   20  ,   20  ,   10  ,   0   ,
+                0   ,   10  ,   20  ,   40  ,   40  ,   20  ,   10  ,   0   ,
+                0   ,   10  ,   20  ,   40  ,   40  ,   20  ,   10  ,   0   ,
+                0   ,   10  ,   20  ,   20  ,   20  ,   20  ,   10  ,   0   ,
+                -10,    0   ,   10  ,   10  ,   10  ,   10  ,   0   ,   -10 ,
+                -50 ,   -10 ,   0   ,   0   ,   0   ,   0   ,   -10 ,   -50
+                };  
+
+
+                Mirror64 = new int[] {
+                56  ,   57  ,   58  ,   59  ,   60  ,   61  ,   62  ,   63  ,
+                48  ,   49  ,   50  ,   51  ,   52  ,   53  ,   54  ,   55  ,
+                40  ,   41  ,   42  ,   43  ,   44  ,   45  ,   46  ,   47  ,
+                32  ,   33  ,   34  ,   35  ,   36  ,   37  ,   38  ,   39  ,
+                24  ,   25  ,   26  ,   27  ,   28  ,   29  ,   30  ,   31  ,
+                16  ,   17  ,   18  ,   19  ,   20  ,   21  ,   22  ,   23  ,
+                8   ,   9   ,   10  ,   11  ,   12  ,   13  ,   14  ,   15  ,
+                0   ,   1   ,   2   ,   3   ,   4   ,   5   ,   6   ,   7
+                };
+
+            }
 
             public void Copyboard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK)
             {
@@ -65,6 +176,8 @@ namespace Chessgamelogic
                 this.BQ = BQ;
                 this.BR = BR;
                 this.BK = BK;
+
+                createUsefullBitboards();
             }
 
             public void arrayToBitBoard(string[,] chessboard)
@@ -184,7 +297,7 @@ namespace Chessgamelogic
                         if (chessboard_revert[row, col] == null || chessboard_revert[row, col] == " ")
                             Console.Write("*");
                         else
-                            Console.Write(chessboard_revert[row, col]);
+                            Console.Write(chessboard_revert[7-row, 7-col]);
                     }
                     Console.WriteLine();
                 }
@@ -193,9 +306,7 @@ namespace Chessgamelogic
             // TO DO
             public int evaluateBoard()
             {
-                ulong blackpieces = BB+BK+BN+BP+BQ+BR;
-                ulong whitepices = WB + WK + WN + WP + WQ + WR;
-                ulong allpieces = blackpieces + whitepices;
+
 
                 int blackPoints = 0;
                 int whitePoints = 0;
@@ -203,74 +314,78 @@ namespace Chessgamelogic
 
                 for (int i = 0; i<64;i++)
                 {
-                    if (((allpieces >> i) & 1) == 1)
+                    if (((occupied >> i) & 1) == 1)
                     {
-                        if (((blackpieces >> i) & 1) == 1)
-                        {
-                            //Evaluation of Black pieces 
-                            if (((BB >> i) & 1) == 1)
-                            {
-                                //Evaluation of Black Bishop 
-
-                            } else if (((BK >> i) & 1) == 1)
-                            {
-                                //Evaluation of Black King 
-
-                            }
-                            else if (((BN >> i) & 1) == 1)
-                            {
-                                //Evaluation of Black Knight 
-
-                            }
-                            else if (((BP >> i) & 1) == 1)
-                            {
-                                //Evaluation of Black Pawns 
-
-                            }
-                            else if (((BQ >> i) & 1) == 1)
-                            {
-                                //Evaluation of Black Queen 
-
-                            }
-                            else if (((BR >> i) & 1) == 1)
-                            {
-                                //Evaluation of Black Rook 
-
-                            }
-
-                        } else
+                        if (((enemy >> i) & 1) == 1)
                         {
                             //Evaluation of White pieces
                             if (((WB >> i) & 1) == 1)
                             {
-                                //Evaluation of White Bishop 
+                                //Evaluation of White Bishop
+                                whitePoints += BishopTable[i];
 
                             }
                             else if (((WK >> i) & 1) == 1)
                             {
-                                //Evaluation of White King 
+                                //Evaluation of White King
+                                whitePoints += KingTableO[i];
 
                             }
                             else if (((WN >> i) & 1) == 1)
                             {
                                 //Evaluation of White Knight 
-
+                                whitePoints += KnightTable[i];
                             }
                             else if (((WP >> i) & 1) == 1)
                             {
                                 //Evaluation of White Pawns 
-
+                                whitePoints += PawnTable[i];
                             }
                             else if (((WQ >> i) & 1) == 1)
                             {
                                 //Evaluation of White Queen 
-
+                                //whitePoints += QueenTable[i];
                             }
                             else if (((WR >> i) & 1) == 1)
                             {
                                 //Evaluation of White Rook 
-
+                                whitePoints += RookTable[i];
                             }
+
+                        } else
+                        {
+                            //Evaluation of Black pieces 
+                            if (((BB >> i) & 1) == 1)
+                            {
+                                //Evaluation of Black Bishop 
+                                blackPoints += BishopTable[Mirror64[i]];
+                            }
+                            else if (((BK >> i) & 1) == 1)
+                            {
+                                //Evaluation of Black King 
+                                blackPoints += KingTableO[Mirror64[i]];
+                            }
+                            else if (((BN >> i) & 1) == 1)
+                            {
+                                //Evaluation of Black Knight 
+                                blackPoints += KnightTable[Mirror64[i]];
+                            }
+                            else if (((BP >> i) & 1) == 1)
+                            {
+                                //Evaluation of Black Pawns 
+                                blackPoints += PawnTable[Mirror64[i]];
+                            }
+                            else if (((BQ >> i) & 1) == 1)
+                            {
+                                //Evaluation of Black Queen 
+                                //blackPoints += QueenTable[Mirror64[i]];
+                            }
+                            else if (((BR >> i) & 1) == 1)
+                            {
+                                //Evaluation of Black Rook 
+                                blackPoints += RookTable[Mirror64[i]];
+                            }
+                            
                         }
                     }
                     else { }
