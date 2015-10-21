@@ -1,6 +1,9 @@
-﻿using ChessBoardUI.ViewModel;
+﻿
+using ChessBoardUI.AIAlgorithm;
+using ChessBoardUI.ViewModel;
 using GalaSoft.MvvmLight.Messaging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -69,18 +72,36 @@ namespace ChessBoardUI.Players
         {
             this.HumanTimer.stopClock();
 
+
+
             //lock the entire board so that use cannot click on piece when it is machine's turn.
             foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)
             {
-                if (item.Value.Player==Player.White)
+                if (item.Value.Player == Player.White)
                 {
                     item.Value.Ownership = false;
                 }
             }
+
+
+            // some bit operations to get the bit
+            int from_index = (7 - (int)action.FromPoint.Y) * 8 + (int)action.FromPoint.X;
+            int to_index = (7 - (int)action.ToPoint.Y) * 8 + (int)action.ToPoint.X;
+            ulong moved_place = 0x0000000000000001;
+            ulong new_place =   0x0000000000000001;
+            moved_place = MoveGenerator.full_occupied & ~(moved_place << (from_index));
+            new_place = (new_place << (to_index));
+
+
+
+            MoveGenerator.UpdateAnyMovedWhiteBitboard(action.Type, moved_place, new_place);
+
+
         }
 
         public void MachinePiecePositionChangeHandler(MachineMoveMessage action)
         {
+
             //unlock human player pieces so he can go on
             foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)
             {
@@ -89,6 +110,8 @@ namespace ChessBoardUI.Players
                     item.Value.Ownership = action.Turn;
                 }
             }
+
+
             this.HumanTimer.startClock();
 
         }

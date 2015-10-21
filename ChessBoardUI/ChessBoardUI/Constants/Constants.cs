@@ -12,5 +12,8 @@ namespace ChessBoardUI.Constants
         internal const int CANVAS_MARGIN_LEFT = 35;  //to pinpoint the cursor position in the canvas 
         internal const int CANVAS_MARGIN_TOP = 45;   //to pinpoint the cursor position in the canvas 
         internal const int IMAGE_CENTER_TO_LEFTTOP = 30; //center of image to left-top corner
+         const ulong fullboard = 0xffffffffffffffff ;
     }
+
+
 }

@@ -13,6 +13,7 @@ using System.Windows.Media;
 using ChessBoardUI.ViewTreeHelper;
 using ChessBoardUI.Constants;
 using GalaSoft.MvvmLight.Messaging;
+using ChessBoardUI.AIAlgorithm;
 
 namespace ChessBoardUI.ViewModel
 {
@@ -80,7 +81,7 @@ namespace ChessBoardUI.ViewModel
         public PieceType Type
         {
             get { return this._Type; }
-            set { this._Type = value; RaisePropertyChanged(() => this.Type); }  //RaisePropertyChanged Called from a property setter to notify the framework that an Entity member has changed.
+            set { this._Type = value; RaisePropertyChanged(() => this.Type); RaisePropertyChanged(() => this.Type); }  //RaisePropertyChanged Called from a property setter to notify the framework that an Entity member has changed.
         }
 
         public Player Player
@@ -123,22 +124,44 @@ namespace ChessBoardUI.ViewModel
                     this.Chose = true;
                     this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
                     this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
-                    //Console.Write("current pos value is {0} , {1}", this.Pos_X, this.Pos.Y);
-                    //Console.Write("current coor position is {0} , {1}", this.Coor_X, this.Coor_Y);
-                    //Console.Write("current mouse value is {0} , {1}", Mouse.GetPosition(null).X-Constants.Constants.CANVAS_MARGIN_LEFT, Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP);
                     this.priv_coor_x = this.Coor_X;
                     this.priv_coor_y = this.Coor_Y;
                 }
                 else
                 {
-                    this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
-                    this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
-                    this.Chose = false;
+                    //targetx&y is used to check if it is legal move later
+                    int target_x = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
+                    int target_y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
 
-                    Console.WriteLine("new COOR value is {0} , {1}", this.Coor_X, this.Coor_Y);
+                    //if player click on the same place. do nothing
+                    if (target_x == this.priv_coor_x && target_y== this.priv_coor_y)
+                    {
+                        this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
+                        this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
+                        this.Chose = false;
+                        return;
+                    }
 
-                    //if(this.priv_coor_x!=this.Coor_X || this.priv_coor_y!=this.Coor_Y ) check whether use has moved a piece to a new place or not. 
-                    Messenger.Default.Send(new HumanMoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(this.Coor_X, this.Coor_Y) });
+                    //need check castling in this legalmove event also
+
+
+                    if (MoveGenerator.LegalMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
+                    {
+
+                        //promote humans pawn
+                        if (target_y == 0 && this.Type == PieceType.Pawn && this.Player==Player.White)
+                        {
+                            this.Type = PieceType.Queen;
+                        }
+
+                        this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
+                        this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
+                        this.Chose = false;
+
+                        Console.WriteLine("new COOR value is {0} , {1}", this.Coor_X, this.Coor_Y);
+
+                        Messenger.Default.Send(new HumanMoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(this.Coor_X, this.Coor_Y), Type = this.Type, Castling = false, AnPassent = false, Promotion=false, Turn=true});
+                    }
 
                 }
 

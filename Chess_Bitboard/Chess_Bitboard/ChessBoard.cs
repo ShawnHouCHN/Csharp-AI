@@ -70,12 +70,13 @@ namespace Chess_Bitboard
            //// Console.Write(Convert.ToString(WR+WK, 2)[3]);
            // Console.WriteLine();
            // Console.Write(WN);
-           // Console.Write(Convert.ToString(WN, 2));
+           // Console.Write(Convert.ToString(WK, 2));
            // Console.WriteLine();
             
            // Console.Write(Convert.ToString(BQ, 2));
             drawArray(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK);
-            drawWhiteQueenArray(WQ);
+            Console.WriteLine();
+            Console.Write(Convert.ToString(WR+WK, 2));
             Console.ReadLine();
         }
 

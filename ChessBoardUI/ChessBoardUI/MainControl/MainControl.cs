@@ -23,7 +23,7 @@ namespace ChessBoardUI.ViewModel
         HMPlayer human_player;
         AIPlayer machine_player;
         private Dictionary<int, ChessPiece> pieces_dict;
-
+        
 
 
         public MainControl()
