@@ -345,9 +345,13 @@ namespace Chessgamelogic
                             //Evaluation of White Pawns 
                             whitePoints += PawnTable[(8 * (7 - i / 8) + i % 8)];
 
-                            //Evaluation of Double Pawn
+                            //Evaluation of Double Pawn and Pawn ramming
                             for (int f = 1; f < 8; f++)
                             {
+                                if ((f == 1 & ((BP>> (i + 8)) & 1) == 1))
+                                { 
+                                    whitePoints += -7;
+                                }
                                 if (((WP >> (i + 8 * f)) & 1) == 1)
                                 {
                                     whitePoints += -7;
@@ -398,7 +402,12 @@ namespace Chessgamelogic
                             //Evaluation of Double Pawn
                             for (int f = 1; f < 8; f++)
                             {
-                                if (((BP >> (i + 8 * f)) & 1) == 1)
+                                if ((f==1 & ((WP>>(i-8))&1)==1))
+                                {
+                                    blackPoints += -7;
+                                }
+
+                                if (((BP >> (i - 8 * f)) & 1) == 1)
                                 {
                                     blackPoints += -7;
                                     break;
