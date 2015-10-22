@@ -877,7 +877,7 @@ namespace Chessgamelogic
 
 
 
-        public static void setCurrentBitborads(ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong BK, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK)
+        public static void setCurrentBitboards(ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong BK, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK)
         {
             black_pawns = BP;
             black_rooks = BR;

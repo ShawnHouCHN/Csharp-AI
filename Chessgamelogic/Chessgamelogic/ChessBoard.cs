@@ -9,12 +9,13 @@ namespace Chessgamelogic
 {
     public class ChessBoard
     {
-        ulong WP = 0L, WN = 0L, WB = 0L, WQ = 0L, WR = 0L, WK = 0L,
+        private ulong WP = 0L, WN = 0L, WB = 0L, WQ = 0L, WR = 0L, WK = 0L,
                 BP = 0L, BN = 0L, BB = 0L, BQ = 0L, BR = 0L, BK = 0L;
-        public ulong fullboard, occupied, empty, enemy, enemyOrEmpty;
+        private ulong fullboard, occupied, empty, enemy, enemyOrEmpty;
 
-        int[] PawnTable, KnightTable, BishopTable, RookTable, QueenTable, KingTableO, KingTableE, Mirror64;
+        private int[] PawnTable, KnightTable, BishopTable, RookTable, QueenTable, KingTableO, KingTableE, Mirror64;
 
+        private ChessBoard bestState;
 
         public ChessBoard()
         {
@@ -442,38 +443,16 @@ namespace Chessgamelogic
             List<ChessBoard> theList = new List<ChessBoard>();
             if (max)
             {
-                MoveGenerator.setCurrentBitborads(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                ArrayList moves = MoveGenerator.PossibleMovesB("",true,true,true,true);
-                foreach (Move move in moves) {
+                MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+                ArrayList moves = MoveGenerator.PossibleMovesB("", true, true, true, true);
+                foreach (Move move in moves)
+                {
                     ChessBoard cb = new ChessBoard();
                     cb.Copyboard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                    switch (move.cap_type) {
-                        case PieceType.King:
-                            cb.WK = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & WK;
-                            break;
-                        case PieceType.Queen:
-                            cb.WQ = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & WQ;
-                            break;
-                        case PieceType.Rook:
-                            cb.WR = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & WR;
-                            break;
-                        case PieceType.Knight:
-                            cb.WK = ~((ulong) 1 << (move.to_rank * 8 + move.to_file)) & WK;
-                            break;
-                        case PieceType.Bishop:
-                            cb.WB = ~((ulong) 1 << (move.to_rank * 8 + move.to_file)) & WB;
-                            break;
-                        case PieceType.Pawn:
-                            cb.WP = ~((ulong) 1 << (move.to_rank * 8 + move.to_file)) & WP;
-                            break;
-                        default:
-                            break;
-                    }
-                    switch (move.moved_type)
+                    switch (move.cap_type)
                     {
                         case PieceType.King:
-                            cb.BK = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & BK;
-                            cb.BK = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & BK;
+                            cb.WK = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & WK;
                             break;
                         case PieceType.Queen:
                             cb.WQ = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & WQ;
@@ -492,12 +471,106 @@ namespace Chessgamelogic
                             break;
                         default:
                             break;
+                    }
+                    switch (move.moved_type)
+                    {
+                        case PieceType.King:
+                            cb.BK = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & BK;
+                            cb.BK = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & BK;
+                            break;
+                        case PieceType.Queen:
+                            cb.BQ = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & BQ;
+                            cb.BQ = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & BQ;
+                            break;
+                        case PieceType.Rook:
+                            cb.BR = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & BR;
+                            cb.BR = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & BR;
+                            break;
+                        case PieceType.Knight:
+                            cb.BN = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & BN;
+                            cb.BN = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & BN;
+                            break;
+                        case PieceType.Bishop:
+                            cb.BB = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & BB;
+                            cb.BB = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & BB;
+                            break;
+                        case PieceType.Pawn:
+                            cb.BP = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & BP;
+                            cb.BP = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & BP;
+                            break;
+                        default:
+                            break;
 
                     }
-                }
-            } else
-            {
+                    // Switch case for special events! promotion, enpassant etc.
 
+                    theList.Add(cb);
+                }
+            }
+            else
+            {
+                MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+                ArrayList moves = MoveGenerator.PossibleMovesW("", true, true, true, true);
+                foreach (Move move in moves)
+                {
+                    ChessBoard cb = new ChessBoard();
+                    cb.Copyboard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+                    switch (move.cap_type)
+                    {
+                        case PieceType.King:
+                            cb.BK = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & BK;
+                            break;
+                        case PieceType.Queen:
+                            cb.BQ = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & BQ;
+                            break;
+                        case PieceType.Rook:
+                            cb.BR = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & BR;
+                            break;
+                        case PieceType.Knight:
+                            cb.BK = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & BK;
+                            break;
+                        case PieceType.Bishop:
+                            cb.BB = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & BB;
+                            break;
+                        case PieceType.Pawn:
+                            cb.BP = ~((ulong)1 << (move.to_rank * 8 + move.to_file)) & BP;
+                            break;
+                        default:
+                            break;
+                    }
+                    switch (move.moved_type)
+                    {
+                        case PieceType.King:
+                            cb.WK = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & WK;
+                            cb.WK = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & WK;
+                            break;
+                        case PieceType.Queen:
+                            cb.WQ = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & WQ;
+                            cb.WQ = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & WQ;
+                            break;
+                        case PieceType.Rook:
+                            cb.WR = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & WR;
+                            cb.WR = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & WR;
+                            break;
+                        case PieceType.Knight:
+                            cb.WN = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & WN;
+                            cb.WN = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & WN;
+                            break;
+                        case PieceType.Bishop:
+                            cb.WB = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & WB;
+                            cb.WB = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & WB;
+                            break;
+                        case PieceType.Pawn:
+                            cb.WP = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & WP;
+                            cb.WP = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & WP;
+                            break;
+                        default:
+                            break;
+
+                    }
+                    // switch for special events
+                    theList.Add(cb);
+                }
             }
             return theList;
         }
@@ -508,25 +581,22 @@ namespace Chessgamelogic
             throw new NotImplementedException();
         }
 
-        public Move AlphaBetaSearch(int alpha, int beta, int layer, bool max)
+        public int AlphaBetaSearch(int alpha, int beta, int layer, bool max)
         {
-            Move returnMove = new Move();
             if (layer == 0 || check() == true)
             {
-                //returnMove = getMove();
-                returnMove.value = evaluateBoard();
-                return returnMove;
+                return evaluateBoard();
             }
-            else if (max == true)
+            else if (max)
             {
-                List<ChessBoard> chessboards = generateChessBoards();
+                List<ChessBoard> chessboards = generateChessBoards(max);
                 foreach (ChessBoard CB in chessboards)
                 {
-                    Move result = AlphaBetaSearch(alpha, beta, layer - 1, false);
-                    if (result.value > alpha)
+                    int result = AlphaBetaSearch(alpha, beta, layer - 1, false);
+                    if (result > alpha)
                     {
-                        alpha = result.value;
-                        returnMove = result;
+                        alpha = result;
+                        bestState = CB;
                     }
 
                     if (alpha >= beta)
@@ -534,18 +604,18 @@ namespace Chessgamelogic
                         break;
                     }
                 }
-                return returnMove;
+                return alpha;
             }
             else
             {
-                List<ChessBoard> chessboards = generateChessBoards();
+                List<ChessBoard> chessboards = generateChessBoards(max);
                 foreach (ChessBoard CB in chessboards)
                 {
-                    Move result = AlphaBetaSearch(alpha, beta, layer - 1, true);
-                    if (result.value < beta)
+                    int result = AlphaBetaSearch(alpha, beta, layer - 1, true);
+                    if (result < beta)
                     {
-                        beta = result.value;
-                        returnMove = result;
+                        beta = result;
+                        bestState = CB;
                     }
 
                     if (alpha >= beta)
@@ -553,7 +623,7 @@ namespace Chessgamelogic
                         break;
                     }
                 }
-                return returnMove;
+                return beta;
             }
         }
     }
