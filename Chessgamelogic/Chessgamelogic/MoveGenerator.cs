@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chessgamelogic
 {
-    public class Move
+    class Move
     {
         public int from_rank;
         public int from_file;
@@ -82,8 +82,8 @@ namespace Chessgamelogic
     {
 
         //init position
-        public static ulong white_pawns = 0x00000000000ff00;
-        public static ulong black_pawns = 0x00ff000000000000;
+        public static ulong white_pawns = 0x000000000000ff00;
+        public static ulong black_pawns = 0x00000000ff000000;
         public static ulong white_knights = 0x000000000000042;
         public static ulong black_knights = 0x4200000000000000;
         public static ulong white_bishops = 0x000000000000024;
@@ -105,12 +105,12 @@ namespace Chessgamelogic
 
 
         //these are for pawn moves
-        static ulong rank8 = 0xff00000000000000;
-        static ulong rank1 = 0x00000000000000ff;
-        static ulong rank4 = 0x00000000ff000000;
-        static ulong rank5 = 0x000000ff00000000;
-        static ulong file1 = 0x0101010101010101;
-        static ulong file8 = 0x8080808080808080;
+        static ulong rank7 = 0xff00000000000000;
+        static ulong rank0 = 0x00000000000000ff;
+        static ulong rank3 = 0x00000000ff000000;
+        static ulong rank4 = 0x000000ff00000000;
+        static ulong file0 = 0x0101010101010101;
+        static ulong file7 = 0x8080808080808080;
 
         static ulong not_black_occupied;
 
@@ -897,7 +897,7 @@ namespace Chessgamelogic
         }
 
         //castling is not made yet, but bool is kept in the parameters.
-        public static ArrayList PossibleMovesB(string history, bool castleWK = true, bool castleWQ = true, bool castleBK = true, bool castleBQ = true)
+        public static ArrayList PossibleMovesB(string history = "", bool castleWK = true, bool castleWQ = true, bool castleBK = true, bool castleBQ = true)
         {
 
             not_black_occupied = ~(white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king | black_king);
@@ -922,14 +922,20 @@ namespace Chessgamelogic
         }
 
 
-        public static ArrayList PossibleMovesW(string history, ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong BK, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK)
+        public static ArrayList PossibleMovesW(string history = "", bool castleWK = true, bool castleWQ = true, bool castleBK = true, bool castleBQ = true)
         {
 
-            black_occupied = (BP | BR | BN | BB | BQ | BK);
-            empty = ~(WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
-            //ArrayList wp_list = PossiblePawnWhite(history, WP);
-            // return wp_list;
-            return null; // test
+            not_black_occupied = ~(white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king | black_king);
+            black_occupied_noking = (black_pawns | black_rooks | black_knights | black_bishops | black_queens);
+            black_occupied = (black_pawns | black_rooks | black_knights | black_bishops | black_queens | black_king);
+            white_occupied = (white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king);
+            ArrayList wp_list = PossibleKing(white_king, black_occupied);
+            wp_list.AddRange(PossibleQueen(white_queens, black_occupied));
+            wp_list.AddRange(PossibleKnight(white_knights, black_occupied));
+            wp_list.AddRange(PossibleBishop(white_bishops, black_occupied));
+            wp_list.AddRange(PossibleRook(white_rooks, black_occupied));
+            wp_list.AddRange(PossiblePawnWhite(history, white_pawns));
+            return wp_list; // test
 
         }
 
@@ -938,7 +944,7 @@ namespace Chessgamelogic
 
             bp_move_list.Clear();
 
-            ulong bp_cap_right_moves = (black_pawns >> 7) & white_occupied & ~rank1 & ~file1;
+            ulong bp_cap_right_moves = (black_pawns >> 7) & white_occupied & ~rank0 & ~file0;
 
             Console.WriteLine(Convert.ToString((long)bp_cap_right_moves, 2));
 
@@ -962,7 +968,7 @@ namespace Chessgamelogic
 
             }
 
-            ulong bp_cap_left_moves = (black_pawns >> 9) & white_occupied & ~rank1 & ~file8;
+            ulong bp_cap_left_moves = (black_pawns >> 9) & white_occupied & ~rank0 & ~file7;
             Console.WriteLine(Convert.ToString((long)bp_cap_left_moves, 2));
             for (int i = 0; i < 64; i++)
             {
@@ -984,7 +990,7 @@ namespace Chessgamelogic
 
             }
 
-            ulong bp_1_downward_moves = (ulong)(black_pawns >> 8) & empty & ~rank1;
+            ulong bp_1_downward_moves = (ulong)(black_pawns >> 8) & empty & ~rank0;
             for (int i = 0; i < 64; i++)
             {
                 if (((bp_1_downward_moves >> i) & 1) == 1)
@@ -996,7 +1002,7 @@ namespace Chessgamelogic
 
             Console.WriteLine(Convert.ToString((long)bp_1_downward_moves, 2));
 
-            ulong bp_2_downward_moves = (ulong)(black_pawns >> 16) & empty & (empty >> 8) & rank5;
+            ulong bp_2_downward_moves = (ulong)(black_pawns >> 16) & empty & (empty >> 8) & rank4;
             for (int i = 0; i < 64; i++)
             {
                 if (((bp_2_downward_moves >> i) & 1) == 1)
@@ -1009,7 +1015,7 @@ namespace Chessgamelogic
             Console.WriteLine(Convert.ToString((long)bp_2_downward_moves, 2));
 
             //promotion move needs to be add in later..........
-            ulong bp_promote_right_cap_moves = (black_pawns >> 7) & rank1 & ~file1;        //promote by right capture;
+            ulong bp_promote_right_cap_moves = (black_pawns >> 7) & rank0 & ~file0;        //promote by right capture;
             for (int i = 0; i < 64; i++)
             {
                 if (((bp_promote_right_cap_moves >> i) & 1) == 1)
@@ -1030,7 +1036,7 @@ namespace Chessgamelogic
             }
             Console.WriteLine(Convert.ToString((long)bp_promote_right_cap_moves, 2));
 
-            ulong bp_promote_left_cap_moves = (black_pawns >> 9) & rank1 & ~file8;        //promote by right capture;
+            ulong bp_promote_left_cap_moves = (black_pawns >> 9) & rank0 & ~file7;        //promote by right capture;
             for (int i = 0; i < 64; i++)
             {
                 if (((bp_promote_left_cap_moves >> i) & 1) == 1)
@@ -1051,7 +1057,7 @@ namespace Chessgamelogic
             }
             Console.WriteLine(Convert.ToString((long)bp_promote_left_cap_moves, 2));
 
-            ulong bp_promote_downward_moves = (black_pawns >> 8) & rank1 & empty;        //promote by right capture;
+            ulong bp_promote_downward_moves = (black_pawns >> 8) & rank0 & empty;        //promote by right capture;
             for (int i = 0; i < 64; i++)
             {
                 if (((bp_promote_downward_moves >> i) & 1) == 1)
@@ -1062,6 +1068,138 @@ namespace Chessgamelogic
             Console.WriteLine(Convert.ToString((long)bp_promote_downward_moves, 2));
 
             return bp_move_list;
+        }
+
+        public static ArrayList PossiblePawnWhite(string history, ulong white_pawns)   //return list of moves black pawn can take. four characters in the list is a move, source rank, source file, desti rank, desti file.
+        {
+
+            wp_move_list.Clear();
+
+            ulong wp_cap_right_moves = (white_pawns << 9) & black_occupied & ~rank7 & ~file0;
+
+            Console.WriteLine(Convert.ToString((long)wp_cap_right_moves, 2));
+
+            for (int i = 0; i < 64; i++)
+            {
+                if (((wp_cap_right_moves >> i) & 1) == 1)
+                {
+                    if (((black_pawns >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Pawn, false));
+                    else if (((black_knights >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Knight, false));
+                    else if (((black_bishops >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Bishop, false));
+                    else if (((black_rooks >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Rook, false));
+                    else if (((black_queens >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Queen, false));
+                    else if (((black_king >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, false));
+                }
+
+            }
+
+            ulong wp_cap_left_moves = (white_pawns << 7) & black_occupied & ~rank7 & ~file7;
+            Console.WriteLine(Convert.ToString((long)wp_cap_left_moves, 2));
+            for (int i = 0; i < 64; i++)
+            {
+                if (((wp_cap_left_moves >> i) & 1) == 1)
+                {
+                    if (((black_pawns >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Pawn, false));
+                    else if (((black_knights >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Knight, false));
+                    else if (((black_bishops >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Bishop, false));
+                    else if (((black_rooks >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Rook, false));
+                    else if (((black_queens >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Queen, false));
+                    else if (((black_king >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, false));
+                }
+
+            }
+
+            ulong wp_1_upward_moves = (ulong)(white_pawns << 8) & empty & ~rank7;
+            for (int i = 0; i < 64; i++)
+            {
+                if (((wp_1_upward_moves >> i) & 1) == 1)
+                {
+                    wp_move_list.Add(new Move((i / 8 - 1), (i % 8), (i / 8), (i % 8), PieceType.Pawn, false));
+                }
+
+            }
+
+            Console.WriteLine(Convert.ToString((long)wp_1_upward_moves, 2));
+
+
+            ulong wp_2_upward_moves = (ulong)(white_pawns << 16) & empty & (empty >> 8) & rank3;
+            for (int i = 0; i < 64; i++)
+            {
+                if (((wp_2_upward_moves >> i) & 1) == 1)
+                {
+                    wp_move_list.Add(new Move((i / 8 - 2), (i % 8), (i / 8), (i % 8), PieceType.Pawn, false));
+                }
+
+            }
+
+            Console.WriteLine(Convert.ToString((long)wp_2_upward_moves, 2));
+
+            //promotion move needs to be add in later..........
+            ulong wp_promote_right_cap_moves = (white_pawns << 9) & rank7 & ~file0;        //promote by right capture;
+            for (int i = 0; i < 64; i++)
+            {
+                if (((wp_promote_right_cap_moves >> i) & 1) == 1)
+                {
+                    if (((black_pawns >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Pawn, true));
+                    else if (((black_knights >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Knight, true));
+                    else if (((black_bishops >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Bishop, true));
+                    else if (((black_rooks >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Rook, true));
+                    else if (((black_queens >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Queen, true));
+                    else if (((black_queens >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, true));
+                }
+            }
+            Console.WriteLine(Convert.ToString((long)wp_promote_right_cap_moves, 2));
+
+            ulong wp_promote_left_cap_moves = (white_pawns << 7) & rank7 & ~file7;        //promote by right capture;
+            for (int i = 0; i < 64; i++)
+            {
+                if (((wp_promote_left_cap_moves >> i) & 1) == 1)
+                {
+                    if (((black_pawns >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Pawn, true));
+                    else if (((black_knights >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Knight, true));
+                    else if (((black_bishops >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Bishop, true));
+                    else if (((black_rooks >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Rook, true));
+                    else if (((black_queens >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Queen, true));
+                    else if (((black_king >> i) & 1) == 1)
+                        wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, true));
+                }
+            }
+            Console.WriteLine(Convert.ToString((long)wp_promote_left_cap_moves, 2));
+
+            ulong wp_promote_upward_moves = (white_pawns >> 8) & rank7 & empty;        //promote by right capture;
+            for (int i = 0; i < 64; i++)
+            {
+                if (((wp_promote_upward_moves >> i) & 1) == 1)
+                {
+                    wp_move_list.Add(new Move((i / 8 - 1), (i % 8), (i / 8), (i % 8), PieceType.Pawn, true));
+                }
+            }
+            Console.WriteLine(Convert.ToString((long)wp_promote_upward_moves, 2));
+
+            return wp_move_list;
         }
 
         public static ArrayList PossibleRook(ulong Rook, ulong enemy_occupied)  //possible rook moves
@@ -1110,26 +1248,51 @@ namespace Chessgamelogic
 
                     rook_moves = rook_right_moves | rook_left_moves | rook_up_moves | rook_down_moves;
                     rook_cap_moves = rook_moves & enemy_occupied;
-                    Console.WriteLine("rook index :" + rook_index);
-                    Console.WriteLine("rook : " + Convert.ToString((long)rook_moves, 2));
-                    for (int j = 0; j < 64; j++)
+
+                    if (enemy_occupied == white_occupied)
                     {
-                        if (((rook_moves >> j) & 1) == 1)
+                        for (int j = 0; j < 64; j++)
                         {
-                            if (((white_pawns >> j) & 1) == 1)
-                                r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Pawn, false)); //from rank, file - to rank, file
-                            else if (((white_knights >> j) & 1) == 1)
-                                r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Knight, false));
-                            else if (((white_bishops >> j) & 1) == 1)
-                                r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Bishop, false));
-                            else if (((white_rooks >> j) & 1) == 1)
-                                r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Rook, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Queen, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.King, false));
-                            else
-                                r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, false));
+                            if (((rook_moves >> j) & 1) == 1)
+                            {
+                                if (((white_pawns >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((white_knights >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Knight, false));
+                                else if (((white_bishops >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Bishop, false));
+                                else if (((white_rooks >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Rook, false));
+                                else if (((white_queens >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Queen, false));
+                                else if (((white_king >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.King, false));
+                                else
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, false));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 0; j < 64; j++)
+                        {
+                            if (((rook_moves >> j) & 1) == 1)
+                            {
+                                if (((black_pawns >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((black_knights >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Knight, false));
+                                else if (((black_bishops >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Bishop, false));
+                                else if (((black_rooks >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Rook, false));
+                                else if (((black_queens >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.Queen, false));
+                                else if (((black_king >> j) & 1) == 1)
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, PieceType.King, false));
+                                else
+                                    r_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Rook, false));
+                            }
                         }
                     }
                 }
@@ -1183,28 +1346,54 @@ namespace Chessgamelogic
 
                     Console.WriteLine("bishop index :" + bishop_index);
                     Console.WriteLine("bishop : " + Convert.ToString((long)bishop_moves, 2));
-                    for (int j = 0; j < 64; j++)
+                    if (enemy_occupied == white_occupied)
                     {
-                        if (((bishop_moves >> j) & 1) == 1)
+                        for (int j = 0; j < 64; j++)
                         {
-                            if (((white_pawns >> j) & 1) == 1)
-                                b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Pawn, false)); //from rank, file - to rank, file
-                            else if (((white_knights >> j) & 1) == 1)
-                                b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Knight, false));
-                            else if (((white_bishops >> j) & 1) == 1)
-                                b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Bishop, false));
-                            else if (((white_rooks >> j) & 1) == 1)
-                                b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Rook, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Queen, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.King, false));
-                            else
-                                b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, false));
-                            //b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            if (((bishop_moves >> j) & 1) == 1)
+                            {
+                                if (((white_pawns >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((white_knights >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Knight, false));
+                                else if (((white_bishops >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Bishop, false));
+                                else if (((white_rooks >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Rook, false));
+                                else if (((white_queens >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Queen, false));
+                                else if (((white_king >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.King, false));
+                                else
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, false));
+                                //b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            }
                         }
                     }
-
+                    else
+                    {
+                        for (int j = 0; j < 64; j++)
+                        {
+                            if (((bishop_moves >> j) & 1) == 1)
+                            {
+                                if (((black_pawns >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((black_knights >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Knight, false));
+                                else if (((black_bishops >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Bishop, false));
+                                else if (((black_rooks >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Rook, false));
+                                else if (((black_queens >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.Queen, false));
+                                else if (((black_king >> j) & 1) == 1)
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, PieceType.King, false));
+                                else
+                                    b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Bishop, false));
+                                //b_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            }
+                        }
+                    }
 
                 }
             }
@@ -1228,25 +1417,52 @@ namespace Chessgamelogic
                     knight_moves = knight_board_set[i] & (empty | enemy_occupied);
                     Console.WriteLine("knight index :" + knight_index);
                     Console.WriteLine("knight : " + Convert.ToString((long)knight_moves, 2));
-                    for (int j = 0; j < 64; j++)
+                    if (enemy_occupied == white_occupied)
                     {
-                        if (((knight_moves >> j) & 1) == 1)
+                        for (int j = 0; j < 64; j++)
                         {
-                            if (((white_pawns >> j) & 1) == 1)
-                                n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Pawn, false)); //from rank, file - to rank, file
-                            else if (((white_knights >> j) & 1) == 1)
-                                n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Knight, false));
-                            else if (((white_bishops >> j) & 1) == 1)
-                                n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Bishop, false));
-                            else if (((white_rooks >> j) & 1) == 1)
-                                n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Rook, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Queen, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.King, false));
-                            else
-                                n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, false));
-                            //n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            if (((knight_moves >> j) & 1) == 1)
+                            {
+                                if (((white_pawns >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((white_knights >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Knight, false));
+                                else if (((white_bishops >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Bishop, false));
+                                else if (((white_rooks >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Rook, false));
+                                else if (((white_queens >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Queen, false));
+                                else if (((white_king >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.King, false));
+                                else
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, false));
+                                //n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 0; j < 64; j++)
+                        {
+                            if (((knight_moves >> j) & 1) == 1)
+                            {
+                                if (((black_pawns >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((black_knights >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Knight, false));
+                                else if (((black_bishops >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Bishop, false));
+                                else if (((black_rooks >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Rook, false));
+                                else if (((black_queens >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.Queen, false));
+                                else if (((black_king >> j) & 1) == 1)
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, PieceType.King, false));
+                                else
+                                    n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Knight, false));
+                                //n_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            }
                         }
                     }
                 }
@@ -1258,7 +1474,7 @@ namespace Chessgamelogic
 
         public static ArrayList PossibleQueen(ulong queen, ulong enemy_occupied)
         {
-            q_move_list.Clear();
+            if (q_move_list != null) { q_move_list.Clear(); }
             int queen_index;
             ulong queen_right, queen_right_moves;
             ulong queen_left, queen_left_moves;
@@ -1325,25 +1541,52 @@ namespace Chessgamelogic
                     queen_cap_moves = queen_moves & enemy_occupied;
                     Console.WriteLine("queen index :" + queen_index);
                     Console.WriteLine("queen : " + Convert.ToString((long)queen_moves, 2));
-                    for (int j = 0; j < 64; j++)
+                    if (enemy_occupied == white_occupied)
                     {
-                        if (((queen_moves >> j) & 1) == 1)
+                        for (int j = 0; j < 64; j++)
                         {
-                            if (((white_pawns >> j) & 1) == 1)
-                                q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Pawn, false)); //from rank, file - to rank, file
-                            else if (((white_knights >> j) & 1) == 1)
-                                q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Knight, false));
-                            else if (((white_bishops >> j) & 1) == 1)
-                                q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Bishop, false));
-                            else if (((white_rooks >> j) & 1) == 1)
-                                q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Rook, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Queen, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.King, false));
-                            else
-                                q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, false));
-                            //q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            if (((queen_moves >> j) & 1) == 1)
+                            {
+                                if (((white_pawns >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((white_knights >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Knight, false));
+                                else if (((white_bishops >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Bishop, false));
+                                else if (((white_rooks >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Rook, false));
+                                else if (((white_queens >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Queen, false));
+                                else if (((white_king >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.King, false));
+                                else
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, false));
+                                //q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 0; j < 64; j++)
+                        {
+                            if (((queen_moves >> j) & 1) == 1)
+                            {
+                                if (((black_pawns >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((black_knights >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Knight, false));
+                                else if (((black_bishops >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Bishop, false));
+                                else if (((black_rooks >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Rook, false));
+                                else if (((black_queens >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.Queen, false));
+                                else if (((black_king >> j) & 1) == 1)
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, PieceType.King, false));
+                                else
+                                    q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.Queen, false));
+                                //q_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            }
                         }
                     }
                 }
@@ -1353,7 +1596,10 @@ namespace Chessgamelogic
         //       public static ArrayList PossibleKing(ulong BK, ulong enemy_occupied, ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK)
         public static ArrayList PossibleKing(ulong BK, ulong enemy_occupied)
         {
-            k_move_list.Clear();
+            if (k_move_list != null)
+            {
+                k_move_list.Clear();
+            }
             int king_index;
             ulong king_bitboard, king_moves;
             for (int i = 0; i < 64; i++)
@@ -1368,25 +1614,52 @@ namespace Chessgamelogic
                     Console.WriteLine("king index :" + king_index);
                     Console.WriteLine("king : " + Convert.ToString((long)king_moves, 2));
 
-                    for (int j = 0; j < 64; j++)
+                    if (enemy_occupied == white_occupied)
                     {
-                        if (((king_moves >> j) & 1) == 1)
+                        for (int j = 0; j < 64; j++)
                         {
-                            if (((white_pawns >> j) & 1) == 1)
-                                k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Pawn, false)); //from rank, file - to rank, file
-                            else if (((white_knights >> j) & 1) == 1)
-                                k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Knight, false));
-                            else if (((white_bishops >> j) & 1) == 1)
-                                k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Bishop, false));
-                            else if (((white_rooks >> j) & 1) == 1)
-                                k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Rook, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Queen, false));
-                            else if (((white_queens >> j) & 1) == 1)
-                                k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.King, false));
-                            else
-                                k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, false));
-                            //k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            if (((king_moves >> j) & 1) == 1)
+                            {
+                                if (((white_pawns >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((white_knights >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Knight, false));
+                                else if (((white_bishops >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Bishop, false));
+                                else if (((white_rooks >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Rook, false));
+                                else if (((white_queens >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Queen, false));
+                                else if (((white_king >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.King, false));
+                                else
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, false));
+                                //k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 0; j < 64; j++)
+                        {
+                            if (((king_moves >> j) & 1) == 1)
+                            {
+                                if (((black_pawns >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Pawn, false)); //from rank, file - to rank, file
+                                else if (((black_knights >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Knight, false));
+                                else if (((black_bishops >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Bishop, false));
+                                else if (((black_rooks >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Rook, false));
+                                else if (((black_queens >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.Queen, false));
+                                else if (((black_king >> j) & 1) == 1)
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, PieceType.King, false));
+                                else
+                                    k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8), PieceType.King, false));
+                                //k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
+                            }
                         }
                     }
                 }

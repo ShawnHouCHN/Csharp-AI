@@ -11,9 +11,8 @@ namespace Chessgamelogic
         static void Main(string[] args)
         {
             ChessBoard CB = new ChessBoard();
-            Console.WriteLine("Evaluation for black = " + CB.evaluateBoard());
-            Console.WriteLine("Occupied: " + CB.occupied);
-            Console.WriteLine("empty: " + CB.empty);
+            Console.WriteLine("Evaluation for black = " + CB.evaluateBoard(true));
+            
             Console.ReadLine();
         }
     }
