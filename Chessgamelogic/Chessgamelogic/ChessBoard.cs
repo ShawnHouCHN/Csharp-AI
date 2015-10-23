@@ -430,8 +430,13 @@ namespace Chessgamelogic
             }
             if (player == Player.Black)
             {
+                if (check()) { blackPoints += 50; }
                 return blackPoints - whitePoints;
-            } else { return whitePoints - blackPoints; }
+            } else
+            {
+                if (check()) { whitePoints += 50; }
+                return whitePoints - blackPoints;
+            }
         }
 
         // TO DO
@@ -568,8 +573,8 @@ namespace Chessgamelogic
                             cb.WB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
                             break;
                         case PieceType.Pawn:
-                            cb.WP = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & WP;
-                            cb.WP = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & WP;
+                            cb.WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            cb.WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
                             break;
                         default:
                             break;
@@ -583,14 +588,14 @@ namespace Chessgamelogic
         }
 
         // TO DO
-        public bool check()
+        public int check()
         {
             throw new NotImplementedException();
         }
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool max)
         {
-            if (layer == 0 || check() == true)
+            if (layer == 0 || check() != 0)
             {
                 return evaluateBoard();
             }
