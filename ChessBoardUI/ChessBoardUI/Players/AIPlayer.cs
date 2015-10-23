@@ -126,7 +126,8 @@ namespace ChessBoardUI.Players
 
 
                         // test code 
-                        ArrayList all_moves = MoveGenerator.PossibleMovesB("", false, false, false, false);
+
+                        ArrayList all_moves = MoveGenerator.PossibleMovesW();
                         Console.WriteLine("Size is " + all_moves.Count);
 
                         all_moves.Sort(new MoveCompare());  //sort the array so all capture will be placed at beginning

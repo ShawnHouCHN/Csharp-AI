@@ -32,6 +32,27 @@
             </DrawingBrush.Drawing>
         </DrawingBrush>
 
+        <DrawingBrush x:Key="Checkerboard2" Stretch="None" TileMode="Tile" Viewport="0,0,140,140" ViewportUnits="Absolute">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="White">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry Rect="0,0,140,140" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="SpringGreen">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="0,0,70,70" />
+                                <RectangleGeometry Rect="70,70,70,70" />
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+
+
         <Style x:Key="ChessPieceStyle" TargetType="{x:Type Image}">
             <Style.Triggers>
 
@@ -169,6 +190,7 @@
                     <Canvas Name="chess_canvas" HorizontalAlignment="Left" Height="560" Margin="35,45,0,0" VerticalAlignment="Top" Width="560" Background="{StaticResource Checkerboard}"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
+
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="70" Height="70">

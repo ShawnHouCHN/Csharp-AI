@@ -97,6 +97,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AIAlgorithm\ChessBoard.cs" />
     <Compile Include="AIAlgorithm\MoveGenerator.cs" />
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Players\AIPlayer.cs" />
