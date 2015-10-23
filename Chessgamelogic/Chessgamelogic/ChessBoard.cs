@@ -17,7 +17,7 @@ namespace Chessgamelogic
 
         //private int[] PawnTable, KnightTable, BishopTable, RookTable, QueenTable, KingTableO, KingTableE, Mirror64;
 
-        private ChessBoard bestState;
+        public ChessBoard bestState;
 
         private static int[] PawnTable = new int[] {
                 0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
@@ -310,9 +310,10 @@ namespace Chessgamelogic
                 } else { break; }
             }
 
-            // Evaluate positions of each piece on the board
+            
             for (int i = 0; i < 64; i++)
             {
+                // Evaluate positions of each piece on the board
                 if (((occupied >> i) & 1) == 1)
                 {
                     if (((whitePieces >> i) & 1) == 1)
