@@ -97,7 +97,7 @@ namespace ChessBoardUI.Players
                 moved_place = (moved_place << (to_index));
                 this.pieces_collection.Remove(to_piece_location);
                 this.pieces_dict.Remove(to_location);
-                MoveGenerator.UpdateAnyCapturedBlackBitboard(to_piece_location.Type, moved_place);
+                MoveGenerator.UpdateAnyCapturedBitboard(to_piece_location.Type, moved_place);
             }
 
             //also need an passent move maybe?
@@ -127,7 +127,7 @@ namespace ChessBoardUI.Players
 
                         // test code 
 
-                        ArrayList all_moves = MoveGenerator.PossibleMovesW();
+                        ArrayList all_moves = MoveGenerator.PossibleMovesPlayer();
                         Console.WriteLine("Size is " + all_moves.Count);
 
                         all_moves.Sort(new MoveCompare());  //sort the array so all capture will be placed at beginning

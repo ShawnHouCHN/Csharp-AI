@@ -34,9 +34,6 @@ namespace ChessBoardUI
         {
             InitializeComponent();
 
-            board_layout = new Dictionary<int, ChessPiece>();
-
-            board = new MainControl();
             //test
             //SPCapturedViewModel test = new SPCapturedViewModel { CapturedPiecesCollection = new ObservableCollection<Image>() };
             //PlayerCapStack.ItemsSource = test.CapturedPiecesCollection;
@@ -73,9 +70,21 @@ namespace ChessBoardUI
 
         private void StartGame_Click(object sender, RoutedEventArgs e)
         {
+
+            board_layout = new Dictionary<int, ChessPiece>();
+
+            if ((String)((ComboBoxItem)ChooseColor.SelectedItem).Content == "Black")
+                board = new MainControl(false);
+            else
+                board = new MainControl(true);
+
+
             //Console.WriteLine("{0},{1}", ((ComboBoxItem)ChooseColor.SelectedItem).Content, ((ComboBoxItem)ChooseLevel.SelectedItem).Content);
             StartButton.IsEnabled = false;
             ChooseLevel.IsEnabled = false;
+            ChooseColor.IsEnabled = false;
+            
+
 
             player_timer.DataContext = board.HumanPlayer.HumanTimer;
             pc_timer.DataContext = board.MachinePlayer.MachineTimer;
@@ -83,7 +92,9 @@ namespace ChessBoardUI
 
             board.HumanPlayer.HumanTimer.startClock();
 
-            
+            //chess_canvas.SetValue = (Brush)Resources["Checkerboard2"];
+            //TemplateContent a = ChessBoard.ItemsPanel.Template;
+            // = (Brush)Resources["Checkerboard2"];
 
             PlayerCapStack.ItemsSource = board.HumanPlayer.HumanCaptureStack.CapturedPiecesCollection;
             MachineCapStack.ItemsSource = board.MachinePlayer.MachineCaptureStack.CapturedPiecesCollection;

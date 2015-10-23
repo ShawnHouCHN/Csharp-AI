@@ -14,6 +14,7 @@ using ChessBoardUI.ViewTreeHelper;
 using ChessBoardUI.Constants;
 using GalaSoft.MvvmLight.Messaging;
 using ChessBoardUI.Players;
+using ChessBoardUI.AIAlgorithm;
 
 namespace ChessBoardUI.ViewModel
 {
@@ -26,43 +27,86 @@ namespace ChessBoardUI.ViewModel
         
 
 
-        public MainControl()
+        public MainControl(bool color)
         {
             this.pieces_dict = new Dictionary<int, ChessPiece>();
+            ChessPiece player_pawn0, player_pawn1, player_pawn2, player_pawn3, player_pawn4, player_pawn5, player_pawn6, player_pawn7, player_rook0, player_knight0, player_bishop0, player_king, player_queen, player_bishop1, player_knight1, player_rook1,
+                       machine_pawn0, machine_pawn1, machine_pawn2, machine_pawn3, machine_pawn4, machine_pawn5, machine_pawn6, machine_pawn7, machine_rook0, machine_knight0, machine_bishop0, machine_king, machine_queen, machine_bishop1, machine_knight1, machine_rook1;
 
-            ChessPiece player_pawn0 = new ChessPiece { Pos = new Point(0, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_pawn1 = new ChessPiece { Pos = new Point(1, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_pawn2 = new ChessPiece { Pos = new Point(2, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_pawn3 = new ChessPiece { Pos = new Point(3, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_pawn4 = new ChessPiece { Pos = new Point(4, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_pawn5 = new ChessPiece { Pos = new Point(5, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_pawn6 = new ChessPiece { Pos = new Point(6, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_pawn7 = new ChessPiece { Pos = new Point(7, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_rook0 = new ChessPiece { Pos = new Point(0, 7), Type = PieceType.Rook, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_knight0 = new ChessPiece { Pos = new Point(1, 7), Type = PieceType.Knight, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_bishop0 = new ChessPiece { Pos = new Point(2, 7), Type = PieceType.Bishop, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_king = new ChessPiece { Pos = new Point(4, 7), Type = PieceType.King, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_queen = new ChessPiece { Pos = new Point(3, 7), Type = PieceType.Queen, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_bishop1 = new ChessPiece { Pos = new Point(5, 7), Type = PieceType.Bishop, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_knight1 = new ChessPiece { Pos = new Point(6, 7), Type = PieceType.Knight, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece player_rook1 = new ChessPiece { Pos = new Point(7, 7), Type = PieceType.Rook, Player = Player.White, Ownership = true, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_pawn0 = new ChessPiece { Pos = new Point(0, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_pawn1 = new ChessPiece { Pos = new Point(1, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_pawn2 = new ChessPiece { Pos = new Point(2, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_pawn3 = new ChessPiece { Pos = new Point(3, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_pawn4 = new ChessPiece { Pos = new Point(4, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_pawn5 = new ChessPiece { Pos = new Point(5, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_pawn6 = new ChessPiece { Pos = new Point(6, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_pawn7 = new ChessPiece { Pos = new Point(7, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_rook0 = new ChessPiece { Pos = new Point(0, 0), Type = PieceType.Rook, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_knight0 = new ChessPiece { Pos = new Point(1, 0), Type = PieceType.Knight, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_bishop0 = new ChessPiece { Pos = new Point(2, 0), Type = PieceType.Bishop, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_king = new ChessPiece { Pos = new Point(4, 0), Type = PieceType.King, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_queen = new ChessPiece { Pos = new Point(3, 0), Type = PieceType.Queen, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_bishop1 = new ChessPiece { Pos = new Point(5, 0), Type = PieceType.Bishop, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_knight1 = new ChessPiece { Pos = new Point(6, 0), Type = PieceType.Knight, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
-            ChessPiece machine_rook1 = new ChessPiece { Pos = new Point(7, 0), Type = PieceType.Rook, Player = Player.Black, Ownership = false, PieceClickCommand = null, PieceMoveCommand = null };
+            if (color)
+            {
+                player_pawn0 = new ChessPiece { Pos = new Point(0, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn1 = new ChessPiece { Pos = new Point(1, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn2 = new ChessPiece { Pos = new Point(2, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn3 = new ChessPiece { Pos = new Point(3, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn4 = new ChessPiece { Pos = new Point(4, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn5 = new ChessPiece { Pos = new Point(5, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn6 = new ChessPiece { Pos = new Point(6, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn7 = new ChessPiece { Pos = new Point(7, 6), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_rook0 = new ChessPiece { Pos = new Point(0, 7), Type = PieceType.Rook, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_knight0 = new ChessPiece { Pos = new Point(1, 7), Type = PieceType.Knight, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_bishop0 = new ChessPiece { Pos = new Point(2, 7), Type = PieceType.Bishop, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_king = new ChessPiece { Pos = new Point(4, 7), Type = PieceType.King, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_queen = new ChessPiece { Pos = new Point(3, 7), Type = PieceType.Queen, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_bishop1 = new ChessPiece { Pos = new Point(5, 7), Type = PieceType.Bishop, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_knight1 = new ChessPiece { Pos = new Point(6, 7), Type = PieceType.Knight, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_rook1 = new ChessPiece { Pos = new Point(7, 7), Type = PieceType.Rook, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn0 = new ChessPiece { Pos = new Point(0, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn1 = new ChessPiece { Pos = new Point(1, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn2 = new ChessPiece { Pos = new Point(2, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn3 = new ChessPiece { Pos = new Point(3, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn4 = new ChessPiece { Pos = new Point(4, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn5 = new ChessPiece { Pos = new Point(5, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn6 = new ChessPiece { Pos = new Point(6, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn7 = new ChessPiece { Pos = new Point(7, 1), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_rook0 = new ChessPiece { Pos = new Point(0, 0), Type = PieceType.Rook, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_knight0 = new ChessPiece { Pos = new Point(1, 0), Type = PieceType.Knight, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_bishop0 = new ChessPiece { Pos = new Point(2, 0), Type = PieceType.Bishop, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_king = new ChessPiece { Pos = new Point(4, 0), Type = PieceType.King, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_queen = new ChessPiece { Pos = new Point(3, 0), Type = PieceType.Queen, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_bishop1 = new ChessPiece { Pos = new Point(5, 0), Type = PieceType.Bishop, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_knight1 = new ChessPiece { Pos = new Point(6, 0), Type = PieceType.Knight, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_rook1 = new ChessPiece { Pos = new Point(7, 0), Type = PieceType.Rook, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
 
+                MoveGenerator.setInitBitboards(color, 0x00ff000000000000, 0x8100000000000000, 0x4200000000000000, 0x2400000000000000, 0x0800000000000000, 0x1000000000000000, 0x000000000000ff00, 0x000000000000081, 0x000000000000042, 0x000000000000024, 0x0000000000000008, 0x0000000000000010);
+            }
+            else
+            {
+                player_pawn0 = new ChessPiece { Pos = new Point(0, 1), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn1 = new ChessPiece { Pos = new Point(1, 1), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn2 = new ChessPiece { Pos = new Point(2, 1), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn3 = new ChessPiece { Pos = new Point(3, 1), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn4 = new ChessPiece { Pos = new Point(4, 1), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn5 = new ChessPiece { Pos = new Point(5, 1), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn6 = new ChessPiece { Pos = new Point(6, 1), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_pawn7 = new ChessPiece { Pos = new Point(7, 1), Type = PieceType.Pawn, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_rook0 = new ChessPiece { Pos = new Point(0, 0), Type = PieceType.Rook, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_knight0 = new ChessPiece { Pos = new Point(1, 0), Type = PieceType.Knight, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_bishop0 = new ChessPiece { Pos = new Point(2, 0), Type = PieceType.Bishop, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_king = new ChessPiece { Pos = new Point(3, 0), Type = PieceType.King, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_queen = new ChessPiece { Pos = new Point(4, 0), Type = PieceType.Queen, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_bishop1 = new ChessPiece { Pos = new Point(5, 0), Type = PieceType.Bishop, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_knight1 = new ChessPiece { Pos = new Point(6, 0), Type = PieceType.Knight, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                player_rook1 = new ChessPiece { Pos = new Point(7, 0), Type = PieceType.Rook, Player = Player.White, Ownership = color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn0 = new ChessPiece { Pos = new Point(0, 6), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn1 = new ChessPiece { Pos = new Point(1, 6), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn2 = new ChessPiece { Pos = new Point(2, 6), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn3 = new ChessPiece { Pos = new Point(3, 6), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn4 = new ChessPiece { Pos = new Point(4, 6), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn5 = new ChessPiece { Pos = new Point(5, 6), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn6 = new ChessPiece { Pos = new Point(6, 6), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_pawn7 = new ChessPiece { Pos = new Point(7, 6), Type = PieceType.Pawn, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_rook0 = new ChessPiece { Pos = new Point(0, 7), Type = PieceType.Rook, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_knight0 = new ChessPiece { Pos = new Point(1, 7), Type = PieceType.Knight, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_bishop0 = new ChessPiece { Pos = new Point(2, 7), Type = PieceType.Bishop, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_king = new ChessPiece { Pos = new Point(3, 7), Type = PieceType.King, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_queen = new ChessPiece { Pos = new Point(4, 7), Type = PieceType.Queen, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_bishop1 = new ChessPiece { Pos = new Point(5, 7), Type = PieceType.Bishop, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_knight1 = new ChessPiece { Pos = new Point(6, 7), Type = PieceType.Knight, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+                machine_rook1 = new ChessPiece { Pos = new Point(7, 7), Type = PieceType.Rook, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
+
+                MoveGenerator.setRevertInitBitboards(color, 0x000000000000ff00, 0x0000000000000081, 0x0000000000000042, 0x0000000000000024, 0x0000000000000010, 0x0000000000000008, 0x00ff000000000000, 0x8100000000000000, 0x4200000000000000, 0x2400000000000000, 0x1000000000000000, 0x0800000000000000);
+            }
 
             this.pieces_collection = new ObservableCollection<ChessPiece>
             {
@@ -92,6 +136,7 @@ namespace ChessBoardUI.ViewModel
             this.human_player = new HMPlayer(this.pieces_collection, this.pieces_dict);
             this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict);
 
+            
 
             // this.boardlayout = Boardlayout;
         }

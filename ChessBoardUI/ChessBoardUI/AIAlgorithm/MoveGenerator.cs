@@ -16,6 +16,7 @@ namespace ChessBoardUI.AIAlgorithm
         public int to_file;
         public PieceType moved_type;
         public PieceType? cap_type=null;
+        
         bool promote = false;
         
 
@@ -83,18 +84,19 @@ namespace ChessBoardUI.AIAlgorithm
     {
 
         //init position
-        public static ulong white_pawns = 0x000000000000ff00;
-        public static ulong black_pawns = 0x00000000ff000000;
-        public static ulong white_knights = 0x000000000000042;
-        public static ulong black_knights = 0x4200000000000000;
-        public static ulong white_bishops = 0x000000000000024;
-        public static ulong black_bishops = 0x2400000000000000;
-        public static ulong white_rooks = 0x000000000000081;
-        public static ulong black_rooks = 0x8100000000000000;
-        public static ulong white_queens = 0x0000000000000008;
-        public static ulong black_queens = 0x0800000000000000;
-        public static ulong white_king = 0x0000000000000010;
-        public static ulong black_king = 0x1000000000000000;
+        public static ulong white_pawns ;
+        public static ulong black_pawns ;
+        public static ulong white_knights ;
+        public static ulong black_knights ;
+        public static ulong white_bishops ;
+        public static ulong black_bishops ;
+        public static ulong white_rooks ;
+        public static ulong black_rooks ;
+        public static ulong white_queens ;
+        public static ulong black_queens ;
+        public static ulong white_king ;
+        public static ulong black_king ;
+        public static bool  player_color;  // deefualt is white
 
         //full occupied bitboard
         public static ulong full_occupied = 0xffffffffffffffff;
@@ -876,8 +878,48 @@ namespace ChessBoardUI.AIAlgorithm
             }
         }
 
-        
-        
+        // if player uses white
+        public static void setInitBitboards(bool playercolor, ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong BK, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK)
+        {
+            player_color = playercolor;
+            black_pawns = BP;
+            black_rooks = BR;
+            black_knights = BN;
+            black_bishops = BB;
+            black_queens = BQ;
+            black_king = BK;
+            white_pawns = WP;
+            white_rooks = WR;
+            white_knights = WN;
+            white_queens = WQ;
+            white_king = WK;
+            white_bishops = WB;
+            empty = ~(WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
+            pieces_occupied = (WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
+        }
+
+        //if player uses black
+        public static void setRevertInitBitboards(bool playercolor, ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong BK, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK)
+        {
+            player_color = playercolor;
+            black_pawns = BP;
+            black_rooks = BR;
+            black_knights = BN;
+            black_bishops = BB;
+            black_queens = BQ;
+            black_king = BK;
+            white_pawns = WP;
+            white_rooks = WR;
+            white_knights = WN;
+            white_queens = WQ;
+            white_king = WK;
+            white_bishops = WB;
+            empty = ~(WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
+            pieces_occupied = (WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
+        }
+
+
+
         public static void setCurrentBitboards(ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong BK, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK)
         {
             black_pawns = BP;
@@ -894,53 +936,85 @@ namespace ChessBoardUI.AIAlgorithm
             white_bishops = WB;
             empty = ~(WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
             pieces_occupied = (WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
-
         }
+
+
         
         //castling is not made yet, but bool is kept in the parameters.
-        public static ArrayList PossibleMovesB(string history="", bool castleWK=true, bool castleWQ=true, bool castleBK=true, bool castleBQ=true)
+        public static ArrayList PossibleMovesMachine(string history="", bool castleWK=true, bool castleWQ=true, bool castleBK=true, bool castleBQ=true)
         {
 
             not_black_occupied = ~(white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king | black_king);
             black_occupied_noking = (black_pawns | black_rooks | black_knights | black_bishops | black_queens);
             black_occupied = (black_pawns | black_rooks | black_knights | black_bishops | black_queens| black_king);
             white_occupied = (white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king);
+            ArrayList bp_list;
             //black_occupied = (BK | BP | BR | BN | BB | BQ);
             //pieces_occupied = (WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
             //empty = ~(WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
 
 
             //ArrayList bp_list = PossibleKing(BK, white_occupied, BP, BR, BN, BB, BQ, WP, WR, WN, WB, WQ, WK); //PossibleQueen(BQ, white_occupied); //PossibleKnight(BN,white_occupied);//PossibleBishop(BB, white_occupied); //PossibleRook(BR, white_occupied);//PossiblePB(history, BP);/*+PossibleRB().......*/
-            ArrayList bp_list = PossibleKing(black_king, white_occupied);
-            bp_list.AddRange(PossibleQueen(black_queens, white_occupied));
-            bp_list.AddRange(PossibleKnight(black_knights, white_occupied));
-            bp_list.AddRange(PossibleBishop(black_bishops, white_occupied));
-            bp_list.AddRange(PossibleRook(black_rooks, white_occupied));
-            bp_list.AddRange(PossiblePawnBlack(history, black_pawns));
+            if (player_color)
+            {
+                bp_list = PossibleKing(black_king, white_occupied);
+                bp_list.AddRange(PossibleQueen(black_queens, white_occupied));
+                bp_list.AddRange(PossibleKnight(black_knights, white_occupied));
+                bp_list.AddRange(PossibleBishop(black_bishops, white_occupied));
+                bp_list.AddRange(PossibleRook(black_rooks, white_occupied));
+                bp_list.AddRange(PossiblePawnMachine(history, black_pawns));
+            }
+            else
+            {
+                bp_list = PossibleKing(white_king, black_occupied);
+                bp_list.AddRange(PossibleQueen(white_queens, black_occupied));
+                bp_list.AddRange(PossibleKnight(white_knights, black_occupied));
+                bp_list.AddRange(PossibleBishop(white_bishops, black_occupied));
+                bp_list.AddRange(PossibleRook(white_rooks, black_occupied));
+                bp_list.AddRange(PossiblePawnMachine(history, white_pawns));
+            }
+
 
             //can also be kept in hashtable for further usage. type oriented 
             return bp_list;
         }
 
 
-        public static ArrayList PossibleMovesW(string history="", bool castleWK = true, bool castleWQ = true, bool castleBK = true, bool castleBQ = true)
+        public static ArrayList PossibleMovesPlayer(string history="", bool castleWK = true, bool castleWQ = true, bool castleBK = true, bool castleBQ = true)
         {
 
             not_black_occupied = ~(white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king | black_king);
             black_occupied_noking = (black_pawns | black_rooks | black_knights | black_bishops | black_queens);
             black_occupied = (black_pawns | black_rooks | black_knights | black_bishops | black_queens | black_king);
             white_occupied = (white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king);
-            ArrayList wp_list = PossibleKing(white_king, black_occupied);
-            wp_list.AddRange(PossibleQueen(white_queens, black_occupied));
-            wp_list.AddRange(PossibleKnight(white_knights, black_occupied));
-            wp_list.AddRange(PossibleBishop(white_bishops, black_occupied));
-            wp_list.AddRange(PossibleRook(white_rooks, black_occupied));
-            wp_list.AddRange(PossiblePawnWhite(history, white_pawns));
+            ArrayList wp_list;
+
+            if (player_color)
+            {
+                wp_list = PossibleKing(white_king, black_occupied);
+                wp_list.AddRange(PossibleQueen(white_queens, black_occupied));
+                wp_list.AddRange(PossibleKnight(white_knights, black_occupied));
+                wp_list.AddRange(PossibleBishop(white_bishops, black_occupied));
+                wp_list.AddRange(PossibleRook(white_rooks, black_occupied));
+                wp_list.AddRange(PossiblePawnPlayer(history, white_pawns));
+            }
+            else
+            {
+                wp_list = PossibleKing(black_king, white_occupied);
+                wp_list.AddRange(PossibleQueen(black_queens, white_occupied));
+                wp_list.AddRange(PossibleKnight(black_knights, white_occupied));
+                wp_list.AddRange(PossibleBishop(black_bishops, white_occupied));
+                wp_list.AddRange(PossibleRook(black_rooks, white_occupied));
+                wp_list.AddRange(PossiblePawnPlayer(history, black_pawns));
+            }
+            
+
+
             return wp_list; // test
 
         }
 
-        public static ArrayList PossiblePawnBlack(string history, ulong black_pawns)   //return list of moves black pawn can take. four characters in the list is a move, source rank, source file, desti rank, desti file.
+        public static ArrayList PossiblePawnMachine(string history, ulong black_pawns)   //return list of moves black pawn can take. four characters in the list is a move, source rank, source file, desti rank, desti file.
         {
 
             bp_move_list.Clear();
@@ -1071,7 +1145,7 @@ namespace ChessBoardUI.AIAlgorithm
             return bp_move_list;
         }
 
-        public static ArrayList PossiblePawnWhite(string history, ulong white_pawns)   //return list of moves black pawn can take. four characters in the list is a move, source rank, source file, desti rank, desti file.
+        public static ArrayList PossiblePawnPlayer(string history, ulong white_pawns)   //return list of moves black pawn can take. four characters in the list is a move, source rank, source file, desti rank, desti file.
         {
 
             wp_move_list.Clear();
@@ -1249,7 +1323,8 @@ namespace ChessBoardUI.AIAlgorithm
 
                     rook_moves = rook_right_moves | rook_left_moves | rook_up_moves | rook_down_moves;
                     rook_cap_moves = rook_moves & enemy_occupied;
-
+                    Console.WriteLine("rook index :" + rook_index);
+                    Console.WriteLine("rook : " + Convert.ToString((long)rook_moves, 2));
                     if (enemy_occupied == white_occupied)
                     {
                         for (int j = 0; j < 64; j++)
@@ -1540,6 +1615,7 @@ namespace ChessBoardUI.AIAlgorithm
 
                     queen_moves = queen_right_moves | queen_left_moves | queen_up_moves | queen_down_moves | queen_45_moves | queen_135_moves | queen_225_moves | queen_315_moves;
                     queen_cap_moves = queen_moves & enemy_occupied;
+
                     Console.WriteLine("queen index :" + queen_index);
                     Console.WriteLine("queen : " + Convert.ToString((long)queen_moves, 2));
                     if (enemy_occupied == white_occupied)
@@ -1789,7 +1865,7 @@ namespace ChessBoardUI.AIAlgorithm
         //    return wp_move_list;
         //}
 
-        public static bool LegalMove(int x, int y, int new_x, int new_y, PieceType piece_type)
+        public static bool LegalRegularMove(int x, int y, int new_x, int new_y, PieceType piece_type)
         {
             ulong white_occupied, black_occupied;
             white_occupied = (white_pawns | white_knights | white_bishops | white_king | white_queens | white_rooks);
@@ -1799,28 +1875,28 @@ namespace ChessBoardUI.AIAlgorithm
             switch (piece_type)
             {
                 case PieceType.Pawn:
-                    return LegalSingleWhitePawnMove(white_occupied, black_occupied,  x,  y,  new_x,  new_y);
+                    return LegalSinglePawnMove(white_occupied, black_occupied,  x,  y,  new_x,  new_y);
                     
                 case PieceType.Knight:
-                    return LegalSingleWhiteKnightMove(white_knights, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleKnightMove(white_knights, black_occupied, x, y, new_x, new_y);
 
                 case PieceType.Queen:
-                    return LegalSingleWhiteQueenMove(white_queens, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleQueenMove(white_queens, black_occupied, x, y, new_x, new_y);
 
                 case PieceType.King:
-                    return LegalSingleWhiteKingMove(white_king, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleKingMove(white_king, black_occupied, x, y, new_x, new_y);
 
                 case PieceType.Bishop:
-                    return LegalSingleWhiteBishopMove(white_bishops, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleBishopMove(white_bishops, black_occupied, x, y, new_x, new_y);
 
                 case PieceType.Rook:
-                    return LegalSingleWhiteRookMove(white_rooks, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleRookMove(white_rooks, black_occupied, x, y, new_x, new_y);
 
             }
             return false;
         }
 
-        public static bool LegalSingleWhitePawnMove(ulong white_occupied, ulong black_occupied, int x, int y, int new_x, int new_y)
+        public static bool LegalSinglePawnMove(ulong white_occupied, ulong black_occupied, int x, int y, int new_x, int new_y)
         {
             int pawn_index = (7 - y) * 8 + x;
             Console.WriteLine("index "+ pawn_index);
@@ -1853,7 +1929,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         }
 
-        public static bool LegalSingleWhiteKnightMove(ulong white_knight, ulong black_occupied, int x, int y, int new_x, int new_y)
+        public static bool LegalSingleKnightMove(ulong white_knight, ulong black_occupied, int x, int y, int new_x, int new_y)
         {
             int knight_index = (7 - y) * 8 + x;
             int new_knight_index = (7 - new_y) * 8 + new_x;
@@ -1880,7 +1956,7 @@ namespace ChessBoardUI.AIAlgorithm
                 
         }
 
-        public static bool LegalSingleWhiteQueenMove(ulong white_queen, ulong black_occupied, int x, int y, int new_x, int new_y)
+        public static bool LegalSingleQueenMove(ulong white_queen, ulong black_occupied, int x, int y, int new_x, int new_y)
         {
             int queen_index = (7 - y) * 8 + x;
             int new_queen_index = (7 - new_y) * 8 + new_x;
@@ -1904,7 +1980,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
         }
 
-        public static bool LegalSingleWhiteBishopMove(ulong white_bishop, ulong black_occupied, int x, int y, int new_x, int new_y)
+        public static bool LegalSingleBishopMove(ulong white_bishop, ulong black_occupied, int x, int y, int new_x, int new_y)
         {
             int bishop_index = (7 - y) * 8 + x;
             int new_bishop_index = (7 - new_y) * 8 + new_x;
@@ -1928,7 +2004,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
         }
 
-        public static bool LegalSingleWhiteRookMove(ulong white_rook, ulong black_occupied, int x, int y, int new_x, int new_y)
+        public static bool LegalSingleRookMove(ulong white_rook, ulong black_occupied, int x, int y, int new_x, int new_y)
         {
             int rook_index = (7 - y) * 8 + x;
             int new_rook_index = (7 - new_y) * 8 + new_x;
@@ -1952,7 +2028,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
         }
 
-        public static bool LegalSingleWhiteKingMove(ulong white_king, ulong black_occupied, int x, int y, int new_x, int new_y)
+        public static bool LegalSingleKingMove(ulong white_king, ulong black_occupied, int x, int y, int new_x, int new_y)
         {
             int king_index = (7 - y) * 8 + x;
             int new_king_index = (7 - new_y) * 8 + new_x;
@@ -1978,102 +2054,136 @@ namespace ChessBoardUI.AIAlgorithm
             }
         }
 
-        //public static bool LegalEnPassantPawnMove(int x, int y, int new_x, int new_y)
-        //{
-
-        //}
-
-
-        public static void UpdateAnyMovedWhiteBitboard(PieceType piece_type, ulong moved_place, ulong new_place)
+        public static void UpdateAnyMovedBitboard(PieceType piece_type, ulong moved_place, ulong new_place)
         {
             //check if it is promotion or castling in the first place;
-
-            switch (piece_type)
+            if (player_color)
             {
-
-                case PieceType.Pawn:
-                    white_pawns &= moved_place;
-                    white_pawns |= new_place;
-                    //Console.WriteLine("new pawn positions : " + Convert.ToString((long)MoveGenerator.white_pawns, 2));
-                    break;
-
-                case PieceType.Knight:
-                    white_knights &= moved_place;
-                    white_knights |= new_place;
-                    Console.WriteLine("new knight positions : " + Convert.ToString((long)white_knights, 2));
-                    break;
-
-                case PieceType.Queen:
-                    white_queens &= moved_place;
-                    white_queens |= new_place;
-                    break;
-
-                case PieceType.King:
-                    white_king &= moved_place;
-                    white_king |= new_place;
-                    break;
-
-                case PieceType.Bishop:
-                    white_bishops &= moved_place;
-                    white_bishops |= new_place;
-                    break;
-
-                case PieceType.Rook:
-                    white_rooks &= moved_place;
-                    white_rooks |= new_place;
-                    break;
-
-                default:  //reserved for castling
-                    break;
-
+                switch (piece_type)
+                {
+                    case PieceType.Pawn:
+                        white_pawns &= moved_place;
+                        white_pawns |= new_place;
+                        break;
+                    case PieceType.Knight:
+                        white_knights &= moved_place;
+                        white_knights |= new_place;
+                        break;
+                    case PieceType.Queen:
+                        white_queens &= moved_place;
+                        white_queens |= new_place;
+                        break;
+                    case PieceType.King:
+                        white_king &= moved_place;
+                        white_king |= new_place;
+                        break;
+                    case PieceType.Bishop:
+                        white_bishops &= moved_place;
+                        white_bishops |= new_place;
+                        break;
+                    case PieceType.Rook:
+                        white_rooks &= moved_place;
+                        white_rooks |= new_place;
+                        break;
+                    default:  //reserved for castling
+                        break;
+                }
+                white_occupied = white_pawns | white_bishops | white_rooks | white_queens | white_knights | white_king;
             }
-
-            white_occupied = white_pawns | white_bishops | white_rooks | white_queens | white_knights | white_king;
+            else
+            {
+                switch (piece_type)
+                {
+                    case PieceType.Pawn:
+                        black_pawns &= moved_place;
+                        black_pawns |= new_place;
+                        break;
+                    case PieceType.Knight:
+                        black_knights &= moved_place;
+                        black_knights |= new_place;
+                        break;
+                    case PieceType.Queen:
+                        black_queens &= moved_place;
+                        black_queens |= new_place;
+                        break;
+                    case PieceType.King:
+                        black_king &= moved_place;
+                        black_king |= new_place;
+                        break;
+                    case PieceType.Bishop:
+                        black_bishops &= moved_place;
+                        black_bishops |= new_place;
+                        break;
+                    case PieceType.Rook:
+                        black_rooks &= moved_place;
+                        black_rooks |= new_place;
+                        break;
+                    default:  //reserved for castling
+                        break;
+                }
+                black_occupied = black_pawns | black_bishops | black_rooks | black_queens | black_knights | black_king;
+            }
             pieces_occupied = white_occupied | black_occupied;
             empty = ~ pieces_occupied;
         }
 
-        public static void UpdateAnyCapturedBlackBitboard(PieceType piece_type, ulong moved_place)
+        //this is for captured
+        public static void UpdateAnyCapturedBitboard(PieceType piece_type, ulong moved_place)
         {
-            //Console.WriteLine("newmoved_place positions : " + Convert.ToString((long)(moved_place), 2));
-            switch (piece_type)
+            if (player_color)
             {
-                 
-                case PieceType.Pawn:
-                    black_pawns &= (~ moved_place);
-                    Console.WriteLine("new black pawn layout : " + Convert.ToString((long)black_pawns, 2));
-                    break;
-
-                case PieceType.Knight:
-                    black_knights &=( ~ moved_place);
-                    
-                    break;
-
-                case PieceType.Queen:
-                    black_queens &= (~moved_place);
-                   
-                    break;
-
-                case PieceType.King:
-                    black_king &= (~moved_place);
-                    break;
-
-                case PieceType.Bishop:
-                    black_bishops &= (~moved_place);
-
-                    break;
-
-                case PieceType.Rook:
-                    black_rooks &= (~moved_place);
-                    break;
-
-                default:  //reserved for castling
-                    break;
-
-                 
+                switch (piece_type)
+                {
+                    case PieceType.Pawn:
+                        black_pawns &= (~moved_place);
+                        break;
+                    case PieceType.Knight:
+                        black_knights &= (~moved_place);
+                        break;
+                    case PieceType.Queen:
+                        black_queens &= (~moved_place);
+                        break;
+                    case PieceType.King:
+                        black_king &= (~moved_place);
+                        break;
+                    case PieceType.Bishop:
+                        black_bishops &= (~moved_place);
+                        break;
+                    case PieceType.Rook:
+                        black_rooks &= (~moved_place);
+                        break;
+                    default:  //reserved for castling
+                        break;
+                }
+                black_occupied = black_pawns | black_bishops | black_rooks | black_queens | black_knights | black_king;
             }
-
-            black_occupied = black_pawns | black_bishops | black_rooks | black_queens | black_knights | black_king;
+            else
+            {
+                switch (piece_type)
+                {
+                    case PieceType.Pawn:
+                        white_pawns &= (~moved_place);                      
+                        break;
+                    case PieceType.Knight:
+                        white_knights &= (~moved_place);
+                        break;
+                    case PieceType.Queen:
+                        white_queens &= (~moved_place);
+                        break;
+                    case PieceType.King:
+                        white_king &= (~moved_place);
+                        break;
+                    case PieceType.Bishop:
+                        white_bishops &= (~moved_place);
+                        break;
+                    case PieceType.Rook:
+                        white_rooks &= (~moved_place);
+                        break;
+                    default:  //reserved for castling
+                        break;
+                }
+                white_occupied = white_pawns | white_bishops | white_rooks | white_queens | white_knights | white_king;
+            }
             pieces_occupied = white_occupied | black_occupied;
             empty = ~ pieces_occupied;
         }

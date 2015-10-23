@@ -32,26 +32,6 @@
             </DrawingBrush.Drawing>
         </DrawingBrush>
 
-        <DrawingBrush x:Key="Checkerboard2" Stretch="None" TileMode="Tile" Viewport="0,0,140,140" ViewportUnits="Absolute">
-            <DrawingBrush.Drawing>
-                <DrawingGroup>
-                    <GeometryDrawing Brush="White">
-                        <GeometryDrawing.Geometry>
-                            <RectangleGeometry Rect="0,0,140,140" />
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                    <GeometryDrawing Brush="SpringGreen">
-                        <GeometryDrawing.Geometry>
-                            <GeometryGroup>
-                                <RectangleGeometry Rect="0,0,70,70" />
-                                <RectangleGeometry Rect="70,70,70,70" />
-                            </GeometryGroup>
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                </DrawingGroup>
-            </DrawingBrush.Drawing>
-        </DrawingBrush>
-
 
         <Style x:Key="ChessPieceStyle" TargetType="{x:Type Image}">
             <Style.Triggers>
@@ -191,6 +171,8 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 
+            
+            
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="70" Height="70">
@@ -203,14 +185,16 @@
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemContainerStyle>
 
+
+            <ItemsControl.ItemContainerStyle>
                 <Style>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Chose}" Value="True">
                             <Setter Property="Canvas.ZIndex"  Value="1000" />
                         </DataTrigger>
                     </Style.Triggers>
+
                     <Setter Property="Canvas.Left" Value="{Binding Pos.X}" />
                     <Setter Property="Canvas.Top" Value="{Binding Pos.Y}" />
                 </Style>
@@ -222,6 +206,11 @@
         <!--Andreas' contribution 12/09-->
         <!--<WrapPanel Orientation="Vertical" HorizontalAlignment="Left" Height="560" Margin="619,43,0,0" VerticalAlignment="Top" Width="189"/>-->
         <WrapPanel Orientation="Vertical" HorizontalAlignment="Center" Height="122" Margin="654,45,84.4,0" VerticalAlignment="Top" Width="80" ItemHeight="40">
+
+            <ComboBox x:Name="ChooseColor" HorizontalAlignment="Center" IsEditable="True" IsReadOnly="True" Text="Color" Width="80" Height="20">
+                <ComboBoxItem Content="White" HorizontalAlignment="Left" Width="80"/>
+                <ComboBoxItem Content="Black" HorizontalAlignment="Left" Width="80"/>
+            </ComboBox>
             <!--<Label x:Name="label" Content="Set difficulty" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-0.508,0.66"/>-->
             <ComboBox x:Name="ChooseLevel" HorizontalAlignment="Center" IsEditable="True" IsReadOnly="True" Text="Level" Width="80" Height="20">
                 <ComboBoxItem Content="Easy" HorizontalAlignment="Left" Width="80"/>

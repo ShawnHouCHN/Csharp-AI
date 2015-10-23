@@ -433,7 +433,7 @@ namespace ChessBoardUI.AIAlgorithm
             if (max)
             {
                 MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                ArrayList moves = MoveGenerator.PossibleMovesB();
+                ArrayList moves = MoveGenerator.PossibleMovesMachine();
                 foreach (Move move in moves)
                 {
                     ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
@@ -498,7 +498,7 @@ namespace ChessBoardUI.AIAlgorithm
             else
             {
                 MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                ArrayList moves = MoveGenerator.PossibleMovesW();
+                ArrayList moves = MoveGenerator.PossibleMovesPlayer();
                 foreach (Move move in moves)
                 {
                     ChessBoard cb = new ChessBoard();

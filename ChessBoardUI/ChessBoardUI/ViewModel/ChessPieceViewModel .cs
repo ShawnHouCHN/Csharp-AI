@@ -77,7 +77,6 @@ namespace ChessBoardUI.ViewModel
             set { this._Pos.Y = value * Constants.Constants.CELL_EDGE_LENGTH; RaisePropertyChanged(() => this.Pos); }
         }
 
-
         public PieceType Type
         {
             get { return this._Type; }
@@ -145,7 +144,7 @@ namespace ChessBoardUI.ViewModel
                     //need check castling in this legalmove event also
 
 
-                    if (MoveGenerator.LegalMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
+                    if (MoveGenerator.LegalRegularMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
                     {
 
                         //promote humans pawn
@@ -157,8 +156,6 @@ namespace ChessBoardUI.ViewModel
                         this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
                         this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
                         this.Chose = false;
-
-                        Console.WriteLine("new COOR value is {0} , {1}", this.Coor_X, this.Coor_Y);
 
                         Messenger.Default.Send(new HumanMoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(this.Coor_X, this.Coor_Y), Type = this.Type, Castling = false, AnPassent = false, Promotion=false, Turn=true});
                     }

@@ -91,10 +91,7 @@ namespace ChessBoardUI.Players
             ulong new_place =   0x0000000000000001;
             moved_place = MoveGenerator.full_occupied & ~(moved_place << (from_index));
             new_place = (new_place << (to_index));
-
-
-
-            MoveGenerator.UpdateAnyMovedWhiteBitboard(action.Type, moved_place, new_place);
+            MoveGenerator.UpdateAnyMovedBitboard(action.Type, moved_place, new_place);
 
 
         }
