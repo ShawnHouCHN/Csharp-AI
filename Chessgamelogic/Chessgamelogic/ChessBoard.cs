@@ -109,13 +109,24 @@ namespace Chessgamelogic
                 0   ,   1   ,   2   ,   3   ,   4   ,   5   ,   6   ,   7
                 };
 
-
-        public ChessBoard(Player currentPlayer)
+        private static ulong[] file = new ulong[]
         {
+            0xf0f0f0f0f0f0f0f0,
+            0x8080808080808080,
+            0x4040404040404040,
+            0x2020202020202020,
+            0x1010101010101010,
+            0x0f0f0f0f0f0f0f0f,
+            0x0808080808080808,
+            0x0404040404040404,
+            0x0202020202020202,
+            0x0101010101010101,
+        };
 
+
+        public ChessBoard()
+        {
             createUsefullBitboards();
-            this.player = currentPlayer;
-
         }
 
         public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK)
@@ -376,19 +387,30 @@ namespace Chessgamelogic
                             //Evaluation of White Pawns 
                             whitePoints += PawnTable[(8 * (7 - i / 8) + i % 8)];
 
-                            //Evaluation of Double Pawn and Pawn ramming
-                            for (int f = 1; f < 8; f++)
+                            //Evaluation of Double Pawn
+                            if ((file[i % 8] & (WP & ((ulong)1<<(63-i))))>0)
                             {
-                                if ((f == 1 & ((BP >> (i + 8)) & 1) == 1))
-                                {
-                                    whitePoints += -7;
-                                }
-                                if (((WP >> (i + 8 * f)) & 1) == 1)
-                                {
-                                    whitePoints += -7;
-                                    break;
-                                }
+                                whitePoints += -7;
                             }
+
+                            //Evalution of pawn ramming
+                            if (((BP >> (i + 8)) & 1) == 1 || ((BP >> (i - 8)) & 1) == 1)
+                            {
+                                whitePoints += -7;
+                            }
+
+                            //for (int f = 1; f < 8; f++)
+                            //{
+                            //    if ((f == 1 & ((BP >> (i + 8)) & 1) == 1))
+                            //    {
+                            //        whitePoints += -7;
+                            //    }
+                            //    if (((WP >> (i + 8 * f)) & 1) == 1)
+                            //    {
+                            //        whitePoints += -7;
+                            //        break;
+                            //    }
+                            //}
                         }
                         else if (((WQ >> i) & 1) == 1)
                         {
@@ -431,19 +453,31 @@ namespace Chessgamelogic
                             blackPoints += PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]];
 
                             //Evaluation of Double Pawn
-                            for (int f = 1; f < 8; f++)
+                            if ((file[i % 8] & (WP & ((ulong)1 << (63 - i)))) > 0)
                             {
-                                if ((f == 1 & ((WP >> (i - 8)) & 1) == 1))
-                                {
-                                    blackPoints += -7;
-                                }
-
-                                if (((BP >> (i - 8 * f)) & 1) == 1)
-                                {
-                                    blackPoints += -7;
-                                    break;
-                                }
+                                blackPoints += -7;
                             }
+
+                            //Evalution of pawn ramming
+                            if (((BP >> (i + 8)) & 1) == 1 || ((BP >> (i - 8)) & 1) == 1)
+                            {
+                                blackPoints += -7;
+                            }
+
+                            //Evaluation of Double Pawn
+                            //for (int f = 1; f < 8; f++)
+                            //{
+                            //    if ((f == 1 & ((WP >> (i - 8)) & 1) == 1))
+                            //    {
+                            //        blackPoints += -7;
+                            //    }
+
+                            //    if (((BP >> (i - 8 * f)) & 1) == 1)
+                            //    {
+                            //        blackPoints += -7;
+                            //        break;
+                            //    }
+                            //}
                         }
                         else if (((BQ >> i) & 1) == 1)
                         {
@@ -493,7 +527,7 @@ namespace Chessgamelogic
                 
                 foreach (Move move in moves)
                 {
-                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, move);
                     switch (move.cap_type)
                     {
                         case PieceType.King:
@@ -558,7 +592,7 @@ namespace Chessgamelogic
                 ArrayList moves = MoveGenerator.PossibleMovesPlayer();
                 foreach (Move move in moves)
                 {
-                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, move);
                     switch (move.cap_type)
                     {
                         case PieceType.King:
@@ -622,7 +656,7 @@ namespace Chessgamelogic
         // TO DO
         public int check()
         {
-            throw new NotImplementedException();
+            return 0;
         }
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)

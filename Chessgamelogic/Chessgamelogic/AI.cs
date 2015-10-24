@@ -10,12 +10,13 @@ namespace ChessGameAI
     {
         Player player;
         int seconds;
-        ChessBoard CB;
+        public ChessBoard CB { get; set; }
 
         public AI(Player player, int seconds)
         {
             this.player = player;
             this.seconds = seconds;
+            CB = new ChessBoard();
         }
 
         public AI(Player player, int seconds, ChessBoard cb)
@@ -37,14 +38,15 @@ namespace ChessGameAI
         private void startIterativeSearch()
         {
             DateTime currentTime = new DateTime();
-            DateTime target = currentTime.AddSeconds((double)seconds);
+            DateTime target = currentTime.AddSeconds(10);
             
             for (int i = 1; i < 100; i++)
             {
                 CB.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
                 currentTime = new DateTime();
-                if (currentTime > target)
+                if (target.CompareTo(currentTime) > 0)
                 {
+                    System.Threading.Thread.Sleep(2000);
                     break;
                 }
             }
