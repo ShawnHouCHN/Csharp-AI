@@ -28,6 +28,7 @@ namespace ChessGameAI
         //TO DO
         public Move getNextMove()
         {
+            startIterativeSearch(new DateTime());
 
             MoveGenerator.setCurrentBitboards(CB.bestState.BP, CB.bestState.BR, CB.bestState.BN, CB.bestState.BB, CB.bestState.BQ, CB.bestState.BK, CB.bestState.WP, CB.bestState.WR, CB.bestState.WN, CB.bestState.WB, CB.bestState.WQ, CB.bestState.WK);
         }

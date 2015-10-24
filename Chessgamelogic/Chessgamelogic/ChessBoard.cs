@@ -302,6 +302,7 @@ namespace Chessgamelogic
                 moves = MoveGenerator.PossibleMovesW();
             }
 
+            //differentiate between white and black
             foreach (Move m in moves)
             {
                 if (m.cap_type != null)
@@ -430,11 +431,11 @@ namespace Chessgamelogic
             }
             if (player == Player.Black)
             {
-                if (check()) { blackPoints += 50; }
+                if (check()==1) { blackPoints += 50; }
                 return blackPoints - whitePoints;
             } else
             {
-                if (check()) { whitePoints += 50; }
+                if (check()==2) { whitePoints += 50; }
                 return whitePoints - blackPoints;
             }
         }
