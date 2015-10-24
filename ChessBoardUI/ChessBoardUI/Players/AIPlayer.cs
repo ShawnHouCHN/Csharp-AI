@@ -26,10 +26,17 @@ namespace ChessBoardUI.Players
         private bool turn = false;
         Thread algo_thread;
         MoveGenerator move_generator;
+        
+
+        //Player ai_color;
 
         public AIPlayer(ObservableCollection<ChessPiece> pieces_collection, Dictionary<int, ChessPiece> pieces_dict)
         {
             move_generator = new MoveGenerator();
+
+            //ai color to use;
+            //this.ai_color = ai_color;
+
             //machine clock instantiation
             machine_timer = new TimerViewModel
             {
@@ -124,6 +131,11 @@ namespace ChessBoardUI.Players
                     {
                         this.MachineTimer.startClock();
 
+                        // this is the current chess board state
+                        ChessBoard curr_board_state = new ChessBoard(MoveGenerator.white_pawns, MoveGenerator.white_knights, MoveGenerator.white_bishops, MoveGenerator.white_queens, MoveGenerator.white_rooks, MoveGenerator.white_king, MoveGenerator.black_pawns, MoveGenerator.black_knights, MoveGenerator.black_bishops, MoveGenerator.black_queens, MoveGenerator.black_rooks, MoveGenerator.black_king);
+
+                        //getNextMove(curr_board_state);
+
 
                         // test code 
 
@@ -170,7 +182,28 @@ namespace ChessBoardUI.Players
 
     }
 
+    public Move getNextMove(ChessBoard curr_board_state)
+    {
+        startIterativeSearch(curr_board_state, new DateTime());
 
+        MoveGenerator.setCurrentBitboards(curr_board_state.bestState.BP, curr_board_state.bestState.BR, curr_board_state.bestState.BN, curr_board_state.bestState.BB, curr_board_state.bestState.BQ, curr_board_state.bestState.BK, curr_board_state.bestState.WP, curr_board_state.bestState.WR, curr_board_state.bestState.WN, curr_board_state.bestState.WB, curr_board_state.bestState.WQ, curr_board_state.bestState.WK);
+    }
+
+    private void startIterativeSearch(ChessBoard init, DateTime date)
+    {
+        DateTime target = date.AddSeconds((double)seconds);
+        DateTime currentTime = new DateTime();
+
+        for (int i = 1; i < 100; i++)
+        {
+            init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
+            currentTime = new DateTime();
+            if (currentTime > target)
+            {
+                break;
+            }
+        }
+    }
 
 
 }

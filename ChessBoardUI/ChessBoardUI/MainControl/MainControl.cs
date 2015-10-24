@@ -136,7 +136,7 @@ namespace ChessBoardUI.ViewModel
             this.human_player = new HMPlayer(this.pieces_collection, this.pieces_dict);
             this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict);
 
-            
+
 
             // this.boardlayout = Boardlayout;
         }

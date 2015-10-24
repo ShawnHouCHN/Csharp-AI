@@ -10,14 +10,15 @@ namespace ChessBoardUI.AIAlgorithm
 {
     public class ChessBoard
     {
+        public Player player { get; set; }
         public ulong WP = 0x000000000000ff00, WN = 0x0000000000000042, WB = 0x0000000000000024, WQ = 0x0000000000000008, WR = 0x0000000000000081, WK = 0x0000000000000010,
                       BP = 0x00ff000000000000, BN = 0x4200000000000000, BB = 0x2400000000000000, BQ = 0x0800000000000000, BR = 0x8100000000000000, BK = 0x1000000000000000;
 
-        private ulong occupied, empty, enemy, enemyOrEmpty;
+        private ulong occupied, empty, whitePieces, enemyOrEmpty;
 
         //private int[] PawnTable, KnightTable, BishopTable, RookTable, QueenTable, KingTableO, KingTableE, Mirror64;
 
-        private ChessBoard bestState;
+        public ChessBoard bestState;
 
         private static int[] PawnTable = new int[] {
                 0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
@@ -108,13 +109,11 @@ namespace ChessBoardUI.AIAlgorithm
                 };
 
 
-        public ChessBoard()
+        public ChessBoard(Player currentPlayer)
         {
 
-            //createUsefullBitboards();
-
-
-            //drawArray();
+            createUsefullBitboards();
+            this.player = currentPlayer;
 
         }
 
@@ -132,14 +131,18 @@ namespace ChessBoardUI.AIAlgorithm
             this.BQ = BQ;
             this.BR = BR;
             this.BK = BK;
+
+            //this.player = currentPlayer;
+
+            createUsefullBitboards();
         }
 
         private void createUsefullBitboards()
         {
             occupied = (WP | BP | WR | BR | WN | BN | WB | BB | WQ | BQ | WK | BK);
             empty = ~occupied;
-            enemy = (WP | WR | WN | WB | WQ | WK);
-            enemyOrEmpty = (empty | enemy);
+            whitePieces = (WP | WR | WN | WB | WQ | WK);
+            enemyOrEmpty = (empty | whitePieces);
         }
 
         //public void Copyboard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK)
@@ -284,22 +287,46 @@ namespace ChessBoardUI.AIAlgorithm
         }
 
         // TO DO
-        public int evaluateBoard()
+        public int evaluateBoard(bool min_max)
         {
-
-
             int blackPoints = 0;
             int whitePoints = 0;
 
             // Evaluate pieces under threat
+            MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+            ArrayList moves;
+            if (min_max)
+            {
+                moves = MoveGenerator.PossibleMovesMachine();
+            }
+            else
+            {
+                moves = MoveGenerator.PossibleMovesPlayer();
+            }
+
+            //differentiate between white and black
+            foreach (Move m in moves)
+            {
+                if (m.cap_type != null)
+                {
+                    if (MoveGenerator.player_color)
+                        blackPoints += 7;
+                    else
+                        whitePoints += 7;
+                }
+                else
+                {
+                    break;
+                }
+            }
 
 
-            // Evaluate positions of each piece on the board
             for (int i = 0; i < 64; i++)
             {
+                // Evaluate positions of each piece on the board
                 if (((occupied >> i) & 1) == 1)
                 {
-                    if (((enemy >> i) & 1) == 1)
+                    if (((whitePieces >> i) & 1) == 1)
                     {
                         //Evaluation of White pieces
                         if (((WB >> i) & 1) == 1)
@@ -411,7 +438,16 @@ namespace ChessBoardUI.AIAlgorithm
                 }
                 else { }
             }
-            return blackPoints - whitePoints;
+            if (MoveGenerator.player_color) //true = player use white
+            {
+                if (check() == 1) { blackPoints += 50; }
+                return blackPoints - whitePoints;  //(machine point - player point)
+            }
+            else
+            {
+                if (check() == 2) { whitePoints += 50; }
+                return whitePoints - blackPoints;
+            }
         }
 
         // TO DO
@@ -427,13 +463,18 @@ namespace ChessBoardUI.AIAlgorithm
         //}
 
         // TO DO
-        public List<ChessBoard> generateChessBoards(bool max)
+        public List<ChessBoard> generateChessBoards(bool min_max)
         {
             List<ChessBoard> theList = new List<ChessBoard>();
-            if (max)
+            if (min_max)
             {
                 MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+                
+
                 ArrayList moves = MoveGenerator.PossibleMovesMachine();
+
+
+
                 foreach (Move move in moves)
                 {
                     ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
@@ -501,8 +542,7 @@ namespace ChessBoardUI.AIAlgorithm
                 ArrayList moves = MoveGenerator.PossibleMovesPlayer();
                 foreach (Move move in moves)
                 {
-                    ChessBoard cb = new ChessBoard();
-                    
+                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                     switch (move.cap_type)
                     {
                         case PieceType.King:
@@ -549,8 +589,8 @@ namespace ChessBoardUI.AIAlgorithm
                             cb.WB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
                             break;
                         case PieceType.Pawn:
-                            cb.WP = ((ulong)1 << (move.to_rank * 8 + move.to_file)) & WP;
-                            cb.WP = ~((ulong)1 << (move.from_rank * 8 + move.from_file)) & WP;
+                            cb.WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            cb.WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
                             break;
                         default:
                             break;
@@ -564,23 +604,23 @@ namespace ChessBoardUI.AIAlgorithm
         }
 
         // TO DO
-        public bool check()
+        public int check()
         {
             throw new NotImplementedException();
         }
 
-        public int AlphaBetaSearch(int alpha, int beta, int layer, bool max)
+        public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
-            if (layer == 0 || check() == true)
+            if (layer == 0 || check() != 0)
             {
-                return evaluateBoard();
+                return evaluateBoard(min_max);
             }
-            else if (max)
+            else if (min_max)
             {
-                List<ChessBoard> chessboards = generateChessBoards(max);
+                List<ChessBoard> chessboards = generateChessBoards(min_max);
                 foreach (ChessBoard CB in chessboards)
                 {
-                    int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, false);
+                    int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result > alpha)
                     {
                         alpha = result;
@@ -596,10 +636,10 @@ namespace ChessBoardUI.AIAlgorithm
             }
             else
             {
-                List<ChessBoard> chessboards = generateChessBoards(max);
+                List<ChessBoard> chessboards = generateChessBoards(min_max);
                 foreach (ChessBoard CB in chessboards)
                 {
-                    int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, true);
+                    int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result < beta)
                     {
                         beta = result;
