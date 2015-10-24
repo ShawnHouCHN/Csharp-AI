@@ -19,6 +19,8 @@ namespace Chessgamelogic
 
         public ChessBoard bestState;
 
+        public Move nextMove { get; private set; }
+
         private static int[] PawnTable = new int[] {
                 0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
                 7   ,   7   ,   13  ,   23  ,   26  ,   13  ,   7   ,   7   ,
@@ -113,10 +115,10 @@ namespace Chessgamelogic
 
             createUsefullBitboards();
             this.player = currentPlayer;
-            
+
         }
 
-        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Player currentPlayer)
+        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK)
         {
             this.WP = WP;
             this.WN = WN;
@@ -131,10 +133,33 @@ namespace Chessgamelogic
             this.BR = BR;
             this.BK = BK;
 
-            this.player = currentPlayer;
+            //this.player = currentPlayer;
 
             createUsefullBitboards();
         }
+
+        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move previousMove)
+        {
+            this.WP = WP;
+            this.WN = WN;
+            this.WB = WB;
+            this.WQ = WQ;
+            this.WR = WR;
+            this.WK = WK;
+            this.BP = BP;
+            this.BN = BN;
+            this.BB = BB;
+            this.BQ = BQ;
+            this.BR = BR;
+            this.BK = BK;
+
+            //this.player = currentPlayer;
+
+            nextMove = previousMove;
+
+            createUsefullBitboards();
+        }
+
 
         private void createUsefullBitboards()
         {
@@ -286,7 +311,7 @@ namespace Chessgamelogic
         }
 
         // TO DO
-        public int evaluateBoard()
+        public int evaluateBoard(bool min_max)
         {
             int blackPoints = 0;
             int whitePoints = 0;
@@ -294,12 +319,13 @@ namespace Chessgamelogic
             // Evaluate pieces under threat
             MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
             ArrayList moves;
-            if (player == Player.Black)
+            if (min_max)
             {
-                moves = MoveGenerator.PossibleMovesB();
-            } else
+                moves = MoveGenerator.PossibleMovesMachine();
+            }
+            else
             {
-                moves = MoveGenerator.PossibleMovesW();
+                moves = MoveGenerator.PossibleMovesPlayer();
             }
 
             //differentiate between white and black
@@ -307,11 +333,18 @@ namespace Chessgamelogic
             {
                 if (m.cap_type != null)
                 {
-                    blackPoints += 7;
-                } else { break; }
+                    if (MoveGenerator.player_color)
+                        blackPoints += 7;
+                    else
+                        whitePoints += 7;
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            
+
             for (int i = 0; i < 64; i++)
             {
                 // Evaluate positions of each piece on the board
@@ -429,13 +462,14 @@ namespace Chessgamelogic
                 }
                 else { }
             }
-            if (player == Player.Black)
+            if (MoveGenerator.player_color) //true = player use white
             {
-                if (check()==1) { blackPoints += 50; }
-                return blackPoints - whitePoints;
-            } else
+                if (check() == 1) { blackPoints += 50; }
+                return blackPoints - whitePoints;  //(machine point - player point)
+            }
+            else
             {
-                if (check()==2) { whitePoints += 50; }
+                if (check() == 2) { whitePoints += 50; }
                 return whitePoints - blackPoints;
             }
         }
@@ -446,23 +480,20 @@ namespace Chessgamelogic
         //    throw new NotImplementedException();
         //}
 
-        //// TO DO
-        //public Move getMove(ChessBoard CB)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
+        
         // TO DO
-        public List<ChessBoard> generateChessBoards()
+        public List<ChessBoard> generateChessBoards(bool min_max)
         {
             List<ChessBoard> theList = new List<ChessBoard>();
-            if (player == Player.Black)
+            if (min_max)
             {
                 MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                ArrayList moves = MoveGenerator.PossibleMovesB();
+                
+                ArrayList moves = MoveGenerator.PossibleMovesMachine();
+                
                 foreach (Move move in moves)
                 {
-                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, Player.White);
+                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                     switch (move.cap_type)
                     {
                         case PieceType.King:
@@ -524,10 +555,10 @@ namespace Chessgamelogic
             else
             {
                 MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                ArrayList moves = MoveGenerator.PossibleMovesW();
+                ArrayList moves = MoveGenerator.PossibleMovesPlayer();
                 foreach (Move move in moves)
                 {
-                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, Player.Black);
+                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                     switch (move.cap_type)
                     {
                         case PieceType.King:
@@ -594,18 +625,18 @@ namespace Chessgamelogic
             throw new NotImplementedException();
         }
 
-        public int AlphaBetaSearch(int alpha, int beta, int layer, bool max)
+        public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
             if (layer == 0 || check() != 0)
             {
-                return evaluateBoard();
+                return evaluateBoard(min_max);
             }
-            else if (max)
+            else if (min_max)
             {
-                List<ChessBoard> chessboards = generateChessBoards();
+                List<ChessBoard> chessboards = generateChessBoards(min_max);
                 foreach (ChessBoard CB in chessboards)
                 {
-                    int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, false);
+                    int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result > alpha)
                     {
                         alpha = result;
@@ -621,10 +652,10 @@ namespace Chessgamelogic
             }
             else
             {
-                List<ChessBoard> chessboards = generateChessBoards();
+                List<ChessBoard> chessboards = generateChessBoards(min_max);
                 foreach (ChessBoard CB in chessboards)
                 {
-                    int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, true);
+                    int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result < beta)
                     {
                         beta = result;

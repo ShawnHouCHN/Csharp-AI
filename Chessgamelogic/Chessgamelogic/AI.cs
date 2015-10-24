@@ -28,16 +28,17 @@ namespace ChessGameAI
         //TO DO
         public Move getNextMove()
         {
-            startIterativeSearch(new DateTime());
+            startIterativeSearch();
 
             MoveGenerator.setCurrentBitboards(CB.bestState.BP, CB.bestState.BR, CB.bestState.BN, CB.bestState.BB, CB.bestState.BQ, CB.bestState.BK, CB.bestState.WP, CB.bestState.WR, CB.bestState.WN, CB.bestState.WB, CB.bestState.WQ, CB.bestState.WK);
+            return CB.bestState.nextMove;
         }
 
-        private void startIterativeSearch(DateTime date)
+        private void startIterativeSearch()
         {
-            DateTime target = date.AddSeconds((double)seconds);
             DateTime currentTime = new DateTime();
-
+            DateTime target = currentTime.AddSeconds((double)seconds);
+            
             for (int i = 1; i < 100; i++)
             {
                 CB.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
