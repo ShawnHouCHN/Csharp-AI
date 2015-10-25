@@ -134,35 +134,39 @@ namespace ChessBoardUI.Players
                         // this is the current chess board state
                         ChessBoard curr_board_state = new ChessBoard(MoveGenerator.white_pawns, MoveGenerator.white_knights, MoveGenerator.white_bishops, MoveGenerator.white_queens, MoveGenerator.white_rooks, MoveGenerator.white_king, MoveGenerator.black_pawns, MoveGenerator.black_knights, MoveGenerator.black_bishops, MoveGenerator.black_queens, MoveGenerator.black_rooks, MoveGenerator.black_king);
 
-                        //getNextMove(curr_board_state);
+                        Console.WriteLine("AI board state before ai runs " + Convert.ToString((long)curr_board_state.occupied, 2));
 
+                        Move test_move = getNextMove(curr_board_state);
 
+                        Console.WriteLine("AI board state after  ai runs " + Convert.ToString((long)curr_board_state.bestState.occupied, 2));
+
+                        Console.WriteLine("AI Move " + test_move.moved_type + " from " + test_move.from_rank + " " + test_move.from_file + " to " + test_move.to_rank + " " + test_move.to_file + " Cap " + test_move.cap_type);
                         // test code 
 
-                        ArrayList all_moves = MoveGenerator.PossibleMovesPlayer();
-                        Console.WriteLine("Size is " + all_moves.Count);
+                        //ArrayList all_moves = MoveGenerator.PossibleMovesPlayer();
+                        //Console.WriteLine("Size is " + all_moves.Count);
 
-                        all_moves.Sort(new MoveCompare());  //sort the array so all capture will be placed at beginning
+                        //all_moves.Sort(new MoveCompare());  //sort the array so all capture will be placed at beginning
 
-                        foreach (Move a in all_moves)
-                        {
-                            Console.WriteLine("Move " + a.moved_type + " from " + a.from_rank + " " + a.from_file + " to " + a.to_rank + " " + a.to_file + " Cap " + a.cap_type);
-                        }
-                        // test code end here
+                        //foreach (Move a in all_moves)
+                        //{
+                        //    Console.WriteLine("Move " + a.moved_type + " from " + a.from_rank + " " + a.from_file + " to " + a.to_rank + " " + a.to_file + " Cap " + a.cap_type);
+                        //}
+                        //// test code end here
 
-                        //test code 
-                        System.Threading.Thread.Sleep(5000); // thread sleep. wait for algorithm to run
-                        ChessPiece ai_move_piece = this.pieces_dict[1];
-                        Console.WriteLine("AI moves {0} {1}", ai_move_piece.Coor_X, ai_move_piece.Coor_Y);
+                        ////test code 
+                        //System.Threading.Thread.Sleep(5000); // thread sleep. wait for algorithm to run
+                        //ChessPiece ai_move_piece = this.pieces_dict[1];
+                        
 
                         
-                        int priv_coor_x = ai_move_piece.Coor_X;
-                        int priv_coor_y = ai_move_piece.Coor_Y;
+                        //int priv_coor_x = ai_move_piece.Coor_X;
+                        //int priv_coor_y = ai_move_piece.Coor_Y;
 
-                        ai_move_piece.Pos_X = 0;
-                        ai_move_piece.Pos_Y = 2;
-                        this.pieces_dict.Add(2, ai_move_piece);
-                        this.pieces_dict.Remove(1);
+                        //ai_move_piece.Pos_X = 0;
+                        //ai_move_piece.Pos_Y = 2;
+                        //this.pieces_dict.Add(2, ai_move_piece);
+                        //this.pieces_dict.Remove(1);
                         //test code end
 
                         //AI algorithm goes here.
@@ -180,30 +184,30 @@ namespace ChessBoardUI.Players
             }
         }
 
-    }
-
-    public Move getNextMove(ChessBoard curr_board_state)
-    {
-        startIterativeSearch(curr_board_state, new DateTime());
-
-        MoveGenerator.setCurrentBitboards(curr_board_state.bestState.BP, curr_board_state.bestState.BR, curr_board_state.bestState.BN, curr_board_state.bestState.BB, curr_board_state.bestState.BQ, curr_board_state.bestState.BK, curr_board_state.bestState.WP, curr_board_state.bestState.WR, curr_board_state.bestState.WN, curr_board_state.bestState.WB, curr_board_state.bestState.WQ, curr_board_state.bestState.WK);
-    }
-
-    private void startIterativeSearch(ChessBoard init, DateTime date)
-    {
-        DateTime target = date.AddSeconds((double)seconds);
-        DateTime currentTime = new DateTime();
-
-        for (int i = 1; i < 100; i++)
+        public Move getNextMove(ChessBoard curr_board_state)
         {
-            init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
-            currentTime = new DateTime();
-            if (currentTime > target)
-            {
-                break;
-            }
+            startIterativeSearch(curr_board_state);
+            MoveGenerator.setCurrentBitboards(curr_board_state.bestState.BP, curr_board_state.bestState.BR, curr_board_state.bestState.BN, curr_board_state.bestState.BB, curr_board_state.bestState.BQ, curr_board_state.bestState.BK, curr_board_state.bestState.WP, curr_board_state.bestState.WR, curr_board_state.bestState.WN, curr_board_state.bestState.WB, curr_board_state.bestState.WQ, curr_board_state.bestState.WK);
+            return curr_board_state.bestState.move;
+
         }
+
+        private void startIterativeSearch(ChessBoard init)
+        {
+
+            init.AlphaBetaSearch(int.MinValue, int.MaxValue, 6, true);
+               // if (DateTime.Now >= stop_time)
+               // {
+              //      break;
+                //}
+          //  }
+        }
+
+
+
     }
+
+   
 
 
 }

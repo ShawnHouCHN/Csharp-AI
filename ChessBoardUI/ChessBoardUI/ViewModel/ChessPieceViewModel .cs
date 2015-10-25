@@ -60,8 +60,6 @@ namespace ChessBoardUI.ViewModel
         {
             get { return this._Pos; }
             set { value.X = value.X * Constants.Constants.CELL_EDGE_LENGTH; value.Y=value.Y* Constants.Constants.CELL_EDGE_LENGTH; this._Pos = value;  RaisePropertyChanged(() => this.Pos);
-
-                //Console.Write("inital pos value is {0} , {1}", this._Pos.X, this._Pos.Y);
             }
         }
 

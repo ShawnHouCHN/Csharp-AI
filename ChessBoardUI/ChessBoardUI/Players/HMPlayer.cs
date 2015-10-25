@@ -77,7 +77,11 @@ namespace ChessBoardUI.Players
             //lock the entire board so that use cannot click on piece when it is machine's turn.
             foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)
             {
-                if (item.Value.Player == Player.White)
+                if (item.Value.Player == Player.White && MoveGenerator.player_color)
+                {
+                    item.Value.Ownership = false;
+                }
+                else if (item.Value.Player == Player.Black && !MoveGenerator.player_color)
                 {
                     item.Value.Ownership = false;
                 }
@@ -102,7 +106,11 @@ namespace ChessBoardUI.Players
             //unlock human player pieces so he can go on
             foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)
             {
-                if (item.Value.Player == Player.White)
+                if (item.Value.Player == Player.White && MoveGenerator.player_color)
+                {
+                    item.Value.Ownership = action.Turn;
+                }
+                else if (item.Value.Player == Player.Black && !MoveGenerator.player_color)
                 {
                     item.Value.Ownership = action.Turn;
                 }

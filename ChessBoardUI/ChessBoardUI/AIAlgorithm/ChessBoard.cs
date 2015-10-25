@@ -10,14 +10,19 @@ namespace ChessBoardUI.AIAlgorithm
 {
     public class ChessBoard
     {
-        public Player player { get; set; }
-        public ulong WP = 0x000000000000ff00, WN = 0x0000000000000042, WB = 0x0000000000000024, WQ = 0x0000000000000008, WR = 0x0000000000000081, WK = 0x0000000000000010,
-                      BP = 0x00ff000000000000, BN = 0x4200000000000000, BB = 0x2400000000000000, BQ = 0x0800000000000000, BR = 0x8100000000000000, BK = 0x1000000000000000;
+        //public ulong WP = 0x000000000000ff00, WN = 0x0000000000000042, WB = 0x0000000000000024, WQ = 0x0000000000000008, WR = 0x0000000000000081, WK = 0x0000000000000010,
+        //              BP = 0x00ff000000000000, BN = 0x4200000000000000, BB = 0x2400000000000000, BQ = 0x0800000000000000, BR = 0x8100000000000000, BK = 0x1000000000000000;
 
-        private ulong occupied, empty, whitePieces, enemyOrEmpty;
+        public ulong WP , WN , WB , WQ, WR , WK ,
+                      BP , BN , BB, BQ , BR , BK ;
 
-        //private int[] PawnTable, KnightTable, BishopTable, RookTable, QueenTable, KingTableO, KingTableE, Mirror64;
 
+
+
+        public ulong occupied, empty, whitePieces, enemyOrEmpty;
+
+        public Move move; // the move taken to this board state 
+       
         public ChessBoard bestState;
 
         private static int[] PawnTable = new int[] {
@@ -109,15 +114,7 @@ namespace ChessBoardUI.AIAlgorithm
                 };
 
 
-        public ChessBoard(Player currentPlayer)
-        {
-
-            createUsefullBitboards();
-            this.player = currentPlayer;
-
-        }
-
-        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK)
+        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move move=null)
         {
             this.WP = WP;
             this.WN = WN;
@@ -131,11 +128,13 @@ namespace ChessBoardUI.AIAlgorithm
             this.BQ = BQ;
             this.BR = BR;
             this.BK = BK;
-
+            this.move = move;
             //this.player = currentPlayer;
 
             createUsefullBitboards();
         }
+
+
 
         private void createUsefullBitboards()
         {
@@ -287,13 +286,13 @@ namespace ChessBoardUI.AIAlgorithm
         }
 
         // TO DO
-        public int evaluateBoard(bool min_max)
+        public int evaluateBoard(bool min_max, ChessBoard leaf_chessboard)
         {
-            int blackPoints = 0;
-            int whitePoints = 0;
+            int Machine_Points = 0;
+            int Player_Points = 0;
 
             // Evaluate pieces under threat
-            MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+            MoveGenerator.setCurrentBitboards(leaf_chessboard.BP, leaf_chessboard.BR, leaf_chessboard.BN, leaf_chessboard.BB, leaf_chessboard.BQ, leaf_chessboard.BK, leaf_chessboard.WP, leaf_chessboard.WR, leaf_chessboard.WN, leaf_chessboard.WB, leaf_chessboard.WQ, leaf_chessboard.WK);
             ArrayList moves;
             if (min_max)
             {
@@ -304,15 +303,17 @@ namespace ChessBoardUI.AIAlgorithm
                 moves = MoveGenerator.PossibleMovesPlayer();
             }
 
+            moves.Sort(new MoveCompare()); // sort the list so it get captured move first;
             //differentiate between white and black
-            foreach (Move m in moves)
+
+            foreach (Move leaf_move in moves)
             {
-                if (m.cap_type != null)
+                if (leaf_move.cap_type != null)
                 {
-                    if (MoveGenerator.player_color)
-                        blackPoints += 7;
+                    if (min_max) //if it is a max leaf node, add vallue to machine's value;
+                        Machine_Points += 7;
                     else
-                        whitePoints += 7;
+                        Player_Points += 7;
                 }
                 else
                 {
@@ -324,302 +325,345 @@ namespace ChessBoardUI.AIAlgorithm
             for (int i = 0; i < 64; i++)
             {
                 // Evaluate positions of each piece on the board
-                if (((occupied >> i) & 1) == 1)
+                if (((leaf_chessboard.occupied >> i) & 1) == 1)
                 {
-                    if (((whitePieces >> i) & 1) == 1)
+                    if (MoveGenerator.player_color) //if player plays white
                     {
-                        //Evaluation of White pieces
-                        if (((WB >> i) & 1) == 1)
+                        if (((leaf_chessboard.WB >> i) & 1) == 1)
                         {
                             //Evaluation of White Bishop
-                            whitePoints += BishopTable[(8 * (7 - i / 8) + i % 8)];
+                            Player_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
-                        else if (((WK >> i) & 1) == 1)
+                        else if (((leaf_chessboard.WK >> i) & 1) == 1)
                         {
                             //Evaluation of White King
-                            whitePoints += KingTableO[(8 * (7 - i / 8) + i % 8)];
+                            Player_Points += (Constants.Constants.KING_WEIGHT+ KingTableO[(8 * (7 - i / 8) + i % 8)]);
 
                         }
-                        else if (((WN >> i) & 1) == 1)
+                        else if (((leaf_chessboard.WN >> i) & 1) == 1)
                         {
                             //Evaluation of White Knight 
-                            whitePoints += KnightTable[(8 * (7 - i / 8) + i % 8)];
+                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT+ KnightTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
-                        else if (((WP >> i) & 1) == 1)
+                        else if (((leaf_chessboard.WP >> i) & 1) == 1)
                         {
                             //Evaluation of White Pawns 
-                            whitePoints += PawnTable[(8 * (7 - i / 8) + i % 8)];
+                            Player_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[(8 * (7 - i / 8) + i % 8)]);
 
-                            //Evaluation of Double Pawn and Pawn ramming
-                            for (int f = 1; f < 8; f++)
+                            //evaluate of dobble pawn weakness
+                            for (int rank= (7- i/8); rank >=0 ; rank--)
+                            if (((leaf_chessboard.WP >> (i+8*rank)) & 1) ==1)
                             {
-                                if ((f == 1 & ((BP >> (i + 8)) & 1) == 1))
-                                {
-                                    whitePoints += -7;
-                                }
-                                if (((WP >> (i + 8 * f)) & 1) == 1)
-                                {
-                                    whitePoints += -7;
-                                    break;
-                                }
+                                Player_Points += -7;
                             }
                         }
-                        else if (((WQ >> i) & 1) == 1)
+                        else if (((leaf_chessboard.WQ >> i) & 1) == 1)
                         {
                             //Evaluation of White Queen 
-                            whitePoints += QueenTable[(8 * (7 - i / 8) + i % 8)];
+                            Player_Points += (Constants.Constants.QUEEN_WEIGHT+ QueenTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
-                        else if (((WR >> i) & 1) == 1)
+                        else if (((leaf_chessboard.WR >> i) & 1) == 1)
                         {
                             //Evaluation of White Rook 
-                            whitePoints += RookTable[(8 * (7 - i / 8) + i % 8)];
-
+                            Player_Points += (Constants.Constants.ROOK_WEIGHT+ RookTable[(8 * (7 - i / 8) + i % 8)]);
                         }
-
-                    }
-                    else
-                    {
-                        //Evaluation of Black pieces 
-                        if (((BB >> i) & 1) == 1)
+                        else if (((leaf_chessboard.BB >> i) & 1) == 1)
                         {
                             //Evaluation of Black Bishop 
-                            blackPoints += BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]];
+                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
-                        else if (((BK >> i) & 1) == 1)
+                        else if (((leaf_chessboard.BK >> i) & 1) == 1)
                         {
                             //Evaluation of Black King 
-                            blackPoints += KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]];
+                            Machine_Points += (Constants.Constants.KING_WEIGHT + KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
-                        else if (((BN >> i) & 1) == 1)
+                        else if (((leaf_chessboard.BN >> i) & 1) == 1)
                         {
                             //Evaluation of Black Knight 
-                            blackPoints += KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]];
+                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT + KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
-                        else if (((BP >> i) & 1) == 1)
+                        else if (((leaf_chessboard.BP >> i) & 1) == 1)
                         {
                             //Evaluation of Black Pawns 
-                            blackPoints += PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]];
+                            Machine_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
-                            //Evaluation of Double Pawn
-                            for (int f = 1; f < 8; f++)
-                            {
-                                if ((f == 1 & ((WP >> (i - 8)) & 1) == 1))
+                            //evaluate of dobble pawn weakness
+                            for (int rank = (7 - i / 8); rank >= 0; rank--)
+                                if (((leaf_chessboard.WP >> (i + 8 * rank)) & 1) == 1)
                                 {
-                                    blackPoints += -7;
+                                    Machine_Points += -7;
                                 }
-
-                                if (((BP >> (i - 8 * f)) & 1) == 1)
-                                {
-                                    blackPoints += -7;
-                                    break;
-                                }
-                            }
                         }
-                        else if (((BQ >> i) & 1) == 1)
+                        else if (((leaf_chessboard.BQ >> i) & 1) == 1)
                         {
                             //Evaluation of Black Queen 
-                            blackPoints += QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]];
+                            Machine_Points += (Constants.Constants.QUEEN_WEIGHT+ QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
-                        else if (((BR >> i) & 1) == 1)
+                        else if (((leaf_chessboard.BR >> i) & 1) == 1)
                         {
                             //Evaluation of Black Rook 
-                            blackPoints += RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]];
+                            Machine_Points += (Constants.Constants.ROOK_WEIGHT + RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                        }
+                    }
+
+
+                    else
+                    {
+                        if (((leaf_chessboard.WB >> i) & 1) == 1)
+                        {
+                            //Evaluation of White Bishop
+                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
+                        else if (((leaf_chessboard.WK >> i) & 1) == 1)
+                        {
+                            //Evaluation of White King
+                            Machine_Points += (Constants.Constants.KING_WEIGHT+ KingTableO[(8 * (7 - i / 8) + i % 8)]);
 
+                        }
+                        else if (((leaf_chessboard.WN >> i) & 1) == 1)
+                        {
+                            //Evaluation of White Knight 
+                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT+ KnightTable[(8 * (7 - i / 8) + i % 8)]);
+
+                        }
+                        else if (((leaf_chessboard.WP >> i) & 1) == 1)
+                        {
+                            //Evaluation of White Pawns 
+                            Machine_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[(8 * (7 - i / 8) + i % 8)]);
+
+                            //evaluate of dobble pawn weakness
+                            for (int rank = (7 - i / 8); rank >= 0; rank--)
+                                if (((leaf_chessboard.WP >> (i + 8 * rank)) & 1) == 1)
+                                {
+                                    Machine_Points += -7;
+                                }
+                        }
+                        else if (((leaf_chessboard.WQ >> i) & 1) == 1)
+                        {
+                            //Evaluation of White Queen 
+                            Machine_Points +=(Constants.Constants.QUEEN_WEIGHT+ QueenTable[(8 * (7 - i / 8) + i % 8)]);
+
+                        }
+                        else if (((leaf_chessboard.WR >> i) & 1) == 1)
+                        {
+                            //Evaluation of White Rook 
+                            Machine_Points += (Constants.Constants.ROOK_WEIGHT+ RookTable[(8 * (7 - i / 8) + i % 8)]);
+                        }
+                        else if (((leaf_chessboard.BB >> i) & 1) == 1)
+                        {
+                            //Evaluation of Black Bishop 
+                            Player_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+
+                        }
+                        else if (((leaf_chessboard.BK >> i) & 1) == 1)
+                        {
+                            //Evaluation of Black King 
+                            Player_Points += (Constants.Constants.KING_WEIGHT+ KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+
+                        }
+                        else if (((leaf_chessboard.BN >> i) & 1) == 1)
+                        {
+                            //Evaluation of Black Knight 
+                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT+ KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+
+                        }
+                        else if (((leaf_chessboard.BP >> i) & 1) == 1)
+                        {
+                            //Evaluation of Black Pawns 
+                            Player_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+
+                            //evaluate of dobble pawn weakness
+                            for (int rank = (7 - i / 8); rank >= 0; rank--)
+                                if (((leaf_chessboard.WP >> (i + 8 * rank)) & 1) == 1)
+                                {
+                                    Player_Points += -7;
+                                }
+                        }
+                        else if (((leaf_chessboard.BQ >> i) & 1) == 1)
+                        {
+                            //Evaluation of Black Queen 
+                            Player_Points +=(Constants.Constants.QUEEN_WEIGHT+ QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+
+                        }
+                        else if (((leaf_chessboard.BR >> i) & 1) == 1)
+                        {
+                            //Evaluation of Black Rook 
+                            Player_Points += (Constants.Constants.ROOK_WEIGHT+ RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                        }
                     }
                 }
-                else { }
+
             }
-            if (MoveGenerator.player_color) //true = player use white
-            {
-                if (check() == 1) { blackPoints += 50; }
-                return blackPoints - whitePoints;  //(machine point - player point)
-            }
-            else
-            {
-                if (check() == 2) { whitePoints += 50; }
-                return whitePoints - blackPoints;
-            }
+                //if (check() == 1) { blackPoints += 50; }
+                return Machine_Points - Player_Points;  //(machine point - player point)
         }
 
-        // TO DO
-        //public void updateBoard(Move move)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //// TO DO
-        //public Move getMove(ChessBoard CB)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         // TO DO
-        public List<ChessBoard> generateChessBoards(bool min_max)
-        {
-            List<ChessBoard> theList = new List<ChessBoard>();
-            if (min_max)
-            {
-                MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+        //public List<ChessBoard> generateChessBoards(bool min_max)
+        //{
+        //    List<ChessBoard> theList = new List<ChessBoard>();
+        //    if (min_max)
+        //    {
+        //        MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 
 
-                ArrayList moves = MoveGenerator.PossibleMovesMachine();
+        //        ArrayList moves = MoveGenerator.PossibleMovesMachine();
 
+        //        foreach (Move move in moves)
+        //        {
+        //            ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, move);
+        //            switch (move.cap_type)
+        //            {
+        //                case PieceType.King:
+        //                    cb.WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Queen:
+        //                    cb.WQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Rook:
+        //                    cb.WR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Knight:
+        //                    cb.WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Bishop:
+        //                    cb.WB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Pawn:
+        //                    cb.WP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //            switch (move.moved_type)
+        //            {
+        //                case PieceType.King:
+        //                    cb.BK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.BK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Queen:
+        //                    cb.BQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.BQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Rook:
+        //                    cb.BR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.BR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Knight:
+        //                    cb.BN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.BN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Bishop:
+        //                    cb.BB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.BB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Pawn:
+        //                    cb.BP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.BP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                default:
+        //                    break;
 
+        //            }
+        //            // Switch case for special events! promotion, enpassant etc.
 
-                foreach (Move move in moves)
-                {
-                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                    switch (move.cap_type)
-                    {
-                        case PieceType.King:
-                            cb.WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Queen:
-                            cb.WQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Rook:
-                            cb.WR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Knight:
-                            cb.WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Bishop:
-                            cb.WB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Pawn:
-                            cb.WP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        default:
-                            break;
-                    }
-                    switch (move.moved_type)
-                    {
-                        case PieceType.King:
-                            cb.BK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.BK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Queen:
-                            cb.BQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.BQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Rook:
-                            cb.BR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.BR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Knight:
-                            cb.BN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.BN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Bishop:
-                            cb.BB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.BB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Pawn:
-                            cb.BP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.BP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        default:
-                            break;
+        //            theList.Add(cb);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+        //        ArrayList moves = MoveGenerator.PossibleMovesPlayer();
+        //        foreach (Move move in moves)
+        //        {
+        //            ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, move);
+        //            switch (move.cap_type)
+        //            {
+        //                case PieceType.King:
+        //                    cb.BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Queen:
+        //                    cb.BQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Rook:
+        //                    cb.BR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Knight:
+        //                    cb.BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Bishop:
+        //                    cb.BB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                case PieceType.Pawn:
+        //                    cb.BP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //            switch (move.moved_type)
+        //            {
+        //                case PieceType.King:
+        //                    cb.WK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.WK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Queen:
+        //                    cb.WQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.WQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Rook:
+        //                    cb.WR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.WR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Knight:
+        //                    cb.WN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.WN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Bishop:
+        //                    cb.WB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.WB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                case PieceType.Pawn:
+        //                    cb.WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+        //                    cb.WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+        //                    break;
+        //                default:
+        //                    break;
 
-                    }
-                    // Switch case for special events! promotion, enpassant etc.
-
-                    theList.Add(cb);
-                }
-            }
-            else
-            {
-                MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                ArrayList moves = MoveGenerator.PossibleMovesPlayer();
-                foreach (Move move in moves)
-                {
-                    ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                    switch (move.cap_type)
-                    {
-                        case PieceType.King:
-                            cb.BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Queen:
-                            cb.BQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Rook:
-                            cb.BR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Knight:
-                            cb.BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Bishop:
-                            cb.BB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        case PieceType.Pawn:
-                            cb.BP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            break;
-                        default:
-                            break;
-                    }
-                    switch (move.moved_type)
-                    {
-                        case PieceType.King:
-                            cb.WK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.WK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Queen:
-                            cb.WQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.WQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Rook:
-                            cb.WR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.WR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Knight:
-                            cb.WN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.WN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Bishop:
-                            cb.WB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.WB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        case PieceType.Pawn:
-                            cb.WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                            cb.WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                            break;
-                        default:
-                            break;
-
-                    }
-                    // switch for special events
-                    theList.Add(cb);
-                }
-            }
-            return theList;
-        }
+        //            }
+        //            // switch for special events
+        //            theList.Add(cb);
+        //        }
+        //    }
+        //    return theList;
+        //}
 
         // TO DO
-        public int check()
-        {
-            throw new NotImplementedException();
-        }
+        //public int check()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
-            if (layer == 0 || check() != 0)
+            if (layer == 0)
             {
-                return evaluateBoard(min_max);
+                return evaluateBoard(min_max, this);
             }
             else if (min_max)
             {
-                List<ChessBoard> chessboards = generateChessBoards(min_max);
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
+                    //Console.WriteLine("Chessboard item "+Convert.ToString((long)CB.occupied, 2));
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result > alpha)
                     {
@@ -636,7 +680,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
             else
             {
-                List<ChessBoard> chessboards = generateChessBoards(min_max);
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
