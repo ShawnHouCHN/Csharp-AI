@@ -134,13 +134,18 @@ namespace ChessBoardUI.Players
                         // this is the current chess board state
                         ChessBoard curr_board_state = new ChessBoard(MoveGenerator.white_pawns, MoveGenerator.white_knights, MoveGenerator.white_bishops, MoveGenerator.white_queens, MoveGenerator.white_rooks, MoveGenerator.white_king, MoveGenerator.black_pawns, MoveGenerator.black_knights, MoveGenerator.black_bishops, MoveGenerator.black_queens, MoveGenerator.black_rooks, MoveGenerator.black_king);
 
-                        Console.WriteLine("AI board state before ai runs " + Convert.ToString((long)curr_board_state.occupied, 2));
+                        //Console.WriteLine("AI board state before ai runs " + Convert.ToString((long)curr_board_state.occupied, 2));
 
-                        Move test_move = getNextMove(curr_board_state);
+                        //code below is for updating frontend
+                        Move ai_move = getNextMove(curr_board_state);
 
-                        Console.WriteLine("AI board state after  ai runs " + Convert.ToString((long)curr_board_state.bestState.occupied, 2));
 
-                        Console.WriteLine("AI Move " + test_move.moved_type + " from " + test_move.from_rank + " " + test_move.from_file + " to " + test_move.to_rank + " " + test_move.to_file + " Cap " + test_move.cap_type);
+                        //Console.WriteLine("AI Moved piece is a " + this.pieces_dict[to_location].Type);
+                        
+
+                        //Console.WriteLine("AI board state after  ai runs " + Convert.ToString((long)curr_board_state.bestState.occupied, 2));
+
+                        Console.WriteLine("AI Move " + ai_move.moved_type + " from " + ai_move.from_rank + " " + ai_move.from_file + " to " + ai_move.to_rank + " " + ai_move.to_file + " Cap " + ai_move.cap_type);
                         // test code 
 
                         //ArrayList all_moves = MoveGenerator.PossibleMovesPlayer();
@@ -171,7 +176,7 @@ namespace ChessBoardUI.Players
 
                         //AI algorithm goes here.
 
-                        Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn });
+                        Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank=ai_move.from_rank, From_File = ai_move.from_file, To_Rank=ai_move.to_rank, To_File=ai_move.to_file});
                         this.MachineTimer.stopClock();
                         this.turn = false;
                     }
@@ -195,7 +200,8 @@ namespace ChessBoardUI.Players
         private void startIterativeSearch(ChessBoard init)
         {
 
-            init.AlphaBetaSearch(int.MinValue, int.MaxValue, 6, true);
+            init.AlphaBetaSearch(int.MinValue, int.MaxValue, 5, true);
+            //Console.WriteLine("Best state is "+init.bestState.eva);
                // if (DateTime.Now >= stop_time)
                // {
               //      break;

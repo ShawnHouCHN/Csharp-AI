@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -102,6 +103,22 @@ namespace ChessBoardUI.Players
 
         public void MachinePiecePositionChangeHandler(MachineMoveMessage action)
         {
+            int from_loca_index = action.From_File * 10 + (7 - action.From_Rank);
+            int to_loca_index = action.To_File * 10 + (7 - action.To_Rank);
+
+            ChessPiece moved = this.pieces_dict[from_loca_index];
+
+            if (this.pieces_dict.ContainsKey(to_loca_index))
+            {
+                ChessPiece to_piece_location = this.pieces_dict[to_loca_index];
+                Application.Current.Dispatcher.Invoke((Action)(() => this.pieces_collection.Remove(to_piece_location)));
+                this.pieces_dict.Remove(to_loca_index);
+            }
+            moved.Pos_X = action.To_File;
+            moved.Pos_Y = 7 - action.To_Rank;
+
+            this.pieces_dict.Remove(from_loca_index);
+            this.pieces_dict.Add(to_loca_index, moved);
 
             //unlock human player pieces so he can go on
             foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)

@@ -68,15 +68,37 @@ namespace ChessBoardUI.ViewModel
     class MachineMoveMessage
         {
             private bool turn;
-
-
-            public bool Turn
+            private int from_rank;
+            private int from_file;
+            private int to_rank;
+            private int to_file;
+          public bool Turn
             {
                 get { return turn; }
                 set { turn = value; }
             }
 
+        public int From_Rank
+        {
+            get { return from_rank; }
+            set { from_rank = value; }
         }
+        public int To_Rank
+        {
+            get { return to_rank; }
+            set { to_rank= value; }
+        }
+        public int From_File
+        {
+            get { return from_file; }
+            set { from_file = value; }
+        }
+        public int To_File
+        {
+            get { return to_file; }
+            set { to_file = value; }
+        }
+    }
     }
 
 

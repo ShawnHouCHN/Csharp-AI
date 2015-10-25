@@ -1939,25 +1939,38 @@ namespace ChessBoardUI.AIAlgorithm
                 return true;
             }
 
-            if((((~(white_occupied | black_occupied)) >> (pawn_index + 8)) & 1) == 1 && (((~(white_occupied | black_occupied)) >> (pawn_index + 16)) & 1) == 1 && y==6 && new_x==x && new_y==4)
+            else if((((~(white_occupied | black_occupied)) >> (pawn_index + 8)) & 1) == 1 && (((~(white_occupied | black_occupied)) >> (pawn_index + 16)) & 1) == 1 && y==6 && new_x==x && new_y==4)
             {
                 Console.WriteLine("two step forward");
                 return true;
             }
-            if (((black_occupied >> (pawn_index+7)) & 1) == 1 && x==new_x+1 && y==new_y+1)  // not on left most file, but left capture
+            if (player_color)
             {
-                Console.WriteLine("left capture");
-                return true;
-            }
-            if (((black_occupied >> (pawn_index + 9)) & 1) == 1  && x == new_x - 1 && y == new_y + 1)  // not on left most file, but left capture
-            {
-                Console.WriteLine("right capture");
-                return true;
+                if (((black_occupied >> (pawn_index + 7)) & 1) == 1 && x == new_x + 1 && y == new_y + 1)  // not on left most file, but left capture
+                {
+                    Console.WriteLine("left capture");
+                    return true;
+                }
+                if (((black_occupied >> (pawn_index + 9)) & 1) == 1 && x == new_x - 1 && y == new_y + 1)  // not on left most file, but left capture
+                {
+                    Console.WriteLine("right capture");
+                    return true;
+                }
             }
             else
             {
-                return false;
+                if (((white_occupied >> (pawn_index + 7)) & 1) == 1 && x == new_x + 1 && y == new_y + 1)  // not on left most file, but left capture
+                {
+                    Console.WriteLine("left capture");
+                    return true;
+                }
+                if (((white_occupied >> (pawn_index + 9)) & 1) == 1 && x == new_x - 1 && y == new_y + 1)  // not on left most file, but left capture
+                {
+                    Console.WriteLine("right capture");
+                    return true;
+                }
             }
+            return false;
 
         }
 

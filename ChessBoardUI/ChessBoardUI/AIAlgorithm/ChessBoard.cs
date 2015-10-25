@@ -16,14 +16,15 @@ namespace ChessBoardUI.AIAlgorithm
         public ulong WP , WN , WB , WQ, WR , WK ,
                       BP , BN , BB, BQ , BR , BK ;
 
-
-
-
         public ulong occupied, empty, whitePieces, enemyOrEmpty;
 
         public Move move; // the move taken to this board state 
        
         public ChessBoard bestState;
+
+
+        //test
+        public int eva;
 
         private static int[] PawnTable = new int[] {
                 0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
@@ -162,129 +163,6 @@ namespace ChessBoardUI.AIAlgorithm
         //    //createUsefullBitboards();
         //}
 
-        public void arrayToBitBoard(string[,] chessboard)
-        {
-            string binary;     //64-bit string
-            for (int i = 0; i < 64; i++)
-            {
-
-                binary = "0000000000000000000000000000000000000000000000000000000000000000";
-                binary = binary.Substring(i + 1) + "1" + binary.Substring(0, i);
-                switch (chessboard[i / 8, i % 8])  //12 bitboard of each piece 
-                {
-
-
-                    case "P":
-                        WP += convertStringToBitboard(binary);
-                        break;
-                    case "R":
-                        WR += convertStringToBitboard(binary);
-                        break;
-                    case "N":
-                        WN += convertStringToBitboard(binary);
-                        break;
-                    case "B":
-                        WB += convertStringToBitboard(binary);
-                        break;
-                    case "Q":
-                        WQ += convertStringToBitboard(binary);
-                        break;
-                    case "K":
-                        WK += convertStringToBitboard(binary);
-                        break;
-                    case "p":
-                        BP += convertStringToBitboard(binary);
-                        break;
-                    case "r":
-                        BR += convertStringToBitboard(binary);
-                        break;
-                    case "n":
-                        BN += convertStringToBitboard(binary);
-                        break;
-                    case "b":
-                        BB += convertStringToBitboard(binary);
-                        break;
-                    case "q":
-                        BQ += convertStringToBitboard(binary);
-                        break;
-                    case "k":
-                        BK += convertStringToBitboard(binary);
-                        break;
-                    case " ":
-                        break;
-
-                }
-            }
-        }
-
-        public ulong convertStringToBitboard(string binary)
-        {
-
-            if (binary[0].Equals('0'))
-            {
-                return Convert.ToUInt64(binary, 2);
-            }
-            else
-            {
-                return Convert.ToUInt64("1" + binary.Substring(2), 2) * 2;
-            }
-        }
-
-        public void drawWhiteQueenArray(long WQ)
-        {
-            string[,] chessboard_revert = new string[8, 8];
-            for (int i = 0; i < 64; i++)
-            {
-                if (((WQ >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "Q"; }
-            }
-            for (int row = 0; row < 8; row++)
-            {
-                for (int col = 0; col < 8; col++)
-                {
-                    if (chessboard_revert[row, col] == null || chessboard_revert[row, col] == " ")
-                        Console.Write("*");
-                    else
-                        Console.Write(chessboard_revert[row, col]);
-                }
-                Console.WriteLine();
-            }
-
-        }
-
-        public void drawArray()
-        {
-
-            string[,] chessboard_revert = new string[8, 8];
-            for (int i = 0; i < 64; i++)
-            {
-                if (((WP >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "P"; }
-                if (((WN >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "N"; }
-                if (((WB >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "B"; }
-                if (((WQ >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "Q"; }
-                if (((WK >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "K"; }
-                if (((WR >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "R"; }
-                if (((BP >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "p"; }
-                if (((BN >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "n"; }
-                if (((BB >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "b"; }
-                if (((BQ >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "q"; }
-                if (((BK >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "k"; }
-                if (((BR >> i) & 1) == 1) { chessboard_revert[i / 8, i % 8] = "r"; }
-            }
-
-
-            for (int row = 0; row < 8; row++)
-            {
-                for (int col = 0; col < 8; col++)
-                {
-                    if (chessboard_revert[7 - row, 7 - col] == null || chessboard_revert[7 - row, 7 - col] == " ")
-                        Console.Write("*");
-                    else
-                        Console.Write(chessboard_revert[7 - row, 7 - col]);
-                }
-                Console.WriteLine();
-            }
-        }
-
         // TO DO
         public int evaluateBoard(bool min_max, ChessBoard leaf_chessboard)
         {
@@ -292,34 +170,34 @@ namespace ChessBoardUI.AIAlgorithm
             int Player_Points = 0;
 
             // Evaluate pieces under threat
-            MoveGenerator.setCurrentBitboards(leaf_chessboard.BP, leaf_chessboard.BR, leaf_chessboard.BN, leaf_chessboard.BB, leaf_chessboard.BQ, leaf_chessboard.BK, leaf_chessboard.WP, leaf_chessboard.WR, leaf_chessboard.WN, leaf_chessboard.WB, leaf_chessboard.WQ, leaf_chessboard.WK);
-            ArrayList moves;
-            if (min_max)
-            {
-                moves = MoveGenerator.PossibleMovesMachine();
-            }
-            else
-            {
-                moves = MoveGenerator.PossibleMovesPlayer();
-            }
+            //MoveGenerator.setCurrentBitboards(leaf_chessboard.BP, leaf_chessboard.BR, leaf_chessboard.BN, leaf_chessboard.BB, leaf_chessboard.BQ, leaf_chessboard.BK, leaf_chessboard.WP, leaf_chessboard.WR, leaf_chessboard.WN, leaf_chessboard.WB, leaf_chessboard.WQ, leaf_chessboard.WK);
+            //ArrayList moves;
+            //if (min_max)
+            //{
+            //    moves = MoveGenerator.PossibleMovesMachine();
+            //}
+            //else
+            //{
+            //    moves = MoveGenerator.PossibleMovesPlayer();
+            //}
 
-            moves.Sort(new MoveCompare()); // sort the list so it get captured move first;
-            //differentiate between white and black
-
-            foreach (Move leaf_move in moves)
-            {
-                if (leaf_move.cap_type != null)
-                {
-                    if (min_max) //if it is a max leaf node, add vallue to machine's value;
-                        Machine_Points += 7;
-                    else
-                        Player_Points += 7;
-                }
-                else
-                {
-                    break;
-                }
-            }
+            //moves.Sort(new MoveCompare()); // sort the list so it get captured move first;
+            //Nullable<PieceType> piece_cap = null;
+            //Console.WriteLine("Protential moves "+moves.Count);
+            //foreach (Move leaf_move in moves)
+            //{
+            //    if (leaf_move.cap_type != piece_cap)
+            //    {
+            //        if (min_max) //if it is a max leaf node, add value to machine's value;
+            //            Machine_Points += 7;
+            //        else
+            //            Player_Points += 7;
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
+            //}
 
 
             for (int i = 0; i < 64; i++)
@@ -502,155 +380,12 @@ namespace ChessBoardUI.AIAlgorithm
                 }
 
             }
-                //if (check() == 1) { blackPoints += 50; }
-                return Machine_Points - Player_Points;  //(machine point - player point)
+            //Console.WriteLine("Chessboard eva " + (Machine_Points - Player_Points));
+            //if (check() == 1) { blackPoints += 50; }
+            //Console.WriteLine("Chessboard eva " + (Machine_Points - Player_Points));
+            this.eva= (Machine_Points - Player_Points);
+            return Machine_Points - Player_Points;  //(machine point - player point)
         }
-
-
-        // TO DO
-        //public List<ChessBoard> generateChessBoards(bool min_max)
-        //{
-        //    List<ChessBoard> theList = new List<ChessBoard>();
-        //    if (min_max)
-        //    {
-        //        MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-                
-
-        //        ArrayList moves = MoveGenerator.PossibleMovesMachine();
-
-        //        foreach (Move move in moves)
-        //        {
-        //            ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, move);
-        //            switch (move.cap_type)
-        //            {
-        //                case PieceType.King:
-        //                    cb.WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Queen:
-        //                    cb.WQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Rook:
-        //                    cb.WR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Knight:
-        //                    cb.WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Bishop:
-        //                    cb.WB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Pawn:
-        //                    cb.WP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
-        //            switch (move.moved_type)
-        //            {
-        //                case PieceType.King:
-        //                    cb.BK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.BK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Queen:
-        //                    cb.BQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.BQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Rook:
-        //                    cb.BR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.BR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Knight:
-        //                    cb.BN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.BN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Bishop:
-        //                    cb.BB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.BB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Pawn:
-        //                    cb.BP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.BP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                default:
-        //                    break;
-
-        //            }
-        //            // Switch case for special events! promotion, enpassant etc.
-
-        //            theList.Add(cb);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MoveGenerator.setCurrentBitboards(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
-        //        ArrayList moves = MoveGenerator.PossibleMovesPlayer();
-        //        foreach (Move move in moves)
-        //        {
-        //            ChessBoard cb = new ChessBoard(BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, move);
-        //            switch (move.cap_type)
-        //            {
-        //                case PieceType.King:
-        //                    cb.BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Queen:
-        //                    cb.BQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Rook:
-        //                    cb.BR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Knight:
-        //                    cb.BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Bishop:
-        //                    cb.BB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                case PieceType.Pawn:
-        //                    cb.BP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
-        //            switch (move.moved_type)
-        //            {
-        //                case PieceType.King:
-        //                    cb.WK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.WK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Queen:
-        //                    cb.WQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.WQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Rook:
-        //                    cb.WR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.WR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Knight:
-        //                    cb.WN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.WN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Bishop:
-        //                    cb.WB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.WB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                case PieceType.Pawn:
-        //                    cb.WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-        //                    cb.WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-        //                    break;
-        //                default:
-        //                    break;
-
-        //            }
-        //            // switch for special events
-        //            theList.Add(cb);
-        //        }
-        //    }
-        //    return theList;
-        //}
-
-        // TO DO
-        //public int check()
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
@@ -663,7 +398,10 @@ namespace ChessBoardUI.AIAlgorithm
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
-                    //Console.WriteLine("Chessboard item "+Convert.ToString((long)CB.occupied, 2));
+
+                    //Console.WriteLine("Chessboard item max " + Convert.ToString((long)CB.occupied, 2));
+                    //Console.WriteLine("Chessboard eva " + evaluateBoard(min_max, CB));
+                    //evaluateBoard(min_max, CB);
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result > alpha)
                     {
@@ -683,6 +421,10 @@ namespace ChessBoardUI.AIAlgorithm
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
+                    //  Console.WriteLine("This is min");
+                    //  Console.WriteLine("Chessboard item min " + Convert.ToString((long)CB.occupied, 2));
+                    // Console.WriteLine("Chessboard eva " + evaluateBoard(min_max, CB));
+                    //evaluateBoard(min_max, CB);
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result < beta)
                     {
