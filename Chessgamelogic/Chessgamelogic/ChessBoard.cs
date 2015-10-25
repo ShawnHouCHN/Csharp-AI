@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessGameAI.Constants;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Chessgamelogic
 
         public ulong occupied, empty, whitePieces, enemyOrEmpty;
 
-        public Move move; // the move taken to this board state 
+        public Move move { get; private set; } // the move taken to this board state 
 
         public ChessBoard bestState;
 
@@ -344,25 +345,25 @@ namespace Chessgamelogic
                         if (((leaf_chessboard.WB >> i) & 1) == 1)
                         {
                             //Evaluation of White Bishop
-                            Player_Points += (Constants.Constants.BISHOP_WEIGHT + BishopTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.BISHOP_WEIGHT + BishopTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WK >> i) & 1) == 1)
                         {
                             //Evaluation of White King
-                            Player_Points += (Constants.Constants.KING_WEIGHT + KingTableO[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.KING_WEIGHT + KingTableO[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WN >> i) & 1) == 1)
                         {
                             //Evaluation of White Knight 
-                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT + KnightTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.KNIGHT_WEIGHT + KnightTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WP >> i) & 1) == 1)
                         {
                             //Evaluation of White Pawns 
-                            Player_Points += (Constants.Constants.PAWN_WEIGHT + PawnTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.PAWN_WEIGHT + PawnTable[(8 * (7 - i / 8) + i % 8)]);
 
                             //Evaluation of Double Pawn
                             if ((file[i % 8] & (WP & ~((ulong)1 << i))) > 0)
@@ -379,36 +380,36 @@ namespace Chessgamelogic
                         else if (((leaf_chessboard.WQ >> i) & 1) == 1)
                         {
                             //Evaluation of White Queen 
-                            Player_Points += (Constants.Constants.QUEEN_WEIGHT + QueenTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.QUEEN_WEIGHT + QueenTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WR >> i) & 1) == 1)
                         {
                             //Evaluation of White Rook 
-                            Player_Points += (Constants.Constants.ROOK_WEIGHT + RookTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.ROOK_WEIGHT + RookTable[(8 * (7 - i / 8) + i % 8)]);
                         }
                         else if (((leaf_chessboard.BB >> i) & 1) == 1)
                         {
                             //Evaluation of Black Bishop 
-                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT + BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.BISHOP_WEIGHT + BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BK >> i) & 1) == 1)
                         {
                             //Evaluation of Black King 
-                            Machine_Points += (Constants.Constants.KING_WEIGHT + KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.KING_WEIGHT + KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BN >> i) & 1) == 1)
                         {
                             //Evaluation of Black Knight 
-                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT + KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.KNIGHT_WEIGHT + KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BP >> i) & 1) == 1)
                         {
                             //Evaluation of Black Pawns 
-                            Machine_Points += (Constants.Constants.PAWN_WEIGHT + PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.PAWN_WEIGHT + PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                             //Evaluation of Double Pawn
                             if ((file[i % 8] & (WP & ~((ulong)1 << i))) > 0)
@@ -425,13 +426,13 @@ namespace Chessgamelogic
                         else if (((leaf_chessboard.BQ >> i) & 1) == 1)
                         {
                             //Evaluation of Black Queen 
-                            Machine_Points += (Constants.Constants.QUEEN_WEIGHT + QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.QUEEN_WEIGHT + QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BR >> i) & 1) == 1)
                         {
                             //Evaluation of Black Rook 
-                            Machine_Points += (Constants.Constants.ROOK_WEIGHT + RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.ROOK_WEIGHT + RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
                         }
                     }
 
@@ -441,25 +442,25 @@ namespace Chessgamelogic
                         if (((leaf_chessboard.WB >> i) & 1) == 1)
                         {
                             //Evaluation of White Bishop
-                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT + BishopTable[(8 * (7 - i / 8) + i % 8)]);
+                            Machine_Points += (Constants.BISHOP_WEIGHT + BishopTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WK >> i) & 1) == 1)
                         {
                             //Evaluation of White King
-                            Machine_Points += (Constants.Constants.KING_WEIGHT + KingTableO[(8 * (7 - i / 8) + i % 8)]);
+                            Machine_Points += (Constants.KING_WEIGHT + KingTableO[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WN >> i) & 1) == 1)
                         {
                             //Evaluation of White Knight 
-                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT + KnightTable[(8 * (7 - i / 8) + i % 8)]);
+                            Machine_Points += (Constants.KNIGHT_WEIGHT + KnightTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WP >> i) & 1) == 1)
                         {
                             //Evaluation of White Pawns 
-                            Machine_Points += (Constants.Constants.PAWN_WEIGHT + PawnTable[(8 * (7 - i / 8) + i % 8)]);
+                            Machine_Points += (Constants.PAWN_WEIGHT + PawnTable[(8 * (7 - i / 8) + i % 8)]);
 
                             //Evaluation of Double Pawn
                             if ((file[i % 8] & (WP & ~((ulong)1 << i))) > 0)
@@ -476,36 +477,36 @@ namespace Chessgamelogic
                         else if (((leaf_chessboard.WQ >> i) & 1) == 1)
                         {
                             //Evaluation of White Queen 
-                            Machine_Points += (Constants.Constants.QUEEN_WEIGHT + QueenTable[(8 * (7 - i / 8) + i % 8)]);
+                            Machine_Points += (Constants.QUEEN_WEIGHT + QueenTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WR >> i) & 1) == 1)
                         {
                             //Evaluation of White Rook 
-                            Machine_Points += (Constants.Constants.ROOK_WEIGHT + RookTable[(8 * (7 - i / 8) + i % 8)]);
+                            Machine_Points += (Constants.ROOK_WEIGHT + RookTable[(8 * (7 - i / 8) + i % 8)]);
                         }
                         else if (((leaf_chessboard.BB >> i) & 1) == 1)
                         {
                             //Evaluation of Black Bishop 
-                            Player_Points += (Constants.Constants.BISHOP_WEIGHT + BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Player_Points += (Constants.BISHOP_WEIGHT + BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BK >> i) & 1) == 1)
                         {
                             //Evaluation of Black King 
-                            Player_Points += (Constants.Constants.KING_WEIGHT + KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Player_Points += (Constants.KING_WEIGHT + KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BN >> i) & 1) == 1)
                         {
                             //Evaluation of Black Knight 
-                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT + KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Player_Points += (Constants.KNIGHT_WEIGHT + KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BP >> i) & 1) == 1)
                         {
                             //Evaluation of Black Pawns 
-                            Player_Points += (Constants.Constants.PAWN_WEIGHT + PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Player_Points += (Constants.PAWN_WEIGHT + PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                             //Evaluation of Double Pawn
                             if ((file[i % 8] & (WP & ~((ulong)1 << i))) > 0)
@@ -523,19 +524,20 @@ namespace Chessgamelogic
                         else if (((leaf_chessboard.BQ >> i) & 1) == 1)
                         {
                             //Evaluation of Black Queen 
-                            Player_Points += (Constants.Constants.QUEEN_WEIGHT + QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Player_Points += (Constants.QUEEN_WEIGHT + QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BR >> i) & 1) == 1)
                         {
                             //Evaluation of Black Rook 
-                            Player_Points += (Constants.Constants.ROOK_WEIGHT + RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Player_Points += (Constants.ROOK_WEIGHT + RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
                         }
                     }
                 }
 
             }
             //if (check() == 1) { blackPoints += 50; }
+            //Console.WriteLine("Evalution returns: " + (Machine_Points - Player_Points));
             return Machine_Points - Player_Points;  //(machine point - player point)
         }
 
@@ -687,6 +689,7 @@ namespace Chessgamelogic
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
+            MoveGenerator.searchcounter += 1;
             if (layer == 0)
             {
                 return evaluateBoard(min_max, this);

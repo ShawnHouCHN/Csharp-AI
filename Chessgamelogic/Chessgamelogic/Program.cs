@@ -13,10 +13,21 @@ namespace Chessgamelogic
         static void Main(string[] args)
         {
             MoveGenerator moveGenerator = new MoveGenerator();
-            MoveGenerator.player_color = false;
+            MoveGenerator.setInitBitboards( true, 0x00ff000000000000, 0x8100000000000000, 0x4200000000000000, 0x2400000000000000, 0x0800000000000000, 0x1000000000000000, 0x000000000000ff00, 0x000000000000081, 0x000000000000042, 0x000000000000024, 0x0000000000000008, 0x0000000000000010);
+            
             AI black = new AI(Player.Black, 1);
-            black.CB.drawArray();
-            Console.ReadLine();
+
+            for (int i = 0; i < 10; i++)
+            {
+                black.CB.drawArray();
+
+                black.getNextMove();
+
+                Console.ReadLine();
+
+                black.CB = black.CB.bestState;
+            }
+
             //AI white = new AI(Player.White, 1);
             //white.CB.drawArray();
             //white.getNextMove();

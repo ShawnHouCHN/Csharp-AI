@@ -81,6 +81,9 @@ namespace Chessgamelogic
 
     class MoveGenerator
     {
+        public static int searchcounter { get; set; } = 0;
+        
+
 
         //init position
         public static ulong white_pawns;
