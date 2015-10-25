@@ -1028,7 +1028,7 @@ namespace Chessgamelogic
 
             ulong bp_cap_right_moves = (machine_pawns >> 7) & enemy_occupied & ~rank0 & ~file0;
 
-            Console.WriteLine(Convert.ToString((long)bp_cap_right_moves, 2));
+            //Console.WriteLine(Convert.ToString((long)bp_cap_right_moves, 2));
 
             for (int i = 0; i < 64; i++)
             {
@@ -1051,7 +1051,7 @@ namespace Chessgamelogic
             }
 
             ulong bp_cap_left_moves = (machine_pawns >> 9) & enemy_occupied & ~rank0 & ~file7;
-            Console.WriteLine(Convert.ToString((long)bp_cap_left_moves, 2));
+            //Console.WriteLine(Convert.ToString((long)bp_cap_left_moves, 2));
             for (int i = 0; i < 64; i++)
             {
                 if (((bp_cap_left_moves >> i) & 1) == 1)
@@ -1082,7 +1082,7 @@ namespace Chessgamelogic
 
             }
 
-            Console.WriteLine(Convert.ToString((long)bp_1_downward_moves, 2));
+            // Console.WriteLine(Convert.ToString((long)bp_1_downward_moves, 2));
 
             ulong bp_2_downward_moves = (ulong)(machine_pawns >> 16) & empty & (empty >> 8) & rank4;
             for (int i = 0; i < 64; i++)
@@ -1094,7 +1094,7 @@ namespace Chessgamelogic
 
             }
 
-            Console.WriteLine(Convert.ToString((long)bp_2_downward_moves, 2));
+            //Console.WriteLine(Convert.ToString((long)bp_2_downward_moves, 2));
 
             //promotion move needs to be add in later..........
             ulong bp_promote_right_cap_moves = (machine_pawns >> 7) & enemy_occupied & rank0 & ~file0;        //promote by right capture;
@@ -1116,7 +1116,7 @@ namespace Chessgamelogic
                         bp_move_list.Add(new Move((i / 8 + 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, true));
                 }
             }
-            Console.WriteLine(Convert.ToString((long)bp_promote_right_cap_moves, 2));
+            // Console.WriteLine(Convert.ToString((long)bp_promote_right_cap_moves, 2));
 
             ulong bp_promote_left_cap_moves = (machine_pawns >> 9) & enemy_occupied & rank0 & ~file7;        //promote by left capture;
             for (int i = 0; i < 64; i++)
@@ -1137,7 +1137,7 @@ namespace Chessgamelogic
                         bp_move_list.Add(new Move((i / 8 + 1), (i % 8 + 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, true));
                 }
             }
-            Console.WriteLine(Convert.ToString((long)bp_promote_left_cap_moves, 2));
+            //Console.WriteLine(Convert.ToString((long)bp_promote_left_cap_moves, 2));
 
             ulong bp_promote_downward_moves = (machine_pawns >> 8) & rank0 & empty;        //promote by right capture;
             for (int i = 0; i < 64; i++)
@@ -1147,7 +1147,7 @@ namespace Chessgamelogic
                     bp_move_list.Add(new Move((i / 8 + 1), (i % 8), (i / 8), (i % 8), PieceType.Pawn, true));
                 }
             }
-            Console.WriteLine(Convert.ToString((long)bp_promote_downward_moves, 2));
+            // Console.WriteLine(Convert.ToString((long)bp_promote_downward_moves, 2));
 
             return bp_move_list;
         }
@@ -1172,7 +1172,7 @@ namespace Chessgamelogic
 
             ulong wp_cap_right_moves = (player_pawns << 9) & enemy_occupied & ~rank7 & ~file0;
 
-            Console.WriteLine(Convert.ToString((long)wp_cap_right_moves, 2));
+            //Console.WriteLine(Convert.ToString((long)wp_cap_right_moves, 2));
 
             for (int i = 0; i < 64; i++)
             {
@@ -1195,7 +1195,7 @@ namespace Chessgamelogic
             }
 
             ulong wp_cap_left_moves = (player_pawns << 7) & enemy_occupied & ~rank7 & ~file7;
-            Console.WriteLine(Convert.ToString((long)wp_cap_left_moves, 2));
+            // Console.WriteLine(Convert.ToString((long)wp_cap_left_moves, 2));
             for (int i = 0; i < 64; i++)
             {
                 if (((wp_cap_left_moves >> i) & 1) == 1)
@@ -1226,7 +1226,7 @@ namespace Chessgamelogic
 
             }
 
-            Console.WriteLine(Convert.ToString((long)wp_1_upward_moves, 2));
+            //Console.WriteLine(Convert.ToString((long)wp_1_upward_moves, 2));
 
 
             ulong wp_2_upward_moves = (ulong)(player_pawns << 16) & empty & (empty >> 8) & rank3;
@@ -1239,7 +1239,7 @@ namespace Chessgamelogic
 
             }
 
-            Console.WriteLine(Convert.ToString((long)wp_2_upward_moves, 2));
+            // Console.WriteLine(Convert.ToString((long)wp_2_upward_moves, 2));
 
             //promotion move needs to be add in later..........
             ulong wp_promote_right_cap_moves = (player_pawns << 9) & enemy_occupied & rank7 & ~file0;        //promote by right capture;
@@ -1261,7 +1261,7 @@ namespace Chessgamelogic
                         wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, true));
                 }
             }
-            Console.WriteLine(Convert.ToString((long)wp_promote_right_cap_moves, 2));
+            //Console.WriteLine(Convert.ToString((long)wp_promote_right_cap_moves, 2));
 
             ulong wp_promote_left_cap_moves = (player_pawns << 7) & enemy_occupied & rank7 & ~file7;        //promote by right capture;
             for (int i = 0; i < 64; i++)
@@ -1283,7 +1283,7 @@ namespace Chessgamelogic
                 }
 
             }
-            Console.WriteLine(Convert.ToString((long)wp_promote_left_cap_moves, 2));
+            //Console.WriteLine(Convert.ToString((long)wp_promote_left_cap_moves, 2));
 
             ulong wp_promote_upward_moves = (player_pawns >> 8) & rank7 & empty;        //promote by upward 1 move;
             for (int i = 0; i < 64; i++)
@@ -1293,7 +1293,7 @@ namespace Chessgamelogic
                     wp_move_list.Add(new Move((i / 8 - 1), (i % 8), (i / 8), (i % 8), PieceType.Pawn, true));
                 }
             }
-            Console.WriteLine(Convert.ToString((long)wp_promote_upward_moves, 2));
+            //Console.WriteLine(Convert.ToString((long)wp_promote_upward_moves, 2));
 
             return wp_move_list;
         }
@@ -1344,8 +1344,8 @@ namespace Chessgamelogic
 
                     rook_moves = rook_right_moves | rook_left_moves | rook_up_moves | rook_down_moves;
                     rook_cap_moves = rook_moves & enemy_occupied;
-                    Console.WriteLine("rook index :" + rook_index);
-                    Console.WriteLine("rook : " + Convert.ToString((long)rook_moves, 2));
+                    //Console.WriteLine("rook index :" + rook_index);
+                    //Console.WriteLine("rook : " + Convert.ToString((long)rook_moves, 2));
                     if (enemy_occupied == white_occupied)
                     {
                         for (int j = 0; j < 64; j++)
@@ -1441,8 +1441,8 @@ namespace Chessgamelogic
                     bishop_moves = bishop_45_moves | bishop_135_moves | bishop_225_moves | bishop_315_moves;
                     bishop_cap_moves = bishop_moves & enemy_occupied;
 
-                    Console.WriteLine("bishop index :" + bishop_index);
-                    Console.WriteLine("bishop : " + Convert.ToString((long)bishop_moves, 2));
+                    //Console.WriteLine("bishop index :" + bishop_index);
+                    //Console.WriteLine("bishop : " + Convert.ToString((long)bishop_moves, 2));
                     if (enemy_occupied == white_occupied)
                     {
                         for (int j = 0; j < 64; j++)
@@ -1512,8 +1512,8 @@ namespace Chessgamelogic
                     knight_index = i;
                     knight_bitboard = knight_board_set[i];
                     knight_moves = knight_board_set[i] & (empty | enemy_occupied);
-                    Console.WriteLine("knight index :" + knight_index);
-                    Console.WriteLine("knight : " + Convert.ToString((long)knight_moves, 2));
+                    //Console.WriteLine("knight index :" + knight_index);
+                    //Console.WriteLine("knight : " + Convert.ToString((long)knight_moves, 2));
                     if (enemy_occupied == white_occupied)
                     {
                         for (int j = 0; j < 64; j++)
@@ -1637,8 +1637,8 @@ namespace Chessgamelogic
                     queen_moves = queen_right_moves | queen_left_moves | queen_up_moves | queen_down_moves | queen_45_moves | queen_135_moves | queen_225_moves | queen_315_moves;
                     queen_cap_moves = queen_moves & enemy_occupied;
 
-                    Console.WriteLine("queen index :" + queen_index);
-                    Console.WriteLine("queen : " + Convert.ToString((long)queen_moves, 2));
+                    //Console.WriteLine("queen index :" + queen_index);
+                    //Console.WriteLine("queen : " + Convert.ToString((long)queen_moves, 2));
                     if (enemy_occupied == white_occupied)
                     {
                         for (int j = 0; j < 64; j++)
@@ -1706,8 +1706,8 @@ namespace Chessgamelogic
                     king_moves = king_board_set[i] & (empty | enemy_occupied);
 
 
-                    Console.WriteLine("king index :" + king_index);
-                    Console.WriteLine("king : " + Convert.ToString((long)king_moves, 2));
+                    //Console.WriteLine("king index :" + king_index);
+                    //Console.WriteLine("king : " + Convert.ToString((long)king_moves, 2));
 
                     if (enemy_occupied == white_occupied)
                     {
@@ -1888,30 +1888,40 @@ namespace Chessgamelogic
 
         public static bool LegalRegularMove(int x, int y, int new_x, int new_y, PieceType piece_type)
         {
-            ulong white_occupied, black_occupied;
+            ulong white_occupied, black_occupied, enemy_occupied, my_pawns, my_knights, my_bishops, my_king, my_queens, my_rooks;
             white_occupied = (white_pawns | white_knights | white_bishops | white_king | white_queens | white_rooks);
             black_occupied = (black_pawns | black_knights | black_bishops | black_king | black_queens | black_rooks);
+            if (player_color)
+            {
+                my_pawns = white_pawns; my_knights = white_knights; my_bishops = white_bishops; my_king = white_king; my_queens = white_queens; my_rooks = white_rooks;
+                enemy_occupied = black_occupied;
+            }
+            else
+            {
+                my_pawns = black_pawns; my_knights = black_knights; my_bishops = black_bishops; my_king = black_king; my_queens = black_queens; my_rooks = black_rooks;
+                enemy_occupied = white_occupied;
+            }
 
-            int piece_index = (7 - y) * 8 + x;
+
             switch (piece_type)
             {
                 case PieceType.Pawn:
                     return LegalSinglePawnMove(white_occupied, black_occupied, x, y, new_x, new_y);
 
                 case PieceType.Knight:
-                    return LegalSingleKnightMove(white_knights, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleKnightMove(my_knights, enemy_occupied, x, y, new_x, new_y);
 
                 case PieceType.Queen:
-                    return LegalSingleQueenMove(white_queens, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleQueenMove(my_queens, enemy_occupied, x, y, new_x, new_y);
 
                 case PieceType.King:
-                    return LegalSingleKingMove(white_king, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleKingMove(my_king, enemy_occupied, x, y, new_x, new_y);
 
                 case PieceType.Bishop:
-                    return LegalSingleBishopMove(white_bishops, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleBishopMove(my_bishops, enemy_occupied, x, y, new_x, new_y);
 
                 case PieceType.Rook:
-                    return LegalSingleRookMove(white_rooks, black_occupied, x, y, new_x, new_y);
+                    return LegalSingleRookMove(my_rooks, enemy_occupied, x, y, new_x, new_y);
 
             }
             return false;
@@ -2209,7 +2219,299 @@ namespace Chessgamelogic
             empty = ~pieces_occupied;
         }
 
+        public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K)
+        {
+            List<ChessBoard> theList = new List<ChessBoard>();
+            if (min_max)  // if it is an ai max node
+            {
 
+                //ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong BK, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK
+                setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
+
+                ArrayList moves = PossibleMovesMachine();
+                moves.Sort(new MoveCompare());
+
+                foreach (Move move in moves)
+                {
+                    ulong BP = B_P; ulong WP = W_P;
+                    ulong BR = B_R; ulong WR = W_R;
+                    ulong BN = B_N; ulong WN = W_N;
+                    ulong BQ = B_Q; ulong WQ = W_Q;
+                    ulong BB = B_B; ulong WB = W_B;
+                    ulong BK = B_K; ulong WK = W_K;
+                    // parms order is ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move move = null
+
+                    switch (move.cap_type)
+                    {
+                        case PieceType.King:
+                            if (player_color) //if player play black then ai updates the white piece                             
+                                WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Queen:
+                            if (player_color)
+                                WQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                BQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Rook:
+                            if (player_color)
+                                WR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                BR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Knight:
+                            if (player_color)
+                                WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Bishop:
+                            if (player_color)
+                                WB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                BB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Pawn:
+                            if (player_color)
+                                WP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                BP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        default:
+                            break;
+                    }
+                    switch (move.moved_type)
+                    {
+                        case PieceType.King:
+                            if (player_color)
+                            {
+                                BK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                WK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            break;
+                        case PieceType.Queen:
+                            if (player_color)
+                            {
+                                BQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                WQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            break;
+                        case PieceType.Rook:
+                            if (player_color)
+                            {
+                                BR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                WR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            break;
+                        case PieceType.Knight:
+                            if (player_color)
+                            {
+                                BN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                WN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            break;
+                        case PieceType.Bishop:
+                            if (player_color)
+                            {
+                                BB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                WB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            break;
+                        case PieceType.Pawn:
+                            if (player_color)
+                            {
+                                BP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            break;
+                        default:
+                            break;
+
+                    }
+                    // Switch case for special events! promotion, enpassant etc.
+                    ChessBoard cb = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move);
+                    theList.Add(cb);
+                }
+            }
+
+            // if it is a player min node 
+            else
+            {
+                setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
+                ArrayList moves = PossibleMovesPlayer();
+                moves.Sort(new MoveCompare());
+
+                foreach (Move move in moves)
+                {
+                    ulong BP = B_P; ulong WP = W_P;
+                    ulong BR = B_R; ulong WR = W_R;
+                    ulong BN = B_N; ulong WN = W_N;
+                    ulong BQ = B_Q; ulong WQ = W_Q;
+                    ulong BB = B_B; ulong WB = W_B;
+                    ulong BK = B_K; ulong WK = W_K;
+
+                    switch (move.cap_type)
+                    {
+                        case PieceType.King:
+                            if (player_color) // if player use black
+                                BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Queen:
+                            if (player_color)
+                                BQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                WQ &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Rook:
+                            if (player_color)
+                                BR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                WR &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Knight:
+                            if (player_color)
+                                BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Bishop:
+                            if (player_color)
+                                BB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                WB &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        case PieceType.Pawn:
+                            if (player_color)
+                                BP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            else
+                                WP &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            break;
+                        default:
+                            break;
+                    }
+                    switch (move.moved_type)
+                    {
+                        case PieceType.King:
+                            if (player_color)
+                            {
+                                WK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                BK |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BK &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            break;
+                        case PieceType.Queen:
+                            if (player_color)
+                            {
+                                WQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                BQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BQ &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            break;
+                        case PieceType.Rook:
+                            if (player_color)
+                            {
+                                WR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                BR |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BR &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+
+                            break;
+                        case PieceType.Knight:
+                            if (player_color)
+                            {
+                                WN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                BN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+
+                            break;
+                        case PieceType.Bishop:
+                            if (player_color)
+                            {
+                                WB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                BB |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BB &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+
+                            break;
+                        case PieceType.Pawn:
+                            if (player_color)
+                            {
+                                WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+                            else
+                            {
+                                BP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                            }
+
+                            break;
+                        default:
+                            break;
+
+                    }
+                    // switch for special events
+                    ChessBoard cb = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move);
+                    theList.Add(cb);
+                }
+            }
+            return theList;
+        }
 
 
     }

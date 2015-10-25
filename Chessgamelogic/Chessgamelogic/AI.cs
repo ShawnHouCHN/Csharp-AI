@@ -46,6 +46,7 @@ namespace ChessGameAI
                 currentTime = new DateTime();
                 if (target.CompareTo(currentTime) > 0)
                 {
+                    CB.bestState.drawArray();
                     System.Threading.Thread.Sleep(2000);
                     break;
                 }
