@@ -2244,7 +2244,6 @@ namespace ChessBoardUI.AIAlgorithm
 
                 ArrayList moves = PossibleMovesMachine();
                 moves.Sort(new MoveCompare());
-
                 foreach (Move move in moves)
                 {
                     ulong BP = B_P;         ulong WP = W_P;
@@ -2277,9 +2276,10 @@ namespace ChessBoardUI.AIAlgorithm
                             break;
                         case PieceType.Knight:
                             if (player_color)
-                                WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WN &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
                             else
-                                BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BN &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                               
                             break;
                         case PieceType.Bishop:
                             if (player_color)
@@ -2418,9 +2418,9 @@ namespace ChessBoardUI.AIAlgorithm
                             break;
                         case PieceType.Knight:
                             if (player_color)
-                                BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                BN &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
                             else
-                                WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                WN &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
                             break;
                         case PieceType.Bishop:
                             if (player_color)
