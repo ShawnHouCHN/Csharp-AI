@@ -62,7 +62,7 @@ namespace ChessBoardUI
             //b.Source = source2;
             //b.Width = 40;
             //b.Height = 40;
-
+            
             //test.CapturedPiecesCollection.Add(a);
             //test.CapturedPiecesCollection.Add(b);
 
@@ -83,7 +83,6 @@ namespace ChessBoardUI
             StartButton.IsEnabled = false;
             ChooseLevel.IsEnabled = false;
             ChooseColor.IsEnabled = false;
-            
 
 
             player_timer.DataContext = board.HumanPlayer.HumanTimer;
@@ -91,11 +90,11 @@ namespace ChessBoardUI
 
 
             board.HumanPlayer.HumanTimer.startClock();
-
             //chess_canvas.SetValue = (Brush)Resources["Checkerboard2"];
             //TemplateContent a = ChessBoard.ItemsPanel.Template;
             // = (Brush)Resources["Checkerboard2"];
-
+            //PlayerCapStack.SetBinding(ItemsControl.ItemsSourceProperty, new Binding() { Source = board.HumanPlayer.HumanCaptureStack.CapturedPiecesCollection });
+            //MachineCapStack.SetBinding(ItemsControl.ItemsSourceProperty, new Binding() { Source = board.MachinePlayer.MachineCaptureStack.CapturedPiecesCollection });
             PlayerCapStack.ItemsSource = board.HumanPlayer.HumanCaptureStack.CapturedPiecesCollection;
             MachineCapStack.ItemsSource = board.MachinePlayer.MachineCaptureStack.CapturedPiecesCollection;
 

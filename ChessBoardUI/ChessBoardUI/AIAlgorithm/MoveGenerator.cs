@@ -17,7 +17,7 @@ namespace ChessBoardUI.AIAlgorithm
         public PieceType moved_type;
         public PieceType? cap_type=null;
         
-        bool promote = false;
+        public bool promote = false;
         
 
 
@@ -105,6 +105,8 @@ namespace ChessBoardUI.AIAlgorithm
         public static ulong empty = ~(white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king | black_pawns | black_knights | black_bishops | black_rooks | black_queens | black_king);
         public static ulong pieces_occupied = ~ empty;
 
+        //history move(en passent)
+        public static Move history_move;
 
 
         //these are for pawn moves
@@ -936,6 +938,11 @@ namespace ChessBoardUI.AIAlgorithm
             white_bishops = WB;
             empty = ~(WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
             pieces_occupied = (WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
+        }
+
+        public static void setCurrentBitboardsHistoryMove(Move historymove)
+        {
+            history_move = historymove;
         }
 
 
@@ -2505,13 +2512,21 @@ namespace ChessBoardUI.AIAlgorithm
                         case PieceType.Pawn:
                             if (player_color)
                             {
-                                WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
                                 WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                                if(move.promote) //if the pawn got promoted, then update a new piece in queen bitboard
+                                    WQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                else
+                                    WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                               
                             }
                             else
                             {
-                                BP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
                                 BP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                                if (move.promote) //if the pawn got promoted, then update a new piece in queen bitboard
+                                    BQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                else
+                                    BP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+
                             }
 
                             break;

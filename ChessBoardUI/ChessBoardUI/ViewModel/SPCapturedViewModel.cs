@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace ChessBoardUI.ViewModel
 {
     class SPCapturedViewModel:ViewModelBase
     {
-        private ObservableCollection<Image> _cap_piece_collection;
-        public ObservableCollection<Image> CapturedPiecesCollection
+        private ObservableCollection<BitmapImage> _cap_piece_collection;
+        public ObservableCollection<BitmapImage> CapturedPiecesCollection
         {
             get
             {

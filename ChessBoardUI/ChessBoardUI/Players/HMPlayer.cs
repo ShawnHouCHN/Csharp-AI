@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace ChessBoardUI.Players
@@ -21,7 +22,7 @@ namespace ChessBoardUI.Players
         private SPCapturedViewModel human_capture;
         private Dictionary<int, ChessPiece> pieces_dict;
         private ObservableCollection<ChessPiece> pieces_collection;
-
+        //private Image cap_piece_image;
 
         //servableCollection<ChessPiece> all_pieces;
         //ctionary<int, ChessPiece> board_layout;
@@ -38,7 +39,7 @@ namespace ChessBoardUI.Players
 
             Messenger.Default.Register<HumanMoveMessage>(this, (action) => HumanPiecePositionChangeHandler(action));
             Messenger.Default.Register<MachineMoveMessage>(this, (action) => MachinePiecePositionChangeHandler(action));
-            human_capture = new SPCapturedViewModel { CapturedPiecesCollection = new ObservableCollection<Image>() };
+            human_capture = new SPCapturedViewModel { CapturedPiecesCollection = new ObservableCollection<BitmapImage>() };
             this.pieces_collection = pieces_collection;
             this.pieces_dict = pieces_dict;
 
@@ -49,6 +50,7 @@ namespace ChessBoardUI.Players
             get { return pieces_dict; }
             set { pieces_dict = value; }
         }
+
 
         public ObservableCollection<ChessPiece> PieceCollection
         {
@@ -113,6 +115,29 @@ namespace ChessBoardUI.Players
                 ChessPiece to_piece_location = this.pieces_dict[to_loca_index];
                 Application.Current.Dispatcher.Invoke((Action)(() => this.pieces_collection.Remove(to_piece_location)));
                 this.pieces_dict.Remove(to_loca_index);
+
+
+
+
+
+                Application.Current.Dispatcher.Invoke((Action)(() => {
+                    String cap_piece_img = "/PieceImg/chess_piece_" + to_piece_location.Player.ToString() + "_" + to_piece_location.Type.ToString()+".png";
+                    Console.WriteLine(cap_piece_img);
+                    Uri uri_cap_piece_img = new Uri(cap_piece_img, UriKind.Relative);
+                    BitmapImage hm_cap_img = new BitmapImage();
+                    // BitmapImage resized_img = new BitmapImage();
+                    hm_cap_img.BeginInit();
+                    hm_cap_img.UriSource = uri_cap_piece_img;
+                    hm_cap_img.DecodePixelHeight = 70;
+                    hm_cap_img.DecodePixelWidth = 70;
+                    hm_cap_img.EndInit();
+                    //Image piece_img = new Image();
+                    //piece_img.Source = hm_cap_img;
+                    //piece_img.Width = 40;
+                    //piece_img.Height = 40;
+                    human_capture.CapturedPiecesCollection.Add(hm_cap_img);
+                }));
+
             }
             moved.Pos_X = action.To_File;
             moved.Pos_Y = 7 - action.To_Rank;
@@ -137,6 +162,8 @@ namespace ChessBoardUI.Players
             this.HumanTimer.startClock();
 
         }
+
+
 
     }
 }

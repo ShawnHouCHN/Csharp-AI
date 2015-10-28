@@ -165,20 +165,20 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="PieceImg\chess_piece_black_bishop.png" />
-    <Resource Include="PieceImg\chess_piece_black_king.png" />
-    <Resource Include="PieceImg\chess_piece_black_knight.png" />
-    <Resource Include="PieceImg\chess_piece_black_pawn.png" />
-    <Resource Include="PieceImg\chess_piece_black_queen.png" />
-    <Resource Include="PieceImg\chess_piece_black_rook.png" />
-    <Resource Include="PieceImg\chess_piece_white_bishop.png" />
-    <Resource Include="PieceImg\chess_piece_white_king.png" />
-    <Resource Include="PieceImg\chess_piece_white_pawn.png" />
-    <Resource Include="PieceImg\chess_piece_white_queen.png" />
-    <Resource Include="PieceImg\chess_piece_white_rook.png" />
+    <Resource Include="PieceImg\chess_piece_Black_Bishop.png" />
+    <Resource Include="PieceImg\chess_piece_Black_King.png" />
+    <Resource Include="PieceImg\chess_piece_Black_Knight.png" />
+    <Resource Include="PieceImg\chess_piece_Black_Pawn.png" />
+    <Resource Include="PieceImg\chess_piece_Black_Queen.png" />
+    <Resource Include="PieceImg\chess_piece_Black_Rook.png" />
+    <Resource Include="PieceImg\chess_piece_White_Bishop.png" />
+    <Resource Include="PieceImg\chess_piece_White_King.png" />
+    <Resource Include="PieceImg\chess_piece_White_Pawn.png" />
+    <Resource Include="PieceImg\chess_piece_White_Queen.png" />
+    <Resource Include="PieceImg\chess_piece_White_Rook.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="PieceImg\chess_piece_white_knight.png" />
+    <Resource Include="PieceImg\chess_piece_White_Knight.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

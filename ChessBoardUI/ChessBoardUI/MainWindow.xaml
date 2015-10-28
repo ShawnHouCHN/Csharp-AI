@@ -42,7 +42,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.White}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_white_pawn.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_White_Pawn.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -51,7 +51,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.White}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_white_rook.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_White_Rook.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -60,7 +60,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.White}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_white_knight.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_White_Knight.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -69,7 +69,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.White}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_white_bishop.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_White_Bishop.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -78,7 +78,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.White}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_white_queen.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_White_Queen.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -87,7 +87,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.White}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_white_king.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_White_King.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -96,7 +96,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.Black}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_black_pawn.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_Black_Pawn.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -105,7 +105,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.Black}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_black_rook.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_Black_Rook.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -114,7 +114,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.Black}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_black_knight.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_Black_Knight.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -123,7 +123,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.Black}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_black_bishop.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_Black_Bishop.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -132,7 +132,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.Black}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_black_queen.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_Black_Queen.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -141,7 +141,7 @@
                         <Condition Binding="{Binding Player}" Value="{x:Static pieceviewmodel:Player.Black}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
-                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_black_king.png" />
+                        <Setter Property="Image.Source" Value="/PieceImg/chess_piece_Black_King.png" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
             </Style.Triggers>
@@ -259,7 +259,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Image/>                         
+                        <Image Width="40" Height="40" Source="{Binding}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -272,7 +272,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Image/>
+                        <Image Width="40" Height="40" Source="{Binding}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

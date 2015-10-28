@@ -379,10 +379,7 @@ namespace ChessBoardUI.AIAlgorithm
                 }
 
             }
-            //Console.WriteLine("Chessboard eva " + (Machine_Points - Player_Points));
-            //if (check() == 1) { blackPoints += 50; }
-            //Console.WriteLine("Chessboard eva " + (Machine_Points - Player_Points));
-            this.eva= (Machine_Points - Player_Points);
+
             return Machine_Points - Player_Points;  //(machine point - player point)
         }
 

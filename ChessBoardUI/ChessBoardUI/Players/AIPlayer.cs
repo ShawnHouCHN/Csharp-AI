@@ -1,5 +1,6 @@
 ﻿using ChessBoardUI.AIAlgorithm;
 using ChessBoardUI.ViewModel;
+using ChessBoardUI.ViewTreeHelper;
 using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections;
@@ -11,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 //using ChessBoardUI.AIAlgorithm;
 
@@ -26,7 +28,7 @@ namespace ChessBoardUI.Players
         private bool turn = false;
         Thread algo_thread;
         MoveGenerator move_generator;
-        
+        private Image cap_piece_image;
 
         //Player ai_color;
 
@@ -50,7 +52,7 @@ namespace ChessBoardUI.Players
             Messenger.Default.Register<HumanMoveMessage>(this, (action) => HumanPiecePositionChangeHandler(action));
 
             //captured stack instantiation 
-            machine_stack = new SPCapturedViewModel { CapturedPiecesCollection = new ObservableCollection<Image>() };
+            machine_stack = new SPCapturedViewModel { CapturedPiecesCollection = new ObservableCollection<BitmapImage>() };
 
             //collection and dictionary referencing
             this.pieces_collection = pieces_collection;
@@ -81,6 +83,12 @@ namespace ChessBoardUI.Players
             set { pieces_dict = value; }
         }
 
+        public Image Cap_Image
+        {
+            get { return cap_piece_image; }
+            set { cap_piece_image = value; }
+        }
+
         public ObservableCollection<ChessPiece> PieceCollection
         {
             get { return pieces_collection; }
@@ -103,8 +111,25 @@ namespace ChessBoardUI.Players
                 ulong moved_place = 0x0000000000000001;
                 moved_place = (moved_place << (to_index));
                 this.pieces_collection.Remove(to_piece_location);
-                this.pieces_dict.Remove(to_location);
+                this.pieces_dict.Remove(to_location);               
                 MoveGenerator.UpdateAnyCapturedBitboard(to_piece_location.Type, moved_place);
+
+
+                Application.Current.Dispatcher.Invoke((Action)(() => {
+                    String cap_piece_img = "/PieceImg/chess_piece_" + to_piece_location.Player.ToString() + "_" + to_piece_location.Type.ToString()+".png";
+                    Uri uri_cap_piece_img = new Uri(cap_piece_img, UriKind.Relative);
+                    BitmapImage hm_cap_img = new BitmapImage();
+                    hm_cap_img.BeginInit();
+                    hm_cap_img.UriSource = uri_cap_piece_img;
+                    hm_cap_img.DecodePixelHeight = 70;
+                    hm_cap_img.DecodePixelWidth = 70;
+                    hm_cap_img.EndInit();
+                    //Image piece_img = new Image();
+                    //piece_img.Source = hm_cap_img;
+                    //piece_img.Width = 40;
+                    //piece_img.Height = 40;
+                    machine_stack.CapturedPiecesCollection.Add(hm_cap_img);
+                }));
             }
 
             //also need an passent move maybe?
@@ -146,35 +171,7 @@ namespace ChessBoardUI.Players
                         //Console.WriteLine("AI board state after  ai runs " + Convert.ToString((long)curr_board_state.bestState.occupied, 2));
 
                         Console.WriteLine("AI Move " + ai_move.moved_type + " from " + ai_move.from_rank + " " + ai_move.from_file + " to " + ai_move.to_rank + " " + ai_move.to_file + " Cap " + ai_move.cap_type);
-                        // test code 
-
-                        //ArrayList all_moves = MoveGenerator.PossibleMovesPlayer();
-                        //Console.WriteLine("Size is " + all_moves.Count);
-
-                        //all_moves.Sort(new MoveCompare());  //sort the array so all capture will be placed at beginning
-
-                        //foreach (Move a in all_moves)
-                        //{
-                        //    Console.WriteLine("Move " + a.moved_type + " from " + a.from_rank + " " + a.from_file + " to " + a.to_rank + " " + a.to_file + " Cap " + a.cap_type);
-                        //}
-                        //// test code end here
-
-                        ////test code 
-                        //System.Threading.Thread.Sleep(5000); // thread sleep. wait for algorithm to run
-                        //ChessPiece ai_move_piece = this.pieces_dict[1];
-                        
-
-                        
-                        //int priv_coor_x = ai_move_piece.Coor_X;
-                        //int priv_coor_y = ai_move_piece.Coor_Y;
-
-                        //ai_move_piece.Pos_X = 0;
-                        //ai_move_piece.Pos_Y = 2;
-                        //this.pieces_dict.Add(2, ai_move_piece);
-                        //this.pieces_dict.Remove(1);
-                        //test code end
-
-                        //AI algorithm goes here.
+ 
 
                         Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank=ai_move.from_rank, From_File = ai_move.from_file, To_Rank=ai_move.to_rank, To_File=ai_move.to_file});
                         this.MachineTimer.stopClock();
