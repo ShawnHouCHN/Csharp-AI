@@ -171,6 +171,7 @@ namespace ChessBoardUI.AIAlgorithm
 
             // Evaluate pieces under threat
             MoveGenerator.setCurrentBitboards(leaf_chessboard.BP, leaf_chessboard.BR, leaf_chessboard.BN, leaf_chessboard.BB, leaf_chessboard.BQ, leaf_chessboard.BK, leaf_chessboard.WP, leaf_chessboard.WR, leaf_chessboard.WN, leaf_chessboard.WB, leaf_chessboard.WQ, leaf_chessboard.WK);
+            MoveGenerator.setCurrentBitboardsHistoryMove(move);
             ArrayList moves;
             if (min_max)
             {
@@ -385,16 +386,18 @@ namespace ChessBoardUI.AIAlgorithm
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
+           
             if (layer == 0)
             {
                 return evaluateBoard(min_max, this);
             }
             else if (min_max)
             {
-                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move);
+                
                 foreach (ChessBoard CB in chessboards)
                 {
-
+                    
                     //Console.WriteLine("Chessboard item max " + Convert.ToString((long)CB.occupied, 2));
                     //Console.WriteLine("Chessboard eva " + evaluateBoard(!min_max, CB));
                     //evaluateBoard(min_max, CB);
@@ -416,7 +419,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
             else
             {
-                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move);
                 foreach (ChessBoard CB in chessboards)
                 {
                     //  Console.WriteLine("This is min");

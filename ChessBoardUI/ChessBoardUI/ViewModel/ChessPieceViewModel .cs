@@ -142,7 +142,7 @@ namespace ChessBoardUI.ViewModel
                     //need check castling in this legalmove event also
 
 
-                    if (MoveGenerator.LegalRegularMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
+                    if (MoveGenerator.LegalRegularMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type) || MoveGenerator.LegalEnPassentPawnMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
                     {
 
                         //promote humans pawn

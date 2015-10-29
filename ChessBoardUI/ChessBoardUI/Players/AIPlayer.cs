@@ -190,6 +190,7 @@ namespace ChessBoardUI.Players
         {
             startIterativeSearch(curr_board_state);
             MoveGenerator.setCurrentBitboards(curr_board_state.bestState.BP, curr_board_state.bestState.BR, curr_board_state.bestState.BN, curr_board_state.bestState.BB, curr_board_state.bestState.BQ, curr_board_state.bestState.BK, curr_board_state.bestState.WP, curr_board_state.bestState.WR, curr_board_state.bestState.WN, curr_board_state.bestState.WB, curr_board_state.bestState.WQ, curr_board_state.bestState.WK);
+            MoveGenerator.setCurrentBitboardsHistoryMove(curr_board_state.bestState.move);
             return curr_board_state.bestState.move;
 
         }

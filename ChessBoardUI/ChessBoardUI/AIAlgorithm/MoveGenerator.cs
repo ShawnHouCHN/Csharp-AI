@@ -807,6 +807,18 @@ namespace ChessBoardUI.AIAlgorithm
             0x40C0000000000000,      // rank 8
         };
 
+        static public ulong[] file_mask =
+        {
+            0x0101010101010101,
+            0x0202020202020202,
+            0x0404040404040404,
+            0x0808080808080808,
+            0x1010101010101010,
+            0x2020202020202020,
+            0x4040404040404040,
+            0x8080808080808080,
+        };
+
         static ArrayList bp_move_list;
         static ArrayList r_move_list; //rook list
         static ArrayList b_move_list; //bishop list
@@ -940,11 +952,15 @@ namespace ChessBoardUI.AIAlgorithm
             pieces_occupied = (WP | WR | WN | WB | WQ | WK | BK | BP | BR | BN | BB | BQ);
         }
 
-        public static void setCurrentBitboardsHistoryMove(Move historymove)
+        public static void setCurrentBitboardsHistoryMove(Move historymove=null)
         {
             history_move = historymove;
         }
 
+        public static Move getCurrentBitboardsHistoryMove()
+        {
+            return history_move;
+        }
 
         
         //castling is not made yet, but bool is kept in the parameters.
@@ -1155,7 +1171,41 @@ namespace ChessBoardUI.AIAlgorithm
                     bp_move_list.Add(new Move((i / 8 + 1), (i % 8), (i / 8), (i % 8), PieceType.Pawn, true));
                 }
             }
-           // Console.WriteLine(Convert.ToString((long)bp_promote_downward_moves, 2));
+            // Console.WriteLine(Convert.ToString((long)bp_promote_downward_moves, 2));
+
+            //en_passent move here
+            if (history_move != null)
+            {
+                if (history_move.from_rank == 1 && history_move.to_rank == 3 && history_move.moved_type == PieceType.Pawn && history_move.from_file == history_move.to_file)
+                {
+                    ulong passent_right = (machine_pawns << 1) & enemy_pawns & rank3 & ~file0 & file_mask[history_move.from_file];  //right en passent capture
+                    if (passent_right != 0)
+                    {
+                        for (int i = 24; i < 32; i++)
+                        {
+                            if (((passent_right >> i) & 1) == 1)
+                            {
+                                bp_move_list.Add(new Move((i / 8), (i % 8 - 1), (i / 8 - 1), (i % 8), PieceType.Pawn, PieceType.Pawn, false));
+
+                            }
+                        }
+                    }
+                    ulong passent_left = (machine_pawns >> 1) & enemy_pawns & rank3 & ~file7 & file_mask[history_move.from_file];  //right en passent capture  
+                    if (passent_left != 0)
+                    {
+                        for (int i = 24; i < 32; i++)
+                        {
+                            if (((passent_left >> i) & 1) == 1)
+                            {
+                                bp_move_list.Add(new Move((i / 8), (i % 8 + 1), (i / 8 - 1), (i % 8), PieceType.Pawn, PieceType.Pawn, false));
+
+                            }
+                        }
+                    }
+                }
+            }
+
+
 
             return bp_move_list;
         }
@@ -1303,6 +1353,36 @@ namespace ChessBoardUI.AIAlgorithm
             }
             //Console.WriteLine(Convert.ToString((long)wp_promote_upward_moves, 2));
 
+            //en passent move for player
+            if (history_move != null)
+            {
+                if (history_move.from_rank == 6 && history_move.to_rank == 4 && history_move.moved_type == PieceType.Pawn && history_move.from_file == history_move.to_file)
+                {
+                    ulong passent_right = (player_pawns << 1) & enemy_pawns & rank4 & ~file0 & file_mask[history_move.from_file];  //right en passent capture  
+                    if (passent_right != 0)
+                    {
+                        for (int i = 32; i < 40; i++)
+                        {
+                            if (((passent_right >> i) & 1) == 1)
+                            {
+                                wp_move_list.Add(new Move((i / 8), (i % 8 - 1), (i / 8 + 1), (i % 8), PieceType.Pawn, PieceType.Pawn, false));
+                            }
+                        }
+                    }
+
+                    ulong passent_left = (player_pawns >> 1) & enemy_pawns & rank4 & ~file7 & file_mask[history_move.from_file];  //right en passent capture  
+                    if (passent_left != 0)
+                    {
+                        for (int i = 32; i < 40; i++)
+                        {
+                            if (((passent_left >> i) & 1) == 1)
+                            {
+                                wp_move_list.Add(new Move((i / 8), (i % 8 + 1), (i / 8 + 1), (i % 8), PieceType.Pawn, PieceType.Pawn, false));
+                            }
+                        }
+                    }
+                }
+            }
             return wp_move_list;
         }
 
@@ -2106,6 +2186,21 @@ namespace ChessBoardUI.AIAlgorithm
             }
         }
 
+        public static bool LegalEnPassentPawnMove(int x, int y, int new_x, int new_y, PieceType moved_type)
+        {
+            if (moved_type == PieceType.Pawn)
+            {
+                if (history_move.moved_type == PieceType.Pawn && history_move.to_file == history_move.from_file && history_move.from_rank == 6 && history_move.to_rank == 4 && (7 - y) == 4)
+                {
+                    if (history_move.to_file == new_x && history_move.to_rank == (7 - y) && Math.Abs(history_move.to_file - x) == 1 && history_move.to_rank == (6 - new_y))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public static void UpdateAnyMovedBitboard(PieceType piece_type, ulong moved_place, ulong new_place)
         {
             //check if it is promotion or castling in the first place;
@@ -2240,7 +2335,7 @@ namespace ChessBoardUI.AIAlgorithm
             empty = ~ pieces_occupied;
         }
 
-        public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K)
+        public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K, Move history_move=null)
         {
             List<ChessBoard> theList = new List<ChessBoard>();
             if (min_max)  // if it is an ai max node
@@ -2248,8 +2343,9 @@ namespace ChessBoardUI.AIAlgorithm
 
                 //ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong BK, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
-
+                setCurrentBitboardsHistoryMove(history_move);             
                 ArrayList moves = PossibleMovesMachine();
+               
                 moves.Sort(new MoveCompare());
                 foreach (Move move in moves)
                 {
@@ -2391,6 +2487,7 @@ namespace ChessBoardUI.AIAlgorithm
             else
             {
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
+                setCurrentBitboardsHistoryMove(history_move);
                 ArrayList moves = PossibleMovesPlayer();
                 moves.Sort(new MoveCompare());
 
