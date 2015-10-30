@@ -428,7 +428,8 @@ namespace ChessBoardUI.AIAlgorithm
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
-            if (layer == 0  || MoveGenerator.black_king==0 || MoveGenerator.white_king==0)
+            MoveGenerator.searchcounter += 1;
+            if (layer == 0 ) //|| MoveGenerator.black_king==0 || MoveGenerator.white_king==0)
             {
                 return evaluateBoard(min_max, this);
             }

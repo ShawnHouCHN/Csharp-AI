@@ -183,7 +183,7 @@ namespace ChessBoardUI.Players
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 Console.WriteLine("Something wrong with the algorithm. check the code!!!");
             }
@@ -200,23 +200,24 @@ namespace ChessBoardUI.Players
         private void startIterativeSearch(ChessBoard curr_board_state)
         {
             DateTime currentTime = DateTime.Now;
-            DateTime target = currentTime.AddSeconds(10);
+            DateTime target = currentTime.AddSeconds(5);
 
             for (int i = 1; i < 100; i++)
             {
-                ChessBoard temp = null;
+                MoveGenerator.searchcounter = 0;
+                //ChessBoard temp = null;
                 curr_board_state.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
-                //Console.WriteLine("Searching in layer: {0} through {1} boardstates", i, MoveGenerator.searchcounter);
+                Console.WriteLine("Searching in layer: {0} through {1} boardstates", i, MoveGenerator.searchcounter);
                 currentTime = DateTime.Now;
-                
-                if (target.CompareTo(currentTime) < 0)
+                //Console.WriteLine("Time is "+(currentTime-target));
+                if (currentTime >= target)
                 {
                     //curr_board_state.bestState.drawArray();
                     //Console.WriteLine("Evaluation of Best state: {0}", CB.bestState.evaluateBoard(true, CB));
                     //MoveGenerator.searchcounter = 0;
-                    curr_board_state.bestState = temp;
+                    //curr_board_state.bestState = temp;
                     break;
-                } else { temp = curr_board_state.bestState; }
+                } //else { temp = curr_board_state.bestState; }
             }
         }
 
