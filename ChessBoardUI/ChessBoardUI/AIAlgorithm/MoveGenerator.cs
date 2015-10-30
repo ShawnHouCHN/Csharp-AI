@@ -97,7 +97,7 @@ namespace ChessBoardUI.AIAlgorithm
         public static ulong white_king ;
         public static ulong black_king ;
         public static bool  player_color;  // deefualt is white
-
+        public static bool MQC, MKC, PQC, PKC; // machine queen castling, macine king castling, player queen castling, player king castling
         //full occupied bitboard
         public static ulong full_occupied = 0xffffffffffffffff;
         public static ulong white_occupied = white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king;
@@ -964,7 +964,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         
         //castling is not made yet, but bool is kept in the parameters.
-        public static ArrayList PossibleMovesMachine(string history="", bool castleWK=true, bool castleWQ=true, bool castleBK=true, bool castleBQ=true)
+        public static ArrayList PossibleMovesMachine(string history="")
         {
 
             not_black_occupied = ~(white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king | black_king);
@@ -998,7 +998,7 @@ namespace ChessBoardUI.AIAlgorithm
         }
 
 
-        public static ArrayList PossibleMovesPlayer(string history="", bool castleWK = true, bool castleWQ = true, bool castleBK = true, bool castleBQ = true)
+        public static ArrayList PossibleMovesPlayer(string history="")
         {
 
             not_black_occupied = ~(white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king | black_king);
@@ -1820,6 +1820,8 @@ namespace ChessBoardUI.AIAlgorithm
                                 //k_move_list.Add(new Move((i / 8), (i % 8), (j / 8), (j % 8)));  //from rank, file - to rank, file
                             }
                         }
+
+
                     }
                     else
                     {
@@ -1852,127 +1854,17 @@ namespace ChessBoardUI.AIAlgorithm
             return k_move_list;
         }
 
-        public static ArrayList PossibleCastlingBlack()
+        public static ArrayList PossibleCastlingMachine(ulong king , ulong enemy_occupied)
+        {
+
+            return null;
+        }
+
+        public static ArrayList PossibleCastlingPlayer()
         {
             return null;
         }
 
-        public static ArrayList PossibleCastlingWhite()
-        {
-            return null;
-        }
-
-        //this method is not finished yet.
-        public static long unsafeBlackKingMove()
-        {
-            return 0; // return a bitboard that king should not move to.
-        }
-
-
-        //public static ArrayList PossiblePawnWhite(string history, ulong white_pawns)   //four characters in the list is a move, source rank, source file, desti rank, desti file.
-        //{
-
-        //    wp_move_list.Clear();
-
-
-        //    //String list = "";
-
-        //    ulong wp_right_cap_list = (white_pawns << 9) & black_occupied & ~rank8 & ~file1;
-
-        //    Console.WriteLine(Convert.ToString((long)wp_right_cap_list, 2));
-
-        //    for (int i = 0; i < 64; i++)
-        //    {
-        //        if (((wp_right_cap_list >> i) & 1) == 1)
-        //        {
-        //            //list += "" + (i / 8 + 1).ToString() + (i % 8 - 1).ToString() + (i / 8).ToString() + (i % 8).ToString();
-        //            wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8)));
-        //        }
-
-        //    }
-
-        //    ulong wp_cap_left_moves = (white_pawns << 7) & black_occupied & ~rank8 & ~file8;
-        //    Console.WriteLine(Convert.ToString((long)wp_cap_left_moves, 2));
-        //    for (int i = 0; i < 64; i++)
-        //    {
-        //        if (((wp_cap_left_moves >> i) & 1) == 1)
-        //        {
-        //            //list += "" + (i / 8 + 1).ToString() + (i % 8 + 1).ToString() + (i / 8).ToString() + (i % 8).ToString();
-        //            wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8)));
-        //        }
-
-        //    }
-
-
-        //    ulong wp_1_upward_moves = (ulong)(white_pawns << 8) & empty & ~rank8;
-        //    for (int i = 0; i < 64; i++)
-        //    {
-        //        if (((wp_1_upward_moves >> i) & 1) == 1)
-        //        {
-        //            //list += "" + (i / 8 + 1).ToString() + (i % 8).ToString() + (i / 8).ToString() + (i % 8).ToString(); 
-        //            wp_move_list.Add(new Move((i / 8 - 1), (i % 8), (i / 8), (i % 8)));
-        //        }
-
-        //    }
-
-        //    Console.WriteLine(Convert.ToString((long)wp_1_upward_moves, 2));
-
-
-        //    ulong wp_2_upward_moves = (ulong)(white_pawns << 16) & empty & (empty << 8) & rank4;
-        //    for (int i = 0; i < 64; i++)
-        //    {
-        //        if (((wp_2_upward_moves >> i) & 1) == 1)
-        //        {
-        //            //list += "" + (i / 8 + 2).ToString() + (i % 8).ToString() + (i / 8).ToString() + (i % 8).ToString();
-        //            wp_move_list.Add(new Move((i / 8 - 2), (i % 8), (i / 8), (i % 8)));
-        //        }
-
-        //    }
-
-        //    Console.WriteLine(Convert.ToString((long)wp_2_upward_moves, 2));
-
-
-        //    //promotion move needs to be add in later..........
-        //    ulong wp_promote_right_cap_moves = (white_pawns << 9) & rank8 & ~file1;        //promote by right capture;
-        //    for (int i = 0; i < 64; i++)
-        //    {
-        //        if (((wp_promote_right_cap_moves >> i) & 1) == 1)
-        //        {
-        //            //list += "" + (i / 8 + 1).ToString() + (i % 8).ToString() + (i / 8).ToString() + (i % 8).ToString(); 
-        //            wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), true));
-        //        }
-        //    }
-        //    Console.WriteLine(Convert.ToString((long)wp_promote_right_cap_moves, 2));
-
-
-        //    ulong wp_promote_left_cap_moves = (white_pawns << 7) & rank8 & ~file8;        //promote by right capture;
-        //    for (int i = 0; i < 64; i++)
-        //    {
-        //        if (((wp_promote_left_cap_moves >> i) & 1) == 1)
-        //        {
-        //            //list += "" + (i / 8 + 1).ToString() + (i % 8).ToString() + (i / 8).ToString() + (i % 8).ToString(); 
-        //            wp_move_list.Add(new Move((i / 8 - 1), (i % 8 + 1), (i / 8), (i % 8), true));
-        //        }
-        //    }
-        //    Console.WriteLine(Convert.ToString((long)wp_promote_left_cap_moves, 2));
-
-
-        //    ulong wp_promote_upward_moves = (white_pawns << 8) & rank8 & empty;        //promote by right capture;
-        //    for (int i = 0; i < 64; i++)
-        //    {
-        //        if (((wp_promote_upward_moves >> i) & 1) == 1)
-        //        {
-        //            //list += "" + (i / 8 + 1).ToString() + (i % 8).ToString() + (i / 8).ToString() + (i % 8).ToString(); 
-        //            wp_move_list.Add(new Move((i / 8 - 1), (i % 8), (i / 8), (i % 8), true));
-        //        }
-        //    }
-        //    Console.WriteLine(Convert.ToString((long)wp_promote_upward_moves, 2));
-
-
-
-        //    //Console.WriteLine("list is {0}" , bp_move_list);
-        //    return wp_move_list;
-        //}
 
         public static bool LegalRegularMove(int x, int y, int new_x, int new_y, PieceType piece_type)
         {

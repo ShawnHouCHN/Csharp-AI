@@ -99,7 +99,7 @@ namespace ChessBoardUI.Players
             moved_place = MoveGenerator.full_occupied & ~(moved_place << (from_index));
             new_place = (new_place << (to_index));
             MoveGenerator.UpdateAnyMovedBitboard(action.Type, moved_place, new_place);
-
+            MoveGenerator.setCurrentBitboardsHistoryMove(new Move((7 - (int)action.FromPoint.Y), (int)action.FromPoint.X, (7 - (int)action.ToPoint.Y), (int)action.ToPoint.X, action.Type, false));
 
         }
 
