@@ -13,13 +13,13 @@ namespace ChessBoardUI.AIAlgorithm
         //public ulong WP = 0x000000000000ff00, WN = 0x0000000000000042, WB = 0x0000000000000024, WQ = 0x0000000000000008, WR = 0x0000000000000081, WK = 0x0000000000000010,
         //              BP = 0x00ff000000000000, BN = 0x4200000000000000, BB = 0x2400000000000000, BQ = 0x0800000000000000, BR = 0x8100000000000000, BK = 0x1000000000000000;
 
-        public ulong WP , WN , WB , WQ, WR , WK ,
-                      BP , BN , BB, BQ , BR , BK ;
+        public ulong WP, WN, WB, WQ, WR, WK,
+                      BP, BN, BB, BQ, BR, BK;
 
         public ulong occupied, empty, whitePieces, enemyOrEmpty;
 
         public Move move; // the move taken to this board state 
-       
+
         public ChessBoard bestState;
 
 
@@ -114,8 +114,19 @@ namespace ChessBoardUI.AIAlgorithm
                 0   ,   1   ,   2   ,   3   ,   4   ,   5   ,   6   ,   7
                 };
 
+        private static ulong[] file = new ulong[]
+               {
+                    0x8080808080808080,
+                    0x4040404040404040,
+                    0x2020202020202020,
+                    0x1010101010101010,
+                    0x0808080808080808,
+                    0x0404040404040404,
+                    0x0202020202020202,
+                    0x0101010101010101,
+               };
 
-        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move move=null)
+        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move move = null)
         {
             this.WP = WP;
             this.WN = WN;
@@ -170,34 +181,34 @@ namespace ChessBoardUI.AIAlgorithm
             int Player_Points = 0;
 
             // Evaluate pieces under threat
-            MoveGenerator.setCurrentBitboards(leaf_chessboard.BP, leaf_chessboard.BR, leaf_chessboard.BN, leaf_chessboard.BB, leaf_chessboard.BQ, leaf_chessboard.BK, leaf_chessboard.WP, leaf_chessboard.WR, leaf_chessboard.WN, leaf_chessboard.WB, leaf_chessboard.WQ, leaf_chessboard.WK);
-            MoveGenerator.setCurrentBitboardsHistoryMove(move);
-            ArrayList moves;
-            if (min_max)
-            {
-                moves = MoveGenerator.PossibleMovesMachine();
-            }
-            else
-            {
-                moves = MoveGenerator.PossibleMovesPlayer();
-            }
+            //MoveGenerator.setCurrentBitboards(leaf_chessboard.BP, leaf_chessboard.BR, leaf_chessboard.BN, leaf_chessboard.BB, leaf_chessboard.BQ, leaf_chessboard.BK, leaf_chessboard.WP, leaf_chessboard.WR, leaf_chessboard.WN, leaf_chessboard.WB, leaf_chessboard.WQ, leaf_chessboard.WK);
+            //ArrayList moves;
+            //if (min_max)
+            //{
+            //    moves = MoveGenerator.PossibleMovesMachine();
+            //}
+            //else
+            //{
+            //    moves = MoveGenerator.PossibleMovesPlayer();
+            //}
 
-            moves.Sort(new MoveCompare()); // sort the list so it get captured move first;
-            Nullable<PieceType> piece_cap = null;
-            foreach (Move leaf_move in moves)
-            {
-                if (leaf_move.cap_type != piece_cap)
-                {
-                    if (min_max) //if it is a max leaf node, add value to machine's value;
-                        Machine_Points += 7;
-                    else
-                        Player_Points += 7;
-                }
-                else
-                {
-                    break;
-                }
-            }
+            //moves.Sort(new MoveCompare()); // sort the list so it get captured move first;
+            //Nullable<PieceType> piece_cap = null;
+            //Console.WriteLine("Protential moves "+moves.Count);
+            //foreach (Move leaf_move in moves)
+            //{
+            //    if (leaf_move.cap_type != piece_cap)
+            //    {
+            //        if (min_max) //if it is a max leaf node, add value to machine's value;
+            //            Machine_Points += 7;
+            //        else
+            //            Player_Points += 7;
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
+            //}
 
 
             for (int i = 0; i < 64; i++)
@@ -210,48 +221,53 @@ namespace ChessBoardUI.AIAlgorithm
                         if (((leaf_chessboard.WB >> i) & 1) == 1)
                         {
                             //Evaluation of White Bishop
-                            Player_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.BISHOP_WEIGHT + BishopTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WK >> i) & 1) == 1)
                         {
                             //Evaluation of White King
-                            Player_Points += (Constants.Constants.KING_WEIGHT+ KingTableO[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.KING_WEIGHT + KingTableO[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WN >> i) & 1) == 1)
                         {
                             //Evaluation of White Knight 
-                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT+ KnightTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT + KnightTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WP >> i) & 1) == 1)
                         {
                             //Evaluation of White Pawns 
-                            Player_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.PAWN_WEIGHT + PawnTable[(8 * (7 - i / 8) + i % 8)]);
 
-                            //evaluate of dobble pawn weakness
-                            for (int rank= (7- i/8); rank >=0 ; rank--)
-                            if (((leaf_chessboard.WP >> (i+8*rank)) & 1) ==1)
+                            //Evaluation of Double Pawn
+                            if ((file[i % 8] & (WP & ~((ulong)1 << i))) > 0)
                             {
-                                Player_Points += -7;
+                                Player_Points += -8;
+                            }
+
+                            //Evalution of pawn ramming
+                            if (((BP >> (i + 8)) & 1) == 1 || ((BP >> (i - 8)) & 1) == 1)
+                            {
+                                Player_Points += -8;
                             }
                         }
                         else if (((leaf_chessboard.WQ >> i) & 1) == 1)
                         {
                             //Evaluation of White Queen 
-                            Player_Points += (Constants.Constants.QUEEN_WEIGHT+ QueenTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.QUEEN_WEIGHT + QueenTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WR >> i) & 1) == 1)
                         {
                             //Evaluation of White Rook 
-                            Player_Points += (Constants.Constants.ROOK_WEIGHT+ RookTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.ROOK_WEIGHT + RookTable[(8 * (7 - i / 8) + i % 8)]);
                         }
                         else if (((leaf_chessboard.BB >> i) & 1) == 1)
                         {
                             //Evaluation of Black Bishop 
-                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT + BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BK >> i) & 1) == 1)
@@ -269,19 +285,24 @@ namespace ChessBoardUI.AIAlgorithm
                         else if (((leaf_chessboard.BP >> i) & 1) == 1)
                         {
                             //Evaluation of Black Pawns 
-                            Machine_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.PAWN_WEIGHT + PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
-                            //evaluate of dobble pawn weakness
-                            for (int rank = (7 - i / 8); rank >= 0; rank--)
-                                if (((leaf_chessboard.WP >> (i + 8 * rank)) & 1) == 1)
-                                {
-                                    Machine_Points += -7;
-                                }
+                            //Evaluation of Double Pawn
+                            if ((file[i % 8] & (WP & ~((ulong)1 << i))) > 0)
+                            {
+                                Machine_Points += -8;
+                            }
+
+                            //Evalution of pawn ramming
+                            if (((BP >> (i + 8)) & 1) == 1 || ((BP >> (i - 8)) & 1) == 1)
+                            {
+                                Machine_Points += -8;
+                            }
                         }
                         else if (((leaf_chessboard.BQ >> i) & 1) == 1)
                         {
                             //Evaluation of Black Queen 
-                            Machine_Points += (Constants.Constants.QUEEN_WEIGHT+ QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.QUEEN_WEIGHT + QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BR >> i) & 1) == 1)
@@ -292,115 +313,133 @@ namespace ChessBoardUI.AIAlgorithm
                     }
 
 
-                    else //player plays black
-                    {
+                    else
+                    { // if player is black
+
                         if (((leaf_chessboard.WB >> i) & 1) == 1)
                         {
                             //Evaluation of White Bishop
-                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT + BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.WK >> i) & 1) == 1)
                         {
                             //Evaluation of White King
-                            Machine_Points += (Constants.Constants.KING_WEIGHT+ KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.KING_WEIGHT + KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.WN >> i) & 1) == 1)
                         {
                             //Evaluation of White Knight 
-                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT+ KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT + KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.WP >> i) & 1) == 1)
                         {
                             //Evaluation of White Pawns 
-                            Machine_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.PAWN_WEIGHT + PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
-                            //evaluate of dobble pawn weakness
-                            for (int rank = (7 - i / 8); rank >= 0; rank--)
-                                if (((leaf_chessboard.WP >> (i + 8 * rank)) & 1) == 1)
-                                {
-                                    Machine_Points += -7;
-                                }
+                            //Evaluation of Double Pawn
+                            if ((file[i % 8] & (WP & ~((ulong)1 << i))) > 0)
+                            {
+                                Machine_Points += -7;
+                            }
+
+                            //Evalution of pawn ramming
+                            if (((BP >> (i + 8)) & 1) == 1 || ((BP >> (i - 8)) & 1) == 1)
+                            {
+                                Machine_Points += -7;
+                            }
                         }
                         else if (((leaf_chessboard.WQ >> i) & 1) == 1)
                         {
                             //Evaluation of White Queen 
-                            Machine_Points +=(Constants.Constants.QUEEN_WEIGHT+ QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.QUEEN_WEIGHT + QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.WR >> i) & 1) == 1)
                         {
                             //Evaluation of White Rook 
-                            Machine_Points += (Constants.Constants.ROOK_WEIGHT+ RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.ROOK_WEIGHT + RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
                         }
                         else if (((leaf_chessboard.BB >> i) & 1) == 1)
                         {
                             //Evaluation of Black Bishop 
-                            Player_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.BISHOP_WEIGHT + BishopTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.BK >> i) & 1) == 1)
                         {
                             //Evaluation of Black King 
-                            Player_Points += (Constants.Constants.KING_WEIGHT+ KingTableO[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.KING_WEIGHT + KingTableO[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.BN >> i) & 1) == 1)
                         {
                             //Evaluation of Black Knight 
-                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT+ KnightTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT + KnightTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.BP >> i) & 1) == 1)
                         {
                             //Evaluation of Black Pawns 
-                            Player_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.PAWN_WEIGHT + PawnTable[(8 * (7 - i / 8) + i % 8)]);
 
-                            //evaluate of dobble pawn weakness
-                            for (int rank = (7 - i / 8); rank >= 0; rank--)
-                                if (((leaf_chessboard.WP >> (i + 8 * rank)) & 1) == 1)
-                                {
-                                    Player_Points += -7;
-                                }
+                            //Evaluation of Double Pawn
+                            if ((file[i % 8] & (WP & ~((ulong)1 << i))) > 0)
+                            {
+                                Player_Points += -8;
+                            }
+
+                            //Evalution of pawn ramming
+                            if (((BP >> (i + 8)) & 1) == 1 || ((BP >> (i - 8)) & 1) == 1)
+                            {
+                                Player_Points += -8;
+                            }
+
                         }
                         else if (((leaf_chessboard.BQ >> i) & 1) == 1)
                         {
                             //Evaluation of Black Queen 
-                            Player_Points +=(Constants.Constants.QUEEN_WEIGHT+ QueenTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.QUEEN_WEIGHT + QueenTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.BR >> i) & 1) == 1)
                         {
                             //Evaluation of Black Rook 
-                            Player_Points += (Constants.Constants.ROOK_WEIGHT+ RookTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.ROOK_WEIGHT + RookTable[(8 * (7 - i / 8) + i % 8)]);
                         }
                     }
                 }
 
             }
+            //Console.WriteLine("Chessboard eva " + (Machine_Points - Player_Points));
+            //if (check() == 1) { blackPoints += 50; }
+            //Console.WriteLine("Chessboard eva " + (Machine_Points - Player_Points));
+            //if (min_max)
+            //{
 
-            return Machine_Points - Player_Points;  //(machine point - player point)
+            eva = (Machine_Points - Player_Points);
+
+            // }
+            //else { eva = Player_Points - Machine_Points; }
+            return eva;//(machine point - player point)
         }
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
-           
-            if (layer == 0)
+            MoveGenerator.searchcounter += 1;
+            if (layer == 0) //|| MoveGenerator.black_king==0 || MoveGenerator.white_king==0)
             {
                 return evaluateBoard(min_max, this);
             }
             else if (min_max)
             {
-                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move);
-                
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
-                    
+
                     //Console.WriteLine("Chessboard item max " + Convert.ToString((long)CB.occupied, 2));
-                    //Console.WriteLine("Chessboard eva " + evaluateBoard(!min_max, CB));
-                    //evaluateBoard(min_max, CB);
                     //Console.WriteLine("Chessboard eva " + evaluateBoard(min_max, CB));
                     //evaluateBoard(min_max, CB);
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
@@ -419,14 +458,12 @@ namespace ChessBoardUI.AIAlgorithm
             }
             else
             {
-                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move);
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
                     //  Console.WriteLine("This is min");
-                     // Console.WriteLine("Chessboard item min " + Convert.ToString((long)CB.occupied, 2));
-                    //Console.WriteLine("Chessboard Bish min " + Convert.ToString((long)CB.BB, 2));
-                    //Console.WriteLine("Chessboard knig min " + Convert.ToString((long)CB.WN, 2));
-                    //Console.WriteLine("Chessboard eva " + evaluateBoard(!min_max, CB));
+                    //  Console.WriteLine("Chessboard item min " + Convert.ToString((long)CB.occupied, 2));
+                    // Console.WriteLine("Chessboard eva " + evaluateBoard(min_max, CB));
                     //evaluateBoard(min_max, CB);
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result < beta)
@@ -444,4 +481,5 @@ namespace ChessBoardUI.AIAlgorithm
             }
         }
     }
+
 }
