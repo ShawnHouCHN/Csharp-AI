@@ -183,6 +183,7 @@ namespace ChessBoardUI.Players
             catch (Exception ex)
             {
                 Console.WriteLine("Something wrong with the algorithm. check the code!!!");
+                Console.WriteLine(ex);
             }
         }
 
@@ -198,17 +199,30 @@ namespace ChessBoardUI.Players
         private void startIterativeSearch(ChessBoard curr_board_state)
         {
             DateTime currentTime = DateTime.Now;
-            DateTime target = currentTime.AddSeconds(5);
+            MoveGenerator.targetsearchtime = currentTime.AddSeconds(10);
 
             for (int i = 1; i < 100; i++)
             {
+                
                 MoveGenerator.searchcounter = 0;
+                MoveGenerator.EBcounter = 0;
+                MoveGenerator.GBcounter = 0;
+                MoveGenerator.GBtime = 0;
+                MoveGenerator.EBtime = 0;
                 //ChessBoard temp = null;
                 curr_board_state.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
+                ChessBoard bestState = curr_board_state.bestState;
+                while (bestState != null)
+                {
+                    MoveGenerator.bestMoves.Enqueue(bestState.move);
+                    bestState = bestState.bestState;
+                }
+                Console.WriteLine("Length of bestmoves is {0}",MoveGenerator.bestMoves.Count);
                 Console.WriteLine("Searching in layer: {0} through {1} boardstates with an average branching factor of {2}", i, MoveGenerator.searchcounter, (Math.Pow(MoveGenerator.searchcounter,(1 /(double) i))));
+                Console.WriteLine("It evaluated {0} boardstates in {1} milliseconds, and generated {2} 'sub'-boards in {3} milliseconds.",MoveGenerator.EBcounter, MoveGenerator.EBtime, MoveGenerator.GBcounter, MoveGenerator.GBtime);
                 currentTime = DateTime.Now;
                 //Console.WriteLine("Time is "+(currentTime-target));
-                if (currentTime >= target)
+                if (currentTime >= MoveGenerator.targetsearchtime)
                 {
                     //curr_board_state.bestState.drawArray();
                     //Console.WriteLine("Evaluation of Best state: {0}", CB.bestState.evaluateBoard(true, CB));

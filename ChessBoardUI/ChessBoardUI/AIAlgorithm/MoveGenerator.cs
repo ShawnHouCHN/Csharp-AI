@@ -19,6 +19,17 @@ namespace ChessBoardUI.AIAlgorithm
 
         public bool promote = false;
 
+        public override bool Equals(object obj)
+        {
+            Move move = (Move)obj;
+            if (from_rank == move.from_rank && to_rank == move.to_rank && from_file == move.from_file && to_file == move.to_file)
+            {
+                return true;
+            }
+            else return false;
+
+        }
+
 
 
         public Move(int from_x, int from_y, int to_x, int to_y)
@@ -51,19 +62,14 @@ namespace ChessBoardUI.AIAlgorithm
         }
     }
 
-    class MoveCompare : IComparer
+    public class MoveCompare : IComparer
     {
-
-        public int Compare(Object x, Object y)
+        public Move bestMove;
+        public Move lastMove;
+        public Move item_one, item_two;
+       
+        public int sortCaptureMoves()
         {
-            if (x == null)
-                return (y == null) ? 0 : 1;
-
-            if (y == null)
-                return -1;
-
-            Move item_one = x as Move;
-            Move item_two = y as Move;
             Nullable<PieceType> piece_cap = null;
             if (item_one.cap_type != piece_cap && item_two.cap_type == piece_cap)
             {
@@ -78,8 +84,93 @@ namespace ChessBoardUI.AIAlgorithm
                 return 0;
             }
         }
-    }
+        public int sortWithBestMove()
+        {
+            if (item_one.Equals(bestMove)) { return 1; }
+            else if (item_two.Equals(bestMove)) { return -1; }
 
+            return 0;
+
+        }
+        public int sortWithLastMove()
+        {
+            if (item_one.to_file == lastMove.to_file && item_one.to_rank == lastMove.to_rank)
+            {
+                return 1;
+            }
+            if (item_two.to_file == lastMove.to_file && item_two.to_rank == lastMove.to_rank)
+            {
+                return 1;
+            }
+            return 0;
+        }
+        public virtual int Compare(Object x, Object y)
+        {
+            item_one = x as Move;
+            item_two = y as Move;
+            return sortCaptureMoves();
+        }
+
+    }
+    public class MoveCompareWithBestLastMove:MoveCompare
+    {
+        public MoveCompareWithBestLastMove(Move best, Move last)
+        {
+            bestMove = best;
+            lastMove = last;
+        }
+        
+        public override int Compare(Object x, Object y)
+        {
+            item_one = x as Move;
+            item_two = y as Move;   
+            int sort = sortWithBestMove();
+            if (sort != 0)
+                return sort;
+            sort = sortWithLastMove();
+            if (sort != 0)
+                return sort;
+            return sortCaptureMoves();
+
+        }
+    }
+    public class MoveCompareWithBestMove : MoveCompare
+    {
+        public MoveCompareWithBestMove(Move best)
+        {
+            bestMove = best;
+        }
+        override
+        public int Compare(Object x, Object y)
+        {
+            item_one = x as Move;
+            item_two = y as Move;
+            int sort = sortWithBestMove();
+            if (sort != 0)
+                return sort;
+            return sortCaptureMoves();
+
+        }
+    }
+    public class MoveCompareWithLastMove : MoveCompare
+    {
+        public MoveCompareWithLastMove(Move last)
+        {
+            lastMove = last;
+        }
+        override
+        public int Compare(Object x, Object y)
+        {
+            item_one = x as Move;
+            item_two = y as Move;
+            int sort = sortWithLastMove();
+            if (sort != 0)
+                return sort;
+            return sortCaptureMoves();
+
+        }
+    }
+    
     class MoveGenerator
     {
 
@@ -108,6 +199,8 @@ namespace ChessBoardUI.AIAlgorithm
         //history move(en passent)
         public static Move history_move;
 
+        public static Queue<Move> bestMoves=new Queue<Move>();
+        public static Move bestMove;
 
         //these are for pawn moves
         static ulong rank7 = 0xff00000000000000;
@@ -125,8 +218,9 @@ namespace ChessBoardUI.AIAlgorithm
         //static ulong rook_moves, rook_cap_moves;
         //static ulong bishop_moves, bishop_cap_moves;
 
-        public static double searchcounter;
-
+        public static double searchcounter, GBcounter;
+        public static double GBtime;
+        public static double EBtime;
 
         static public ulong[] rook_right_board_set = {
             0x00000000000000fe,
@@ -828,7 +922,9 @@ namespace ChessBoardUI.AIAlgorithm
         static ArrayList q_move_list; //queen list
         static ArrayList k_move_list;
         static ArrayList wp_move_list;
-
+        internal static int EBcounter;
+        internal static Move lastMove;
+        internal static DateTime targetsearchtime;
 
         public MoveGenerator()
         {
@@ -2231,6 +2327,8 @@ namespace ChessBoardUI.AIAlgorithm
 
         public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K, Move history_move = null)
         {
+            DateTime starttime = DateTime.Now;
+            GBcounter += 1;
             List<ChessBoard> theList = new List<ChessBoard>();
             if (min_max)  // if it is an ai max node
             {
@@ -2239,8 +2337,23 @@ namespace ChessBoardUI.AIAlgorithm
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
                 setCurrentBitboardsHistoryMove(history_move);
                 ArrayList moves = PossibleMovesMachine();
+                
+                if (bestMoves.Count == 0) {
+                    if (lastMove != null)
+                        moves.Sort(new MoveCompareWithLastMove(lastMove));
+                    else
+                        moves.Sort(new MoveCompare());
 
-                moves.Sort(new MoveCompare());
+                }
+
+                else
+                {
+                    bestMove = bestMoves.Dequeue();
+                    if (lastMove != null)
+                        moves.Sort(new MoveCompareWithBestLastMove(bestMove,lastMove));
+                    else
+                        moves.Sort(new MoveCompareWithBestMove(bestMove));
+                }
                 foreach (Move move in moves)
                 {
                     ulong BP = B_P; ulong WP = W_P;
@@ -2383,7 +2496,10 @@ namespace ChessBoardUI.AIAlgorithm
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
                 setCurrentBitboardsHistoryMove(history_move);
                 ArrayList moves = PossibleMovesPlayer();
-                moves.Sort(new MoveCompare());
+                if (bestMoves.Count == 0)
+                    moves.Sort(new MoveCompare());
+                else
+                    moves.Sort(new MoveCompareWithBestMove(bestMoves.Dequeue())); 
 
                 foreach (Move move in moves)
                 {
@@ -2530,6 +2646,7 @@ namespace ChessBoardUI.AIAlgorithm
                     theList.Add(cb);
                 }
             }
+            GBtime += (DateTime.Now - starttime).TotalMilliseconds;
             return theList;
         }
 

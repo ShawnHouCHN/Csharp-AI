@@ -177,6 +177,8 @@ namespace ChessBoardUI.AIAlgorithm
         // TO DO
         public int evaluateBoard(bool min_max, ChessBoard leaf_chessboard)
         {
+            DateTime starttime = DateTime.Now;
+            MoveGenerator.EBcounter += 1;
             int Machine_Points = 0;
             int Player_Points = 0;
 
@@ -420,7 +422,7 @@ namespace ChessBoardUI.AIAlgorithm
             //{
 
             eva = (Machine_Points - Player_Points);
-
+            MoveGenerator.EBtime += (DateTime.Now - starttime).TotalMilliseconds;
             // }
             //else { eva = Player_Points - Machine_Points; }
             return eva;//(machine point - player point)
@@ -428,6 +430,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
+            //if (DateTime.Now > MoveGenerator.targetsearchtime) { if (!min_max) return alpha - 1; else return beta + 1; }
             MoveGenerator.searchcounter += 1;
             if (layer == 0) //|| MoveGenerator.black_king==0 || MoveGenerator.white_king==0)
             {
@@ -435,6 +438,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
             else if (min_max)
             {
+                MoveGenerator.lastMove = move;
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
@@ -454,10 +458,12 @@ namespace ChessBoardUI.AIAlgorithm
                         break;
                     }
                 }
+                
                 return alpha;
             }
             else
             {
+                MoveGenerator.lastMove = move;
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
