@@ -92,14 +92,7 @@ namespace ChessBoardUI.Players
 
 
             // some bit operations to get the bit
-            int from_index = (7 - (int)action.FromPoint.Y) * 8 + (int)action.FromPoint.X;
-            int to_index = (7 - (int)action.ToPoint.Y) * 8 + (int)action.ToPoint.X;
-            ulong moved_place = 0x0000000000000001;
-            ulong new_place =   0x0000000000000001;
-            moved_place = MoveGenerator.full_occupied & ~(moved_place << (from_index));
-            new_place = (new_place << (to_index));
-            MoveGenerator.UpdateAnyMovedBitboard(action.Type, moved_place, new_place);
-            MoveGenerator.setCurrentBitboardsHistoryMove(new Move((7 - (int)action.FromPoint.Y), (int)action.FromPoint.X, (7 - (int)action.ToPoint.Y), (int)action.ToPoint.X, action.Type, false));
+         
 
         }
 
@@ -110,15 +103,63 @@ namespace ChessBoardUI.Players
 
             ChessPiece moved = this.pieces_dict[from_loca_index];
 
+
+            //this is all for castling move updating on frontend
+            if (action.MKC)
+            {
+                if(action.From_File==4) //means machine use black
+                {
+                    ChessPiece rook_king_side = this.pieces_dict[70];
+                    moved.Pos_X = 6;
+                    rook_king_side.Pos_X = 5;
+                    this.pieces_dict.Remove(from_loca_index);
+                    this.pieces_dict.Remove(70);
+                    this.pieces_dict.Add(60, moved);
+                    this.pieces_dict.Add(50, rook_king_side);
+                }
+                else  //means machine use white
+                {
+                    ChessPiece rook_king_side = this.pieces_dict[0];
+                    moved.Pos_X = 1;
+                    rook_king_side.Pos_X = 2;
+                    this.pieces_dict.Remove(from_loca_index);
+                    this.pieces_dict.Remove(0);
+                    this.pieces_dict.Add(10, moved);
+                    this.pieces_dict.Add(20, rook_king_side);
+                }
+                return ;
+            }
+            if (action.MQC)
+            {
+                if (action.From_File == 4) //means machine use black
+                {
+                    ChessPiece rook_king_side = this.pieces_dict[0];
+                    moved.Pos_X = 2;
+                    rook_king_side.Pos_X = 3;
+                    this.pieces_dict.Remove(from_loca_index);
+                    this.pieces_dict.Remove(0);
+                    this.pieces_dict.Add(20, moved);
+                    this.pieces_dict.Add(30, rook_king_side);
+                }
+                else  //means machine use white
+                {
+                    ChessPiece rook_king_side = this.pieces_dict[70];
+                    moved.Pos_X = 5;
+                    rook_king_side.Pos_X = 4;
+                    this.pieces_dict.Remove(from_loca_index);
+                    this.pieces_dict.Remove(70);
+                    this.pieces_dict.Add(50, moved);
+                    this.pieces_dict.Add(40, rook_king_side);
+                }
+                return;
+            }
+
+
             if (this.pieces_dict.ContainsKey(to_loca_index))
             {
                 ChessPiece to_piece_location = this.pieces_dict[to_loca_index];
                 Application.Current.Dispatcher.Invoke((Action)(() => this.pieces_collection.Remove(to_piece_location)));
                 this.pieces_dict.Remove(to_loca_index);
-
-
-
-
 
                 Application.Current.Dispatcher.Invoke((Action)(() => {
                     String cap_piece_img = "/PieceImg/chess_piece_" + to_piece_location.Player.ToString() + "_" + to_piece_location.Type.ToString()+".png";
@@ -131,10 +172,6 @@ namespace ChessBoardUI.Players
                     hm_cap_img.DecodePixelHeight = 70;
                     hm_cap_img.DecodePixelWidth = 70;
                     hm_cap_img.EndInit();
-                    //Image piece_img = new Image();
-                    //piece_img.Source = hm_cap_img;
-                    //piece_img.Width = 40;
-                    //piece_img.Height = 40;
                     human_capture.CapturedPiecesCollection.Add(hm_cap_img);
                 }));
 

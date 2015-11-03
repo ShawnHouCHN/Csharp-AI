@@ -21,8 +21,10 @@ namespace ChessBoardUI.AIAlgorithm
         public Move move; // the move taken to this board state 
        
         public ChessBoard bestState;
-
-
+        public bool MKC = true;
+        public bool MQC = true;
+        public bool PKC = true;
+        public bool PQC = true;
         //test
         public int eva;
 
@@ -115,7 +117,7 @@ namespace ChessBoardUI.AIAlgorithm
                 };
 
 
-        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move move=null)
+        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move move=null , bool MKC= true, bool MQC =true, bool PKC= true, bool PQC=true)
         {
             this.WP = WP;
             this.WN = WN;
@@ -130,6 +132,10 @@ namespace ChessBoardUI.AIAlgorithm
             this.BR = BR;
             this.BK = BK;
             this.move = move;
+            this.MKC = MKC;
+            this.MQC = MQC;
+            this.PKC = PKC;
+            this.PQC = PQC;
             //this.player = currentPlayer;
 
             createUsefullBitboards();
@@ -171,8 +177,20 @@ namespace ChessBoardUI.AIAlgorithm
 
             // Evaluate pieces under threat
             MoveGenerator.setCurrentBitboards(leaf_chessboard.BP, leaf_chessboard.BR, leaf_chessboard.BN, leaf_chessboard.BB, leaf_chessboard.BQ, leaf_chessboard.BK, leaf_chessboard.WP, leaf_chessboard.WR, leaf_chessboard.WN, leaf_chessboard.WB, leaf_chessboard.WQ, leaf_chessboard.WK);
-            MoveGenerator.setCurrentBitboardsHistoryMove(move);
+            MoveGenerator.setCurrentBitboardsHistoryMove(leaf_chessboard.move);
+            MoveGenerator.setCurrentCastlingCondition(leaf_chessboard.MKC, leaf_chessboard.MQC, leaf_chessboard.PKC, leaf_chessboard.PQC);
             ArrayList moves;
+            if (leaf_chessboard.move.PKC || leaf_chessboard.move.PQC)
+            {
+                Player_Points += 14;
+            }
+            if (leaf_chessboard.move.MKC || leaf_chessboard.move.MQC)
+            {
+                //Console.WriteLine("Hallo");
+                Machine_Points += 14;
+            }
+
+
             if (min_max)
             {
                 moves = MoveGenerator.PossibleMovesMachine();
@@ -186,6 +204,10 @@ namespace ChessBoardUI.AIAlgorithm
             Nullable<PieceType> piece_cap = null;
             foreach (Move leaf_move in moves)
             {
+
+                //this is castling move bonus
+
+
                 if (leaf_move.cap_type != piece_cap)
                 {
                     if (min_max) //if it is a max leaf node, add value to machine's value;
@@ -393,7 +415,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
             else if (min_max)
             {
-                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move);
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC);
                 
                 foreach (ChessBoard CB in chessboards)
                 {
@@ -419,7 +441,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
             else
             {
-                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move);
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC);
                 foreach (ChessBoard CB in chessboards)
                 {
                     //  Console.WriteLine("This is min");

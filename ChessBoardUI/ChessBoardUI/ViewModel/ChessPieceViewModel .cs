@@ -46,6 +46,16 @@ namespace ChessBoardUI.ViewModel
         private int priv_coor_y;
 
 
+        public int Pri_Coor_X
+        {
+            get { return priv_coor_x; }
+        }
+
+        public int Pri_Coor_Y
+        {
+            get { return priv_coor_y; }
+        }
+
         public int Coor_X
         {
             get { return ((int)this._Pos.X / Constants.Constants.CELL_EDGE_LENGTH); }
@@ -59,7 +69,8 @@ namespace ChessBoardUI.ViewModel
         public Point Pos
         {
             get { return this._Pos; }
-            set { value.X = value.X * Constants.Constants.CELL_EDGE_LENGTH; value.Y=value.Y* Constants.Constants.CELL_EDGE_LENGTH; this._Pos = value;  RaisePropertyChanged(() => this.Pos);
+            set {
+                this.priv_coor_x =(int) value.X; this.priv_coor_y = (int)value.Y; value.X = value.X * Constants.Constants.CELL_EDGE_LENGTH; value.Y=value.Y* Constants.Constants.CELL_EDGE_LENGTH; this._Pos = value;  RaisePropertyChanged(() => this.Pos);
             }
         }
 
@@ -136,15 +147,35 @@ namespace ChessBoardUI.ViewModel
                         this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
                         this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
                         this.Chose = false;
-                        return;
+                        return ;
                     }
 
-                    //need check castling in this legalmove event also
-
-
-                    if (MoveGenerator.LegalRegularMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type) || MoveGenerator.LegalEnPassentPawnMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
+                    //if player makes a casstling move
+                    if(MoveGenerator.LegalCastlingMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
                     {
+                        //this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
+                        //this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
+                        //Console.WriteLine("Coor for king in vm is " + this.Coor_X);
+                        this.Chose = false;
+                        Messenger.Default.Send(new HumanMoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(target_x, target_y), Type = this.Type, Castling = true, AnPassent = false, Promotion = false, Turn = true });
+                        return ;
+                    }
 
+
+                    //need player make en passent move
+                    if(MoveGenerator.LegalEnPassentPawnMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
+                    {
+                        this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
+                        this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
+                        this.Chose = false;
+                        Messenger.Default.Send(new HumanMoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(this.Coor_X, this.Coor_Y), Type = this.Type, Castling = false, AnPassent = true, Promotion = false, Turn = true });
+                        return ;
+                    }
+
+
+
+                    if (MoveGenerator.LegalRegularMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
+                    {
                         //promote humans pawn
                         if (target_y == 0 && this.Type == PieceType.Pawn && this.Player==Player.White)
                         {

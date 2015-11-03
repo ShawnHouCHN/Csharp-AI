@@ -34,38 +34,6 @@ namespace ChessBoardUI
         {
             InitializeComponent();
 
-            //test
-            //SPCapturedViewModel test = new SPCapturedViewModel { CapturedPiecesCollection = new ObservableCollection<Image>() };
-            //PlayerCapStack.ItemsSource = test.CapturedPiecesCollection;
-            //Uri uri = new Uri("/PieceImg/chess_piece_white_bishop.png", UriKind.Relative);
-            //BitmapImage source = new BitmapImage();
-            //source.BeginInit();
-            //source.UriSource = uri;
-            //source.DecodePixelHeight = 70;
-            //source.DecodePixelWidth = 70;
-            //source.EndInit();
-
-            //Uri uri2 = new Uri("/PieceImg/chess_piece_white_queen.png", UriKind.Relative);
-            //BitmapImage source2 = new BitmapImage();
-            //source2.BeginInit();
-            //source2.UriSource = uri2;
-            //source2.DecodePixelHeight = 70;
-            //source2.DecodePixelWidth = 70;
-            //source2.EndInit();
-
-            //Image a = new Image();
-            //a.Source = source;
-            //a.Width = 40;
-            //a.Height = 40;
-
-            //Image b = new Image();
-            //b.Source = source2;
-            //b.Width = 40;
-            //b.Height = 40;
-            
-            //test.CapturedPiecesCollection.Add(a);
-            //test.CapturedPiecesCollection.Add(b);
-
         }
 
         private void StartGame_Click(object sender, RoutedEventArgs e)
@@ -90,11 +58,7 @@ namespace ChessBoardUI
 
 
             board.HumanPlayer.HumanTimer.startClock();
-            //chess_canvas.SetValue = (Brush)Resources["Checkerboard2"];
-            //TemplateContent a = ChessBoard.ItemsPanel.Template;
-            // = (Brush)Resources["Checkerboard2"];
-            //PlayerCapStack.SetBinding(ItemsControl.ItemsSourceProperty, new Binding() { Source = board.HumanPlayer.HumanCaptureStack.CapturedPiecesCollection });
-            //MachineCapStack.SetBinding(ItemsControl.ItemsSourceProperty, new Binding() { Source = board.MachinePlayer.MachineCaptureStack.CapturedPiecesCollection });
+     
             PlayerCapStack.ItemsSource = board.HumanPlayer.HumanCaptureStack.CapturedPiecesCollection;
             MachineCapStack.ItemsSource = board.MachinePlayer.MachineCaptureStack.CapturedPiecesCollection;
 
