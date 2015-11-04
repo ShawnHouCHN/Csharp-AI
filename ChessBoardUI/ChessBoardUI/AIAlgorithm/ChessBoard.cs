@@ -442,11 +442,12 @@ namespace ChessBoardUI.AIAlgorithm
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
-
-                    //Console.WriteLine("Chessboard item max " + Convert.ToString((long)CB.occupied, 2));
-                    //Console.WriteLine("Chessboard eva " + evaluateBoard(min_max, CB));
-                    //evaluateBoard(min_max, CB);
-                    int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
+                    if (DateTime.Now > MoveGenerator.targetsearchtime)
+                    { break; }
+                        //Console.WriteLine("Chessboard item max " + Convert.ToString((long)CB.occupied, 2));
+                        //Console.WriteLine("Chessboard eva " + evaluateBoard(min_max, CB));
+                        //evaluateBoard(min_max, CB);
+                        int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result > alpha)
                     {
                         alpha = result;
@@ -467,6 +468,8 @@ namespace ChessBoardUI.AIAlgorithm
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK);
                 foreach (ChessBoard CB in chessboards)
                 {
+                    if (DateTime.Now > MoveGenerator.targetsearchtime)
+                    { break; }
                     //  Console.WriteLine("This is min");
                     //  Console.WriteLine("Chessboard item min " + Convert.ToString((long)CB.occupied, 2));
                     // Console.WriteLine("Chessboard eva " + evaluateBoard(min_max, CB));

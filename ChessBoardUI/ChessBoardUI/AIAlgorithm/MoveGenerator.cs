@@ -86,8 +86,8 @@ namespace ChessBoardUI.AIAlgorithm
         }
         public int sortWithBestMove()
         {
-            if (item_one.Equals(bestMove)) { return 1; }
-            else if (item_two.Equals(bestMove)) { return -1; }
+            if (item_one.Equals(bestMove)) { return -1; }
+            else if (item_two.Equals(bestMove)) { return 1; }
 
             return 0;
 
@@ -96,7 +96,7 @@ namespace ChessBoardUI.AIAlgorithm
         {
             if (item_one.to_file == lastMove.to_file && item_one.to_rank == lastMove.to_rank)
             {
-                return 1;
+                return -1;
             }
             if (item_two.to_file == lastMove.to_file && item_two.to_rank == lastMove.to_rank)
             {
@@ -923,7 +923,7 @@ namespace ChessBoardUI.AIAlgorithm
         static ArrayList k_move_list;
         static ArrayList wp_move_list;
         internal static int EBcounter;
-        internal static Move lastMove;
+        internal static Move lastMove = null;
         internal static DateTime targetsearchtime;
 
         public MoveGenerator()
@@ -1053,6 +1053,7 @@ namespace ChessBoardUI.AIAlgorithm
         public static void setCurrentBitboardsHistoryMove(Move historymove = null)
         {
             history_move = historymove;
+            lastMove = historymove;
         }
 
         public static Move getCurrentBitboardsHistoryMove()
@@ -2350,10 +2351,16 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     bestMove = bestMoves.Dequeue();
                     if (lastMove != null)
-                        moves.Sort(new MoveCompareWithBestLastMove(bestMove,lastMove));
+                    {
+                        moves.Sort(new MoveCompareWithBestLastMove(bestMove, lastMove));
+                        Console.WriteLine("Bestmove is at index {0} of the sorted moves.", moves.IndexOf(bestMove));
+                    }
                     else
                         moves.Sort(new MoveCompareWithBestMove(bestMove));
+                    Console.WriteLine("Bestmove is at index {0} of the sorted moves.", moves.IndexOf(bestMove));
                 }
+                
+
                 foreach (Move move in moves)
                 {
                     ulong BP = B_P; ulong WP = W_P;
@@ -2496,10 +2503,29 @@ namespace ChessBoardUI.AIAlgorithm
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
                 setCurrentBitboardsHistoryMove(history_move);
                 ArrayList moves = PossibleMovesPlayer();
+
                 if (bestMoves.Count == 0)
-                    moves.Sort(new MoveCompare());
+                {
+                    if (lastMove != null)
+                        moves.Sort(new MoveCompareWithLastMove(lastMove));
+                    else
+                        moves.Sort(new MoveCompare());
+
+                }
+
                 else
-                    moves.Sort(new MoveCompareWithBestMove(bestMoves.Dequeue())); 
+                {
+                    bestMove = bestMoves.Dequeue();
+                    if (lastMove != null)
+                    {
+                        moves.Sort(new MoveCompareWithBestLastMove(bestMove, lastMove));
+                        Console.WriteLine("Bestmove is at index {0} of the sorted moves.", moves.IndexOf(bestMove));
+                    }
+                    else
+                        moves.Sort(new MoveCompareWithBestMove(bestMove));
+                        Console.WriteLine("Bestmove is at index {0} of the sorted moves.", moves.IndexOf(bestMove));
+                }
+               
 
                 foreach (Move move in moves)
                 {

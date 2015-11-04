@@ -193,23 +193,32 @@ namespace ChessBoardUI.Players
             MoveGenerator.setCurrentBitboards(curr_board_state.bestState.BP, curr_board_state.bestState.BR, curr_board_state.bestState.BN, curr_board_state.bestState.BB, curr_board_state.bestState.BQ, curr_board_state.bestState.BK, curr_board_state.bestState.WP, curr_board_state.bestState.WR, curr_board_state.bestState.WN, curr_board_state.bestState.WB, curr_board_state.bestState.WQ, curr_board_state.bestState.WK);
             MoveGenerator.setCurrentBitboardsHistoryMove(curr_board_state.bestState.move);
             return curr_board_state.bestState.move;
-
         }
 
         private void startIterativeSearch(ChessBoard curr_board_state)
         {
-            DateTime currentTime = DateTime.Now;
-            MoveGenerator.targetsearchtime = currentTime.AddSeconds(10);
+            MoveGenerator.targetsearchtime = DateTime.Now.AddSeconds(10);
+            ChessBoard temp = curr_board_state;
+            //curr_board_state.AlphaBetaSearch(int.MinValue, int.MaxValue, 1, true);
+            //ChessBoard bestState = curr_board_state.bestState;
+            //while (bestState != null)
+            //{
+            //    MoveGenerator.bestMoves.Enqueue(bestState.move);
+            //    bestState = bestState.bestState;
+            //}
+            //Console.WriteLine("Best move of layer 1 search: "+MoveGenerator.bestMoves.Peek().ToString());
+
+            //curr_board_state.AlphaBetaSearch(int.MinValue, int.MaxValue, 2, true);
+
 
             for (int i = 1; i < 100; i++)
             {
-                
                 MoveGenerator.searchcounter = 0;
                 MoveGenerator.EBcounter = 0;
                 MoveGenerator.GBcounter = 0;
                 MoveGenerator.GBtime = 0;
                 MoveGenerator.EBtime = 0;
-                //ChessBoard temp = null;
+
                 curr_board_state.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
                 ChessBoard bestState = curr_board_state.bestState;
                 while (bestState != null)
@@ -217,27 +226,14 @@ namespace ChessBoardUI.Players
                     MoveGenerator.bestMoves.Enqueue(bestState.move);
                     bestState = bestState.bestState;
                 }
-                Console.WriteLine("Length of bestmoves is {0}",MoveGenerator.bestMoves.Count);
-                Console.WriteLine("Searching in layer: {0} through {1} boardstates with an average branching factor of {2}", i, MoveGenerator.searchcounter, (Math.Pow(MoveGenerator.searchcounter,(1 /(double) i))));
-                Console.WriteLine("It evaluated {0} boardstates in {1} milliseconds, and generated {2} 'sub'-boards in {3} milliseconds.",MoveGenerator.EBcounter, MoveGenerator.EBtime, MoveGenerator.GBcounter, MoveGenerator.GBtime);
-                currentTime = DateTime.Now;
-                //Console.WriteLine("Time is "+(currentTime-target));
-                if (currentTime >= MoveGenerator.targetsearchtime)
+                Console.WriteLine("Length of bestmoves is {0}", MoveGenerator.bestMoves.Count);
+                Console.WriteLine("Searching in layer: {0} through {1} boardstates with an average branching factor of {2}", i, MoveGenerator.searchcounter, (Math.Pow(MoveGenerator.searchcounter, (1 / (double)i))));
+                Console.WriteLine("It evaluated {0} boardstates in {1} milliseconds, and generated {2} 'sub'-boards in {3} milliseconds.", MoveGenerator.EBcounter, MoveGenerator.EBtime, MoveGenerator.GBcounter, MoveGenerator.GBtime);
+                if (DateTime.Now >= MoveGenerator.targetsearchtime)
                 {
-                    //curr_board_state.bestState.drawArray();
-                    //Console.WriteLine("Evaluation of Best state: {0}", CB.bestState.evaluateBoard(true, CB));
-                    //MoveGenerator.searchcounter = 0;
-                    //curr_board_state.bestState = temp;
                     break;
-                } //else { temp = curr_board_state.bestState; }
+                }
             }
         }
-
-
-
     }
-
-
-
-
 }
