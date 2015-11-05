@@ -202,7 +202,7 @@ namespace ChessBoardUI.Players
                     // if two piece is same color,then it is a castling. 
                     Console.WriteLine("Player made a capture move");
                     ChessPiece to_piece_location = this.pieces_dict[to_location];
-                    //int to_index = (7 - (int)action.ToPoint.Y) * 8 + (int)action.ToPoint.X;
+
                     ulong removed_place = 0x0000000000000001;
                     removed_place = (removed_place << (to_index));
                     this.pieces_collection.Remove(to_piece_location);
@@ -277,7 +277,7 @@ namespace ChessBoardUI.Players
                         // this is the current chess board state
                         ChessBoard curr_board_state = new ChessBoard(MoveGenerator.white_pawns, MoveGenerator.white_knights, MoveGenerator.white_bishops, MoveGenerator.white_queens, MoveGenerator.white_rooks, MoveGenerator.white_king, MoveGenerator.black_pawns, MoveGenerator.black_knights, MoveGenerator.black_bishops, MoveGenerator.black_queens, MoveGenerator.black_rooks, MoveGenerator.black_king, MoveGenerator.history_move, MoveGenerator.MKC, MoveGenerator.MQC, MoveGenerator.PKC, MoveGenerator.PQC);
 
-                        //Console.WriteLine("AI board state before ai runs " + Convert.ToString((long)curr_board_state.occupied, 2));
+  
 
                         //code below is for updating frontend
                         Move ai_move = getNextMove(curr_board_state);
@@ -314,7 +314,7 @@ namespace ChessBoardUI.Players
         {
             startIterativeSearch(curr_board_state);
             MoveGenerator.setCurrentBitboards(curr_board_state.bestState.BP, curr_board_state.bestState.BR, curr_board_state.bestState.BN, curr_board_state.bestState.BB, curr_board_state.bestState.BQ, curr_board_state.bestState.BK, curr_board_state.bestState.WP, curr_board_state.bestState.WR, curr_board_state.bestState.WN, curr_board_state.bestState.WB, curr_board_state.bestState.WQ, curr_board_state.bestState.WK);
-            MoveGenerator.setCurrentBitboardsHistoryMove(curr_board_state.bestState.move);
+            MoveGenerator.setCurrentBitboardsHistoryMove(curr_board_state.bestState.move);            
             MoveGenerator.setCurrentCastlingCondition(curr_board_state.bestState.MKC, curr_board_state.bestState.MQC, curr_board_state.bestState.PKC, curr_board_state.bestState.PQC);
             return curr_board_state.bestState.move;
 
@@ -322,8 +322,26 @@ namespace ChessBoardUI.Players
 
         private void startIterativeSearch(ChessBoard init)
         {
+            DateTime start_time = DateTime.Now;
+            int i = 1;
+            while (i<=5)
+            {
+            init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
+            ChessBoard bestState = init.bestState;
+            MoveGenerator.best_move_queue.Clear();
+            while (bestState != null)
+            {                
+                MoveGenerator.addAIBestMoveQueue(bestState.move);
+                bestState = bestState.bestState;
+            }
+                //Console.WriteLine();
+                //foreach (Move move in MoveGenerator.best_move_queue)
+                //{
+                //    Console.WriteLine("Best move is " + move.from_rank + move.from_file + move.to_rank + move.to_file);
+                //}
+                i++;
+            }
 
-            init.AlphaBetaSearch(int.MinValue, int.MaxValue, 5, true);
 
         }
 

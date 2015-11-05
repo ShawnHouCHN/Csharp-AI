@@ -66,6 +66,16 @@ namespace ChessBoardUI.AIAlgorithm
 
     class MoveCompare: IComparer
     {
+        Move last_move;
+        public MoveCompare()
+        {
+            this.last_move = null;
+        }
+
+        public MoveCompare(Move last_move=null)
+        {
+            this.last_move = last_move;
+        }
 
         public int Compare(Object x, Object y)
         {
@@ -78,17 +88,45 @@ namespace ChessBoardUI.AIAlgorithm
             Move item_one = x as Move;
             Move item_two = y as Move;
             Nullable<PieceType> piece_cap = null;
-            if (item_one.cap_type != piece_cap && item_two.cap_type == piece_cap)
+
+            if (last_move == null)
             {
-                return -1;
-            }
-            if (item_one.cap_type == piece_cap && item_two.cap_type != piece_cap)
-            {
-                return 1;
+                if (item_one.cap_type != piece_cap && item_two.cap_type == piece_cap)
+                {
+                    return -1;
+                }
+                else if (item_one.cap_type == piece_cap && item_two.cap_type != piece_cap)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
             }
             else
             {
-                return 0;
+
+                if (item_one.from_rank == last_move.from_rank && item_one.from_file == last_move.from_file&& item_one.to_rank==last_move.to_rank&& item_one.to_file==last_move.to_file)
+                {
+                    return -1;
+                }
+                else if (item_two.from_rank == last_move.from_rank && item_two.from_file == last_move.from_file&& item_two.to_rank == last_move.to_rank && item_two.to_file == last_move.to_file)
+                {
+                    return 1;
+                }
+                else if (item_one.cap_type != piece_cap && item_two.cap_type == piece_cap)
+                {
+                    return -1;
+                }
+                else if (item_one.cap_type == piece_cap && item_two.cap_type != piece_cap)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
     }
@@ -121,7 +159,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         //history move(en passent)
         public static Move history_move;
-
+        public static Move history_ai_move;
 
         //these are for pawn moves
         static ulong rank7 = 0xff00000000000000;
@@ -842,6 +880,7 @@ namespace ChessBoardUI.AIAlgorithm
         static ArrayList wp_move_list;
         static ArrayList machine_castling_move_list;
         static ArrayList player_castling_move_list;
+        public static Queue<Move> best_move_queue;
 
         public MoveGenerator()
         {
@@ -859,6 +898,7 @@ namespace ChessBoardUI.AIAlgorithm
             wp_move_list = new ArrayList();
             machine_castling_move_list = new ArrayList();
             player_castling_move_list = new ArrayList();
+            best_move_queue = new Queue<Move>();
         }
 
 
@@ -980,6 +1020,12 @@ namespace ChessBoardUI.AIAlgorithm
         public static void setCurrentBitboardsHistoryMove(Move historymove=null)
         {
             history_move = historymove;
+        }
+
+        public static void addAIBestMoveQueue(Move historymove = null)
+        {
+            best_move_queue.Enqueue(historymove);
+
         }
 
         public static void setCurrentCastlingCondition(bool _MKC=true, bool _MQC=true, bool _PKC=true, bool _PQC=true)
@@ -2740,14 +2786,32 @@ namespace ChessBoardUI.AIAlgorithm
             List<ChessBoard> theList = new List<ChessBoard>();
             if (min_max)  // if it is an ai max node
             {
-
-                //ulong BP, ulong BR, ulong BN, ulong BB, ulong BQ, ulong BK, ulong WP, ulong WR, ulong WN, ulong WB, ulong WQ, ulong WK
+                //Console.WriteLine("---------------");
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
                 setCurrentBitboardsHistoryMove(history_move);
                 setCurrentCastlingCondition(MKC, MQC, PKC, PQC);        
                 ArrayList moves = PossibleMovesMachine();
-               
-                moves.Sort(new MoveCompare()); //move ordering
+                Move last_time_best=null;
+                if (best_move_queue.Count!=0)
+                {
+                    last_time_best = best_move_queue.Dequeue();
+                    //Console.WriteLine("Best Move is " + last_time_best.from_rank + " " + last_time_best.from_file + " " + last_time_best.to_rank + " " + last_time_best.to_file);
+                }                   
+                //Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
+                moves.Sort(new MoveCompare(last_time_best));
+
+                // else
+                // {
+                //Move last_best = best_move_queue.Dequeue();
+                // moves.Sort(new MoveCompare()); //move ordering
+                //moves.Sort(new MoveCompare(last_best));
+                //}
+                
+                //foreach (Move move in moves)
+                //{
+                //    Console.WriteLine("Move is " + move.from_rank + " " + move.from_file + " " + move.to_rank + " " + move.to_file);
+                //}
+
 
                 foreach (Move move in moves)
                 {
@@ -2957,7 +3021,13 @@ namespace ChessBoardUI.AIAlgorithm
                 setCurrentBitboardsHistoryMove(history_move);
                 setCurrentCastlingCondition(MKC, MQC, PKC, PQC);
                 ArrayList moves = PossibleMovesPlayer();
-                moves.Sort(new MoveCompare());
+                Move last_time_best = null;
+                if (best_move_queue.Count != 0)
+                {
+                    last_time_best = best_move_queue.Dequeue();
+                }
+                //Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
+                moves.Sort(new MoveCompare(last_time_best));
 
                 foreach (Move move in moves)
                 {

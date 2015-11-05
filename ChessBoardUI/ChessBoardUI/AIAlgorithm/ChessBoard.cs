@@ -20,7 +20,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         public Move move; // the move taken to this board state 
        
-        public ChessBoard bestState;
+        public ChessBoard bestState=null;
         public bool MKC = true;
         public bool MQC = true;
         public bool PKC = true;
