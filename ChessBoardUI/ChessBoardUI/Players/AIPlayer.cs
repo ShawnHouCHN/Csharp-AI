@@ -148,12 +148,12 @@ namespace ChessBoardUI.Players
 
         public void AlgorithmThread()
         {
+            bool max = true;
             try
             {
                 while (true)
                 {
-                    if (turn)
-                    {
+                    
                         this.MachineTimer.startClock();
 
                         // this is the current chess board state
@@ -162,8 +162,8 @@ namespace ChessBoardUI.Players
                         //Console.WriteLine("AI board state before ai runs " + Convert.ToString((long)curr_board_state.occupied, 2));
 
                         //code below is for updating frontend
-                        Move ai_move = getNextMove(curr_board_state);
-
+                        Move ai_move = getNextMove(curr_board_state,max);
+                        max = !max;
 
                         //Console.WriteLine("AI Moved piece is a " + this.pieces_dict[to_location].Type);
 
@@ -175,9 +175,9 @@ namespace ChessBoardUI.Players
 
                         Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank = ai_move.from_rank, From_File = ai_move.from_file, To_Rank = ai_move.to_rank, To_File = ai_move.to_file });
                         this.MachineTimer.stopClock();
-                        this.turn = false;
+                        
                     }
-                }
+                
 
             }
             catch (Exception ex)
@@ -187,15 +187,15 @@ namespace ChessBoardUI.Players
             }
         }
 
-        public Move getNextMove(ChessBoard curr_board_state)
+        public Move getNextMove(ChessBoard curr_board_state,bool max)
         {
-            startIterativeSearch(curr_board_state);
+            startIterativeSearch(curr_board_state,max);
             MoveGenerator.setCurrentBitboards(curr_board_state.bestState.BP, curr_board_state.bestState.BR, curr_board_state.bestState.BN, curr_board_state.bestState.BB, curr_board_state.bestState.BQ, curr_board_state.bestState.BK, curr_board_state.bestState.WP, curr_board_state.bestState.WR, curr_board_state.bestState.WN, curr_board_state.bestState.WB, curr_board_state.bestState.WQ, curr_board_state.bestState.WK);
             MoveGenerator.setCurrentBitboardsHistoryMove(curr_board_state.bestState.move);
             return curr_board_state.bestState.move;
         }
 
-        private void startIterativeSearch(ChessBoard curr_board_state)
+        private void startIterativeSearch(ChessBoard curr_board_state, bool start)
         {
             MoveGenerator.targetsearchtime = DateTime.Now.AddSeconds(10);
             ChessBoard temp = curr_board_state;
@@ -219,7 +219,7 @@ namespace ChessBoardUI.Players
                 MoveGenerator.GBtime = 0;
                 MoveGenerator.EBtime = 0;
 
-                curr_board_state.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
+                curr_board_state.AlphaBetaSearch(int.MinValue, int.MaxValue, i, start);
                 ChessBoard bestState = curr_board_state.bestState;
                 while (bestState != null)
                 {
