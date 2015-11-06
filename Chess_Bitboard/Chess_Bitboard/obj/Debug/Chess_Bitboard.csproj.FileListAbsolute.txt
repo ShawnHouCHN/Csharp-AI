@@ -1,6 +1,0 @@
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chess_Bitboard\Chess_Bitboard\bin\Debug\Chess_Bitboard.exe.config
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chess_Bitboard\Chess_Bitboard\bin\Debug\Chess_Bitboard.exe
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chess_Bitboard\Chess_Bitboard\bin\Debug\Chess_Bitboard.pdb
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chess_Bitboard\Chess_Bitboard\obj\Debug\Chess_Bitboard.exe
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chess_Bitboard\Chess_Bitboard\obj\Debug\Chess_Bitboard.pdb
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chess_Bitboard\Chess_Bitboard\obj\Debug\Chess_Bitboard.csprojResolveAssemblyReference.cache

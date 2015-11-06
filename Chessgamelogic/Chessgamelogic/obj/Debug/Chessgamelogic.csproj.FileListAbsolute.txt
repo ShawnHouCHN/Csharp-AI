@@ -1,6 +1,0 @@
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chessgamelogic\Chessgamelogic\bin\Debug\Chessgamelogic.exe.config
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chessgamelogic\Chessgamelogic\bin\Debug\Chessgamelogic.exe
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chessgamelogic\Chessgamelogic\bin\Debug\Chessgamelogic.pdb
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chessgamelogic\Chessgamelogic\obj\Debug\Chessgamelogic.csprojResolveAssemblyReference.cache
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chessgamelogic\Chessgamelogic\obj\Debug\Chessgamelogic.exe
-D:\6th semester\C# programming\Github Repository\Csharp-AI\Chessgamelogic\Chessgamelogic\obj\Debug\Chessgamelogic.pdb
