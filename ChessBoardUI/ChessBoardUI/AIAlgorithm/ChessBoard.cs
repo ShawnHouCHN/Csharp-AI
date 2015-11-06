@@ -419,7 +419,8 @@ namespace ChessBoardUI.AIAlgorithm
                 
                 foreach (ChessBoard CB in chessboards)
                 {
-                    
+                    if (DateTime.Compare(DateTime.Now, MoveGenerator.end_time) > 0)
+                    { break; }
                     //Console.WriteLine("Chessboard item max " + Convert.ToString((long)CB.occupied, 2));
                     //Console.WriteLine("Chessboard eva " + evaluateBoard(!min_max, CB));
                     //evaluateBoard(min_max, CB);
@@ -444,8 +445,10 @@ namespace ChessBoardUI.AIAlgorithm
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC);
                 foreach (ChessBoard CB in chessboards)
                 {
+                    if (DateTime.Compare(DateTime.Now, MoveGenerator.end_time) > 0)
+                    { break; }
                     //  Console.WriteLine("This is min");
-                     // Console.WriteLine("Chessboard item min " + Convert.ToString((long)CB.occupied, 2));
+                    // Console.WriteLine("Chessboard item min " + Convert.ToString((long)CB.occupied, 2));
                     //Console.WriteLine("Chessboard Bish min " + Convert.ToString((long)CB.BB, 2));
                     //Console.WriteLine("Chessboard knig min " + Convert.ToString((long)CB.WN, 2));
                     //Console.WriteLine("Chessboard eva " + evaluateBoard(!min_max, CB));

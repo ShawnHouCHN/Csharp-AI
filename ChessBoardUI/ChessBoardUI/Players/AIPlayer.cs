@@ -29,7 +29,9 @@ namespace ChessBoardUI.Players
         Thread algo_thread;
         MoveGenerator move_generator;
         private Image cap_piece_image;
+        private static int time_interval;
 
+       
         //Player ai_color;
 
         public AIPlayer(ObservableCollection<ChessPiece> pieces_collection, Dictionary<int, ChessPiece> pieces_dict)
@@ -63,6 +65,12 @@ namespace ChessBoardUI.Players
             algo_thread = new Thread(new ThreadStart(AlgorithmThread));
             algo_thread.IsBackground = true; //terminate thread when window is closed 
             algo_thread.Start();
+        }
+
+        public int Interval
+        {
+            get { return time_interval; }
+            set { time_interval = value; }
         }
 
         public SPCapturedViewModel MachineCaptureStack  //stack of pieces captured by human player(collection of images)
@@ -323,17 +331,19 @@ namespace ChessBoardUI.Players
         private void startIterativeSearch(ChessBoard init)
         {
             DateTime start_time = DateTime.Now;
+            MoveGenerator.end_time = start_time.AddSeconds(this.Interval); //set iterative deepning end time;
             int i = 1;
-            while (i<=5)
+            while (DateTime.Compare(DateTime.Now , MoveGenerator.end_time)<=0)
             {
-            init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
-            ChessBoard bestState = init.bestState;
-            MoveGenerator.best_move_queue.Clear();
-            while (bestState != null)
-            {                
-                MoveGenerator.addAIBestMoveQueue(bestState.move);
-                bestState = bestState.bestState;
-            }
+                Console.WriteLine("Depth is "+i);
+                init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, true);
+                ChessBoard bestState = init.bestState;
+                MoveGenerator.best_move_queue.Clear();
+                while (bestState != null)
+                {                
+                   MoveGenerator.addAIBestMoveQueue(bestState.move);
+                   bestState = bestState.bestState;
+                 }
                 //Console.WriteLine();
                 //foreach (Move move in MoveGenerator.best_move_queue)
                 //{
@@ -341,7 +351,7 @@ namespace ChessBoardUI.Players
                 //}
                 i++;
             }
-
+            return;
 
         }
 

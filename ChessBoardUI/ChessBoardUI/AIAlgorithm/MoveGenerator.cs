@@ -161,6 +161,9 @@ namespace ChessBoardUI.AIAlgorithm
         public static Move history_move;
         public static Move history_ai_move;
 
+        public static DateTime process_time;
+        public static DateTime end_time;
+
         //these are for pawn moves
         static ulong rank7 = 0xff00000000000000;
         static ulong rank0 = 0x00000000000000ff;
@@ -2784,6 +2787,9 @@ namespace ChessBoardUI.AIAlgorithm
         public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K, Move history_move=null, bool MKC=true, bool MQC=true, bool PKC=true, bool PQC=true)
         {
             List<ChessBoard> theList = new List<ChessBoard>();
+
+            
+
             if (min_max)  // if it is an ai max node
             {
                 //Console.WriteLine("---------------");
@@ -2825,7 +2831,11 @@ namespace ChessBoardUI.AIAlgorithm
                     bool M_Q_C = MQC;
                     bool P_K_C = PKC;
                     bool P_Q_C = PQC;
-                    
+
+                    //process_time = DateTime.Now;
+                    //if (DateTime.Compare(process_time, end_time) > 0)
+                    //    break;
+
                     //castling move.
 
                     if (move.MQC) // if move is a machine queen side castling
@@ -3041,6 +3051,12 @@ namespace ChessBoardUI.AIAlgorithm
                     bool M_Q_C = MQC;
                     bool P_K_C = PKC;
                     bool P_Q_C = PQC;
+                    //process_time = DateTime.Now;
+                    //if (DateTime.Compare(process_time, end_time) > 0)
+                    //    break;
+                    //process_time = DateTime.Now;
+                    //if (DateTime.Compare(process_time, end_time) >= 0)
+                    //    break;
 
                     if (move.PQC) // if move is a player queen side castling
                     {

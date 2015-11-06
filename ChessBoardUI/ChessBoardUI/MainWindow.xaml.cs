@@ -42,9 +42,9 @@ namespace ChessBoardUI
             board_layout = new Dictionary<int, ChessPiece>();
 
             if ((String)((ComboBoxItem)ChooseColor.SelectedItem).Content == "Black")
-                board = new MainControl(false);
+                board = new MainControl(false, (String)((ComboBoxItem)ChooseLevel.SelectedItem).Content);
             else
-                board = new MainControl(true);
+                board = new MainControl(true, (String)((ComboBoxItem)ChooseLevel.SelectedItem).Content);
 
 
             //Console.WriteLine("{0},{1}", ((ComboBoxItem)ChooseColor.SelectedItem).Content, ((ComboBoxItem)ChooseLevel.SelectedItem).Content);

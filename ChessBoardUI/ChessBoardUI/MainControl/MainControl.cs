@@ -27,7 +27,7 @@ namespace ChessBoardUI.ViewModel
         
 
 
-        public MainControl(bool color)
+        public MainControl(bool color, string difficulty)
         {
             this.pieces_dict = new Dictionary<int, ChessPiece>();
             ChessPiece player_pawn0, player_pawn1, player_pawn2, player_pawn3, player_pawn4, player_pawn5, player_pawn6, player_pawn7, player_rook0, player_knight0, player_bishop0, player_king, player_queen, player_bishop1, player_knight1, player_rook1,
@@ -136,6 +136,14 @@ namespace ChessBoardUI.ViewModel
 
             this.human_player = new HMPlayer(this.pieces_collection, this.pieces_dict);
             this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict);
+
+            //add difficulty
+            if (difficulty.Equals("Easy"))
+                this.machine_player.Interval = 10;
+            else if(difficulty.Equals("Normal"))
+                this.machine_player.Interval = 15;
+            else if (difficulty.Equals("Hard"))
+                this.machine_player.Interval = 25;
 
         }
 
