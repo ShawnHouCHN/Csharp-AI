@@ -152,23 +152,7 @@ namespace ChessBoardUI.AIAlgorithm
             enemyOrEmpty = (empty | whitePieces);
         }
 
-        //public void Copyboard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK)
-        //{
-        //    this.WP = WP;
-        //    this.WN = WN;
-        //    this.WB = WB;
-        //    this.WQ = WQ;
-        //    this.WR = WR;
-        //    this.WK = WK;
-        //    this.BP = BP;
-        //    this.BN = BN;
-        //    this.BB = BB;
-        //    this.BQ = BQ;
-        //    this.BR = BR;
-        //    this.BK = BK;
 
-        //    //createUsefullBitboards();
-        //}
 
         // TO DO
         public int evaluateBoard(bool min_max, ChessBoard leaf_chessboard)
@@ -181,13 +165,14 @@ namespace ChessBoardUI.AIAlgorithm
             MoveGenerator.setCurrentBitboardsHistoryMove(leaf_chessboard.move);
             MoveGenerator.setCurrentCastlingCondition(leaf_chessboard.MKC, leaf_chessboard.MQC, leaf_chessboard.PKC, leaf_chessboard.PQC);
             ArrayList moves;
+
+            //
             if (leaf_chessboard.move.PKC || leaf_chessboard.move.PQC)
             {
                 Player_Points += 100;
             }
             if (leaf_chessboard.move.MKC || leaf_chessboard.move.MQC)
             {
-                //Console.WriteLine("Hallo");
                 Machine_Points += 100;
             }
 
