@@ -1404,7 +1404,7 @@ namespace ChessBoardUI.AIAlgorithm
                         wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Rook, true));
                     else if (((enemy_queens >> i) & 1) == 1)
                         wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Queen, true));
-                    else if (((enemy_queens >> i) & 1) == 1)
+                    else if (((enemy_king >> i) & 1) == 1)
                         wp_move_list.Add(new Move((i / 8 - 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, true));
                 }
             }
