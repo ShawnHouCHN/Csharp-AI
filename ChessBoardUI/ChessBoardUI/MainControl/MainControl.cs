@@ -23,11 +23,12 @@ namespace ChessBoardUI.ViewModel
         private ObservableCollection<ChessPiece> pieces_collection;
         HMPlayer human_player;
         AIPlayer machine_player;
+        AIPlayer human_player_simu;
         private Dictionary<int, ChessPiece> pieces_dict;
         
 
 
-        public MainControl(bool color, string difficulty)
+        public MainControl(bool color, string difficulty, bool mode=false)
         {
             this.pieces_dict = new Dictionary<int, ChessPiece>();
             ChessPiece player_pawn0, player_pawn1, player_pawn2, player_pawn3, player_pawn4, player_pawn5, player_pawn6, player_pawn7, player_rook0, player_knight0, player_bishop0, player_king, player_queen, player_bishop1, player_knight1, player_rook1,
@@ -69,6 +70,7 @@ namespace ChessBoardUI.ViewModel
                 machine_rook1 = new ChessPiece { Pos = new Point(7, 0), Type = PieceType.Rook, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
 
                 MoveGenerator.setInitBitboards(color, 0x00ff000000000000, 0x8100000000000000, 0x4200000000000000, 0x2400000000000000, 0x0800000000000000, 0x1000000000000000, 0x000000000000ff00, 0x000000000000081, 0x000000000000042, 0x000000000000024, 0x0000000000000008, 0x0000000000000010);
+
             }
             else
             {
@@ -135,7 +137,13 @@ namespace ChessBoardUI.ViewModel
             this.pieces_dict.Add(player_king.Coor_X * 10 + player_king.Coor_Y, player_king);                this.pieces_dict.Add(machine_king.Coor_X * 10 + machine_king.Coor_Y, machine_king);
 
             this.human_player = new HMPlayer(this.pieces_collection, this.pieces_dict);
-            this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict);
+            if (!mode)
+            {
+                this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict);
+            }
+              
+            else
+                this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict, mode);
 
             //add difficulty
             if (difficulty.Equals("Easy"))
@@ -165,7 +173,10 @@ namespace ChessBoardUI.ViewModel
             get { return this.machine_player; }
         }
 
-
+        //public AIPlayer HumanSimuPlayer
+        //{
+        //    get { return this.human_player_simu; }
+        //}
 
 
 

@@ -90,8 +90,6 @@ namespace ChessBoardUI.Players
                 }
             }
 
-
-            // some bit operations to get the bit
          
 
         }
@@ -103,6 +101,7 @@ namespace ChessBoardUI.Players
 
             ChessPiece moved = this.pieces_dict[from_loca_index];
 
+            
 
             //this is all for castling move updating on frontend
             if (action.MKC)
@@ -153,8 +152,62 @@ namespace ChessBoardUI.Players
                 }
                 return;
             }
-
-
+            if (action.PQC)
+            {
+                if (action.From_File == 4) //means machine use black
+                {
+                    ChessPiece rook_queen_side = this.pieces_dict[7];
+                    moved.Pos_X = 2;
+                    rook_queen_side.Pos_X = 3;
+                    this.pieces_dict.Remove(from_loca_index);
+                    this.pieces_dict.Remove(0);
+                    this.pieces_dict.Add(27, moved);
+                    this.pieces_dict.Add(37, rook_queen_side);
+                }
+                else  //means machine use white
+                {
+                    ChessPiece rook_queen_side = this.pieces_dict[77];
+                    moved.Pos_X = 5;
+                    rook_queen_side.Pos_X = 4;
+                    this.pieces_dict.Remove(from_loca_index);
+                    this.pieces_dict.Remove(77);
+                    this.pieces_dict.Add(57, moved);
+                    this.pieces_dict.Add(47, rook_queen_side);
+                }
+                return;
+            }
+            if (action.PKC)
+            {
+                if (action.From_File == 4) //means machine use black
+                {
+                    ChessPiece rook_king_side = this.pieces_dict[77];
+                    moved.Pos_X = 6;
+                    rook_king_side.Pos_X = 5;
+                    this.pieces_dict.Remove(from_loca_index);
+                    this.pieces_dict.Remove(77);
+                    this.pieces_dict.Add(67, moved);
+                    this.pieces_dict.Add(57, rook_king_side);
+                }
+                else  //means machine use white
+                {
+                    ChessPiece rook_king_side = this.pieces_dict[7];
+                    moved.Pos_X = 1;
+                    rook_king_side.Pos_X = 2;
+                    this.pieces_dict.Remove(from_loca_index);
+                    this.pieces_dict.Remove(7);
+                    this.pieces_dict.Add(17, moved);
+                    this.pieces_dict.Add(27, rook_king_side);
+                }
+                return;
+            }
+            //if (action.Promotion)
+            //{
+            //    ChessPiece moved_to = this.pieces_dict[to_loca_index];
+            //    moved_to.Type = PieceType.Queen;
+            //    this.pieces_dict.Remove(from_loca_index);
+            //    this.pieces_dict.Add()
+            //}
+            //this is capture
             if (this.pieces_dict.ContainsKey(to_loca_index))
             {
                 ChessPiece to_piece_location = this.pieces_dict[to_loca_index];
@@ -176,6 +229,12 @@ namespace ChessBoardUI.Players
                 }));
 
             }
+
+            if (action.Promotion)
+            {
+                moved.Type = PieceType.Queen;
+            }
+
             moved.Pos_X = action.To_File;
             moved.Pos_Y = 7 - action.To_Rank;
 

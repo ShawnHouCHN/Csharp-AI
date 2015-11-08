@@ -171,8 +171,8 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 
-            
-            
+
+
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="70" Height="70">
@@ -205,7 +205,7 @@
 
         <!--Andreas' contribution 12/09-->
         <!--<WrapPanel Orientation="Vertical" HorizontalAlignment="Left" Height="560" Margin="619,43,0,0" VerticalAlignment="Top" Width="189"/>-->
-        <WrapPanel Orientation="Vertical" HorizontalAlignment="Center" Height="122" Margin="654,45,84.4,0" VerticalAlignment="Top" Width="80" ItemHeight="40">
+        <WrapPanel Orientation="Vertical" HorizontalAlignment="Center" Height="169" Margin="654,45,84.4,0" VerticalAlignment="Top" Width="80" ItemHeight="40">
 
             <ComboBox x:Name="ChooseColor" HorizontalAlignment="Center" IsEditable="True" IsReadOnly="True" Text="Color" Width="80" Height="20">
                 <ComboBoxItem Content="White" HorizontalAlignment="Left" Width="80"/>
@@ -218,12 +218,13 @@
                 <ComboBoxItem Content="Hard" HorizontalAlignment="Left" Width="80"/>
             </ComboBox>
             <Button x:Name="StartButton" Content="Start" Click="StartGame_Click" Width="80" Height="20" HorizontalAlignment="center"/>
+            <Button x:Name="SimulateButton" Content="Simulate" Click="SimulateGame_Click" Width="80" Height="20" HorizontalAlignment="center"/>
             <!--<Button x:Name="button" Content="Start" Command="{Binding Path=PlaySetupCommand}" Width="80" Height="20" HorizontalAlignment="center"/>-->
             <!--<Button x:Name="button2"  Content="Pause" Width="80" Height="20" HorizontalAlignment="Center"/>-->
         </WrapPanel>
 
-        
-        <Grid Name="timer_grid"  Width="180" Height="70" Margin="610,185,68,565">
+
+        <Grid Name="timer_grid"  Width="180" Height="70" Margin="610,237,28.4,513">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="7*" />
@@ -232,25 +233,25 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <Label x:Name="play_timer_label" Content="Player :" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <Label x:Name="ai_timer_label" Content="PC :" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBlock x:Name="player_timer" Width="126" Height="35" Text="{Binding Display}" Grid.Row="0" FontSize="14" Padding="9" Grid.ColumnSpan="2" Margin="54,0,0,0.2"/>
-            <TextBlock x:Name="pc_timer" Width="126" Height="35" Grid.Column="1" FontStretch="Medium" Text="{Binding Display}" FontSize="14" Grid.Row="1" Padding="9" />
+            <Label x:Name="play_timer_label" Content="Player :" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,8,0,3.2"/>
+            <Label x:Name="ai_timer_label" Content="PC :" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,6.8,0,2.4"/>
+            <TextBlock x:Name="player_timer" Width="126" Height="35" Text="{Binding Display}" Grid.Row="0" FontSize="14" Padding="9" Grid.ColumnSpan="2" Margin="54,2,0,33.4" Grid.RowSpan="2"/>
+            <TextBlock x:Name="pc_timer" Width="126" Height="35" FontStretch="Medium" Text="{Binding Display}" FontSize="14" Grid.Row="1" Padding="9" Grid.ColumnSpan="2" Margin="54,1.8,0,-1.6" />
         </Grid>
 
         <Grid Margin="6,619,69.4,56" ShowGridLines="True">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="16*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="16*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
             <Label x:Name="play_captured_label" Content="Player :" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             <Label x:Name="machine_captured_label" Content="PC :" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            
-            
+
+
             <ItemsControl x:Name="PlayerCapStack" Grid.Column="1" Grid.Row="0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -276,7 +277,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            
+
         </Grid>
 
 

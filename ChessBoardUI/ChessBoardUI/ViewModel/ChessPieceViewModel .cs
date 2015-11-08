@@ -176,18 +176,29 @@ namespace ChessBoardUI.ViewModel
 
                     if (MoveGenerator.LegalRegularMove(this.priv_coor_x, this.priv_coor_y, target_x, target_y, this.Type))
                     {
+                        //Console.WriteLine("Hallo");
                         //promote humans pawn
-                        if (target_y == 0 && this.Type == PieceType.Pawn && this.Player==Player.White)
+                        if (target_y == 0 && this.Type == PieceType.Pawn)
                         {
+                            //Console.WriteLine("Hallo1");
                             this.Type = PieceType.Queen;
+                            this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
+                            this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
+                            this.Chose = false;
+                            Messenger.Default.Send(new HumanMoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(this.Coor_X, this.Coor_Y), Type = this.Type, Castling = false, AnPassent = false, Promotion = true, Turn = true });
                         }
 
-                        this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
-                        this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
-                        this.Chose = false;
+                        else
+                        {
+                            //Console.WriteLine("Hallo2");
+                            this.Pos_X = ((int)Mouse.GetPosition(null).X - Constants.Constants.CANVAS_MARGIN_LEFT) / Constants.Constants.CELL_EDGE_LENGTH;
+                            this.Pos_Y = ((int)Mouse.GetPosition(null).Y - Constants.Constants.CANVAS_MARGIN_TOP) / Constants.Constants.CELL_EDGE_LENGTH;
+                            this.Chose = false;
 
-                        Messenger.Default.Send(new HumanMoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(this.Coor_X, this.Coor_Y), Type = this.Type, Castling = false, AnPassent = false, Promotion=false, Turn=true});
-                    }
+                            Messenger.Default.Send(new HumanMoveMessage { FromPoint = new Point(this.priv_coor_x, this.priv_coor_y), ToPoint = new Point(this.Coor_X, this.Coor_Y), Type = this.Type, Castling = false, AnPassent = false, Promotion = false, Turn = true });
+                            
+                        }
+                        }
 
                 }
 

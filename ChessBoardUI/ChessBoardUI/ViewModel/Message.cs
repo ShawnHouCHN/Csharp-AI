@@ -23,8 +23,8 @@ namespace ChessBoardUI.ViewModel
 
         public bool Turn
         {
-            get { return promote; }
-            set { promote = value; }
+            get { return turn; }
+            set { turn = value; }
         }
 
         public bool Promotion
@@ -72,8 +72,17 @@ namespace ChessBoardUI.ViewModel
         private int from_file;
         private int to_rank;
         private int to_file;
+        private bool promote;
         private bool M_K_C;
         private bool M_Q_C;
+        private bool P_K_C;
+        private bool P_Q_C;
+
+        public bool Promotion
+        {
+            get { return promote; }
+            set { promote = value; }
+        }
 
         public bool MKC
         {
@@ -85,6 +94,17 @@ namespace ChessBoardUI.ViewModel
         {
             get { return M_Q_C; }
             set { M_Q_C = value; }
+        }
+        public bool PKC
+        {
+            get { return P_K_C; }
+            set { P_K_C = value; }
+        }
+
+        public bool PQC
+        {
+            get { return P_Q_C; }
+            set { P_Q_C = value; }
         }
 
         public bool Turn

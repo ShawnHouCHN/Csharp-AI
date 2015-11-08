@@ -478,7 +478,7 @@ namespace ChessBoardUI.AIAlgorithm
             0x0000000000000000, //rank 3
             0x1008040200000000,
             0x2010080400000000,
-            0x4020300800000000,
+            0x4020100800000000,  //it was 3 before and it was a bug
             0x8040201000000000,
             0x0080402000000000,
             0x0000804000000000,
@@ -1881,13 +1881,14 @@ namespace ChessBoardUI.AIAlgorithm
                     king_index = i;
                     king_bitboard = king_board_set[i];
                     king_moves = king_board_set[i] & (empty | enemy_occupied);
-
+                    
 
                     //Console.WriteLine("king index :" + king_index);
                     //Console.WriteLine("king : " + Convert.ToString((long)king_moves, 2));
 
                     if (enemy_occupied == white_occupied)
                     {
+                        king_moves &= ~(PossibleBishopAttack(white_bishops, black_occupied) | PossibleKnightAttack(white_knights, black_occupied) | PossibleRookAttack(white_rooks, black_occupied) | PossiblePawnAttackMachine(white_pawns) | PossibleKingAttack(white_king, black_occupied) | PossibleQueenAttack(white_queens, black_occupied));
                         for (int j = 0; j < 64; j++)
                         {
                             if (((king_moves >> j) & 1) == 1)
@@ -1914,6 +1915,7 @@ namespace ChessBoardUI.AIAlgorithm
                     }
                     else
                     {
+                        king_moves &= ~(PossibleBishopAttack(black_bishops, white_occupied) | PossibleKnightAttack(black_knights, white_occupied) | PossibleRookAttack(black_rooks, white_occupied) | PossiblePawnAttackMachine(black_pawns) | PossibleKingAttack(black_king, white_occupied) | PossibleQueenAttack(black_queens, white_occupied));
                         for (int j = 0; j < 64; j++)
                         {
                             if (((king_moves >> j) & 1) == 1)
@@ -2604,6 +2606,20 @@ namespace ChessBoardUI.AIAlgorithm
             return true;
         }
 
+        public static void updatePromotionMovedBitboard(ulong moved_place, ulong new_place)
+        {
+            if(player_color)
+            {
+                white_pawns &= moved_place;
+                white_queens |= new_place;
+            }
+            else
+            {
+                black_pawns &= moved_place;
+                black_queens |= new_place;
+            }
+        }
+
         public static void UpdateAnyMovedBitboard(PieceType piece_type, ulong moved_place, ulong new_place)
         {
             //check if it is promotion or castling in the first place;
@@ -3003,14 +3019,20 @@ namespace ChessBoardUI.AIAlgorithm
                             break;
                         case PieceType.Pawn:
                             if (player_color)
-                            {
-                                BP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                            {                              
                                 BP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                                if (move.promote) //if the pawn got promoted, then update a new piece in queen bitboard
+                                    BQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                else
+                                    BP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
                             }
                             else
                             {
-                                WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
                                 WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
+                                if (move.promote) //if the pawn got promoted, then update a new piece in queen bitboard
+                                    WQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
+                                else
+                                    WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
                             }
                             break;
                         default:

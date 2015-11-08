@@ -16,7 +16,7 @@ namespace ChessBoardUI.AIAlgorithm
         public ulong WP , WN , WB , WQ, WR , WK ,
                       BP , BN , BB, BQ , BR , BK ;
 
-        public ulong occupied, empty, whitePieces, enemyOrEmpty;
+        public ulong occupied, empty, whitePieces, enemyOrEmpty, blackPieces;
 
         public Move move; // the move taken to this board state 
        
@@ -148,6 +148,7 @@ namespace ChessBoardUI.AIAlgorithm
             occupied = (WP | BP | WR | BR | WN | BN | WB | BB | WQ | BQ | WK | BK);
             empty = ~occupied;
             whitePieces = (WP | WR | WN | WB | WQ | WK);
+            blackPieces = (BP | BR | BN | BB | BQ | BK);
             enemyOrEmpty = (empty | whitePieces);
         }
 
@@ -182,12 +183,12 @@ namespace ChessBoardUI.AIAlgorithm
             ArrayList moves;
             if (leaf_chessboard.move.PKC || leaf_chessboard.move.PQC)
             {
-                Player_Points += 14;
+                Player_Points += 100;
             }
             if (leaf_chessboard.move.MKC || leaf_chessboard.move.MQC)
             {
                 //Console.WriteLine("Hallo");
-                Machine_Points += 14;
+                Machine_Points += 100;
             }
 
 
@@ -408,19 +409,31 @@ namespace ChessBoardUI.AIAlgorithm
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
-           
-            if (layer == 0)
+            if (move == null)
             {
+                move = new Move(0, 0, 0, 0);
+            }
+
+            if (layer == 0)
+            {             
                 return evaluateBoard(min_max, this);
             }
             else if (min_max)
             {
+
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC);
                 
                 foreach (ChessBoard CB in chessboards)
                 {
                     if (DateTime.Compare(DateTime.Now, MoveGenerator.end_time) > 0)
-                    { break; }
+                    {
+                        return int.MaxValue;
+                    }
+                    if (CB.move.cap_type == PieceType.King)
+                    {
+                        bestState = CB;
+                        return int.MaxValue;
+                    }
                     //Console.WriteLine("Chessboard item max " + Convert.ToString((long)CB.occupied, 2));
                     //Console.WriteLine("Chessboard eva " + evaluateBoard(!min_max, CB));
                     //evaluateBoard(min_max, CB);
@@ -442,17 +455,20 @@ namespace ChessBoardUI.AIAlgorithm
             }
             else
             {
+               
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC);
                 foreach (ChessBoard CB in chessboards)
                 {
                     if (DateTime.Compare(DateTime.Now, MoveGenerator.end_time) > 0)
-                    { break; }
-                    //  Console.WriteLine("This is min
-                    // Console.WriteLine("Chessboard item min " + Convert.ToString((long)CB.occupied, 2));
-                    //Console.WriteLine("Chessboard Bish min " + Convert.ToString((long)CB.BB, 2));
-                    //Console.WriteLine("Chessboard knig min " + Convert.ToString((long)CB.WN, 2));
-                    //Console.WriteLine("Chessboard eva " + evaluateBoard(!min_max, CB));
-                    //evaluateBoard(min_max, CB);
+                    {
+                        return int.MinValue;
+                    }
+                    if (CB.move.cap_type == PieceType.King)
+                    {
+                        bestState = CB;
+                        return int.MinValue;
+                    }
+
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     if (result < beta)
                     {

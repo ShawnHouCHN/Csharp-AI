@@ -38,7 +38,6 @@ namespace ChessBoardUI
 
         private void StartGame_Click(object sender, RoutedEventArgs e)
         {
-
             board_layout = new Dictionary<int, ChessPiece>();
 
             if ((String)((ComboBoxItem)ChooseColor.SelectedItem).Content == "Black")
@@ -51,21 +50,39 @@ namespace ChessBoardUI
             StartButton.IsEnabled = false;
             ChooseLevel.IsEnabled = false;
             ChooseColor.IsEnabled = false;
-
+            SimulateButton.IsEnabled = false;
 
             player_timer.DataContext = board.HumanPlayer.HumanTimer;
             pc_timer.DataContext = board.MachinePlayer.MachineTimer;
-
 
             board.HumanPlayer.HumanTimer.startClock();
      
             PlayerCapStack.ItemsSource = board.HumanPlayer.HumanCaptureStack.CapturedPiecesCollection;
             MachineCapStack.ItemsSource = board.MachinePlayer.MachineCaptureStack.CapturedPiecesCollection;
 
-
             this.ChessBoard.ItemsSource = board.BoardCollection;
+        }
+
+        private void SimulateGame_Click(object sender, RoutedEventArgs e)
+        {
+            board_layout = new Dictionary<int, ChessPiece>();
+
+            if ((String)((ComboBoxItem)ChooseColor.SelectedItem).Content == "Black")
+                board = new MainControl(false, (String)((ComboBoxItem)ChooseLevel.SelectedItem).Content, true);
+            else
+                board = new MainControl(true, (String)((ComboBoxItem)ChooseLevel.SelectedItem).Content, true);
 
 
+            //Console.WriteLine("{0},{1}", ((ComboBoxItem)ChooseColor.SelectedItem).Content, ((ComboBoxItem)ChooseLevel.SelectedItem).Content);
+            StartButton.IsEnabled = false;
+            ChooseLevel.IsEnabled = false;
+            ChooseColor.IsEnabled = false;
+            SimulateButton.IsEnabled = false;
+
+
+            PlayerCapStack.ItemsSource = board.HumanPlayer.HumanCaptureStack.CapturedPiecesCollection;
+            MachineCapStack.ItemsSource = board.MachinePlayer.MachineCaptureStack.CapturedPiecesCollection;
+            this.ChessBoard.ItemsSource = board.BoardCollection;
         }
     }
 }
