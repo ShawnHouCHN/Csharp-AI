@@ -89,9 +89,6 @@ namespace ChessBoardUI.Players
                     item.Value.Ownership = false;
                 }
             }
-
-         
-
         }
 
         public void MachinePiecePositionChangeHandler(MachineMoveMessage action)
@@ -101,7 +98,18 @@ namespace ChessBoardUI.Players
 
             ChessPiece moved = this.pieces_dict[from_loca_index];
 
-            
+            //unlock human player pieces so he can go on
+            foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)
+            {
+                if (item.Value.Player == Player.White && MoveGenerator.player_color)
+                {
+                    item.Value.Ownership = action.Turn;
+                }
+                else if (item.Value.Player == Player.Black && !MoveGenerator.player_color)
+                {
+                    item.Value.Ownership = action.Turn;
+                }
+            }
 
             //this is all for castling move updating on frontend
             if (action.MKC)
@@ -126,6 +134,7 @@ namespace ChessBoardUI.Players
                     this.pieces_dict.Add(10, moved);
                     this.pieces_dict.Add(20, rook_king_side);
                 }
+                this.HumanTimer.startClock();
                 return ;
             }
             if (action.MQC)
@@ -150,6 +159,7 @@ namespace ChessBoardUI.Players
                     this.pieces_dict.Add(50, moved);
                     this.pieces_dict.Add(40, rook_king_side);
                 }
+                this.HumanTimer.startClock();
                 return;
             }
             if (action.PQC)
@@ -173,7 +183,9 @@ namespace ChessBoardUI.Players
                     this.pieces_dict.Remove(77);
                     this.pieces_dict.Add(57, moved);
                     this.pieces_dict.Add(47, rook_queen_side);
+
                 }
+                this.HumanTimer.startClock();
                 return;
             }
             if (action.PKC)
@@ -198,21 +210,17 @@ namespace ChessBoardUI.Players
                     this.pieces_dict.Add(17, moved);
                     this.pieces_dict.Add(27, rook_king_side);
                 }
+                this.HumanTimer.startClock();
                 return;
             }
-            //if (action.Promotion)
-            //{
-            //    ChessPiece moved_to = this.pieces_dict[to_loca_index];
-            //    moved_to.Type = PieceType.Queen;
-            //    this.pieces_dict.Remove(from_loca_index);
-            //    this.pieces_dict.Add()
-            //}
+
+
             //this is capture
             if (this.pieces_dict.ContainsKey(to_loca_index))
             {
                 ChessPiece to_piece_location = this.pieces_dict[to_loca_index];
                 Application.Current.Dispatcher.Invoke((Action)(() => this.pieces_collection.Remove(to_piece_location)));
-                this.pieces_dict.Remove(to_loca_index);
+                this.pieces_dict.Remove(to_loca_index); 
 
                 Application.Current.Dispatcher.Invoke((Action)(() => {
                     String cap_piece_img = "/PieceImg/chess_piece_" + to_piece_location.Player.ToString() + "_" + to_piece_location.Type.ToString()+".png";
@@ -241,18 +249,7 @@ namespace ChessBoardUI.Players
             this.pieces_dict.Remove(from_loca_index);
             this.pieces_dict.Add(to_loca_index, moved);
 
-            //unlock human player pieces so he can go on
-            foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)
-            {
-                if (item.Value.Player == Player.White && MoveGenerator.player_color)
-                {
-                    item.Value.Ownership = action.Turn;
-                }
-                else if (item.Value.Player == Player.Black && !MoveGenerator.player_color)
-                {
-                    item.Value.Ownership = action.Turn;
-                }
-            }
+
 
 
             this.HumanTimer.startClock();

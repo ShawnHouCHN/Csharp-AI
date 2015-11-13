@@ -130,7 +130,6 @@ namespace ChessBoardUI.Players
             {
                 int from_dic_index = (int)action.FromPoint.X * 10 + (int)action.FromPoint.Y;
                 int to_dic_index = (int)action.ToPoint.X * 10 + (int)action.ToPoint.Y;
-                //Console.WriteLine("from value is " + from_dic_index);
                 ChessPiece king = this.pieces_dict[from_dic_index];
                 ChessPiece rook = this.pieces_dict[to_dic_index];
                
