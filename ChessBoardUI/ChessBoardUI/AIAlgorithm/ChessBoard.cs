@@ -398,6 +398,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
+            MoveGenerator.states += 1;
             if (move == null)
             {
                 move = new Move(0, 0, 0, 0);

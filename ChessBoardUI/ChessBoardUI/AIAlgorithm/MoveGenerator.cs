@@ -886,6 +886,10 @@ namespace ChessBoardUI.AIAlgorithm
         static ArrayList player_castling_move_list;
         public static Queue<Move> best_move_queue;
 
+        public static double searchcounter;
+        public static double states;
+        public static double branchingfactor =0;
+
         public MoveGenerator()
         {
             //white_occupied = white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king;
@@ -1026,7 +1030,7 @@ namespace ChessBoardUI.AIAlgorithm
             history_move = historymove;
         }
 
-        public static void addAIBestMoveQueue(Move historymove = null)
+        public static void addAIBestMoveQueue(Move historymove)
         {
             best_move_queue.Enqueue(historymove);
 
@@ -2803,6 +2807,15 @@ namespace ChessBoardUI.AIAlgorithm
         public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K, Move history_move, bool MKC, bool MQC, bool PKC, bool PQC, bool PC_DONE, bool MC_DONE)
         {
             List<ChessBoard> theList = new List<ChessBoard>();
+            ArrayList lastMovedCaptured = new ArrayList();
+            ArrayList captureMoves = new ArrayList();
+            ArrayList otherMoves = new ArrayList();
+            bool useHistory = true;
+            bool useBestMove = false;
+            if (history_move.to_file == history_move.from_file && history_move.to_rank == history_move.from_rank)
+            {
+                useHistory = false;
+            }
             if (min_max)  // if it is an ai max node
             {
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
@@ -2813,11 +2826,42 @@ namespace ChessBoardUI.AIAlgorithm
                 if (best_move_queue.Count!=0)
                 {
                     last_time_best = best_move_queue.Dequeue();
+                    useBestMove = true;
                     //Console.WriteLine("Best Move is " + last_time_best.from_rank + " " + last_time_best.from_file + " " + last_time_best.to_rank + " " + last_time_best.to_file);
-                }                   
+                }
                 //Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
-                moves.Sort(new MoveCompare(last_time_best));
+                // moves.Sort(new MoveCompare(last_time_best));
 
+
+                foreach (Move move in moves)
+                {
+                    if (useBestMove) {
+                        if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank && last_time_best.from_file == move.from_file && last_time_best.from_rank == move.from_rank)
+                            continue;
+                    }
+                    if (move.cap_type != null)
+                    {
+                        if (useHistory)
+                        {
+                            if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
+                                lastMovedCaptured.Add(move);
+                        }
+                        else
+                            captureMoves.Add(move); 
+                    }
+                    else
+                        otherMoves.Add(move);
+                   
+                }
+
+                moves.Clear();
+                if (useBestMove)
+                {
+                    moves.Add(last_time_best);
+                }
+                moves.AddRange(lastMovedCaptured);
+                moves.AddRange(captureMoves);
+                moves.AddRange(otherMoves);
                 // else
                 // {
                 //Move last_best = best_move_queue.Dequeue();
@@ -2825,6 +2869,7 @@ namespace ChessBoardUI.AIAlgorithm
                 //moves.Sort(new MoveCompare(last_best));
                 //}
                 
+
                 //foreach (Move move in moves)
                 //{
                 //    Console.WriteLine("Move is " + move.from_rank + " " + move.from_file + " " + move.to_rank + " " + move.to_file);
@@ -3055,9 +3100,36 @@ namespace ChessBoardUI.AIAlgorithm
                 if (best_move_queue.Count != 0)
                 {
                     last_time_best = best_move_queue.Dequeue();
+                    useBestMove = true;
                 }
+
                 //Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
-                moves.Sort(new MoveCompare(last_time_best));
+                // moves.Sort(new MoveCompare(last_time_best));
+                foreach (Move move in moves)
+                {
+                    if (useBestMove)
+                    {
+                        if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank && last_time_best.from_file == move.from_file && last_time_best.from_rank == move.from_rank)
+                            continue;
+                    }
+                    if (move.cap_type != null)
+                    {
+                        if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
+                            lastMovedCaptured.Add(move);
+                        else
+                            captureMoves.Add(move);
+                    }
+                    else
+                        otherMoves.Add(move);
+
+                }
+
+                moves.Clear();
+                if (useBestMove)
+                    moves.Add(last_time_best);
+                moves.AddRange(lastMovedCaptured);
+                moves.AddRange(captureMoves);
+                moves.AddRange(otherMoves);
 
                 foreach (Move move in moves)
                 {

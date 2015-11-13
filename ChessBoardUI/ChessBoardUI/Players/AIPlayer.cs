@@ -365,6 +365,7 @@ namespace ChessBoardUI.Players
             catch (Exception ex)
             {
                 Console.WriteLine("Something wrong with the algorithm. check the code!!!");
+                Console.WriteLine(ex);
             }
         }
 
@@ -443,6 +444,7 @@ namespace ChessBoardUI.Players
             //while (i <= 2)
             {
                 //Thread.Sleep(2000);
+                MoveGenerator.states = 0;
                 Console.WriteLine("Depth is "+i);
                 init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, min_max);
                 ChessBoard bestState = init.bestState;
@@ -454,12 +456,12 @@ namespace ChessBoardUI.Players
                    bestState = bestState.bestState;
                  }
 
-                //foreach (Move move in MoveGenerator.best_move_queue)
-                //{
-                //    Console.WriteLine("Best move is " + move.from_rank + move.from_file + move.to_rank + move.to_file);
-                //}
+                Console.WriteLine("Searching in layer: {0} through {1} boardstates with an average branching factor of {2}", i, MoveGenerator.states,(Math.Pow(MoveGenerator.states, (1 / (double)i))));
+                MoveGenerator.branchingfactor += (Math.Pow(MoveGenerator.states, (1 / (double)i)));
+                MoveGenerator.searchcounter += 1;
                 i++;
             }
+            Console.WriteLine("Avg. branching factor: "+(MoveGenerator.branchingfactor/MoveGenerator.searchcounter));
             return;
 
         }
