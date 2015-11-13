@@ -41,12 +41,16 @@ namespace ChessBoardUI
             board_layout = new Dictionary<int, ChessPiece>();
 
             if ((String)((ComboBoxItem)ChooseColor.SelectedItem).Content == "Black")
+            {
                 board = new MainControl(false, (String)((ComboBoxItem)ChooseLevel.SelectedItem).Content);
+                board.MachinePlayer.MachineTimer.startClock();
+            }
             else
+            {
                 board = new MainControl(true, (String)((ComboBoxItem)ChooseLevel.SelectedItem).Content);
-
-
-            //Console.WriteLine("{0},{1}", ((ComboBoxItem)ChooseColor.SelectedItem).Content, ((ComboBoxItem)ChooseLevel.SelectedItem).Content);
+                board.HumanPlayer.HumanTimer.startClock();
+            }
+    
             StartButton.IsEnabled = false;
             ChooseLevel.IsEnabled = false;
             ChooseColor.IsEnabled = false;
@@ -55,7 +59,7 @@ namespace ChessBoardUI
             player_timer.DataContext = board.HumanPlayer.HumanTimer;
             pc_timer.DataContext = board.MachinePlayer.MachineTimer;
 
-            board.HumanPlayer.HumanTimer.startClock();
+           
      
             PlayerCapStack.ItemsSource = board.HumanPlayer.HumanCaptureStack.CapturedPiecesCollection;
             MachineCapStack.ItemsSource = board.MachinePlayer.MachineCaptureStack.CapturedPiecesCollection;

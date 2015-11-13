@@ -10,8 +10,6 @@ namespace ChessBoardUI.AIAlgorithm
 {
     public class ChessBoard
     {
-        //public ulong WP = 0x000000000000ff00, WN = 0x0000000000000042, WB = 0x0000000000000024, WQ = 0x0000000000000008, WR = 0x0000000000000081, WK = 0x0000000000000010,
-        //              BP = 0x00ff000000000000, BN = 0x4200000000000000, BB = 0x2400000000000000, BQ = 0x0800000000000000, BR = 0x8100000000000000, BK = 0x1000000000000000;
 
         public ulong WP , WN , WB , WQ, WR , WK ,
                       BP , BN , BB, BQ , BR , BK ;
@@ -26,18 +24,22 @@ namespace ChessBoardUI.AIAlgorithm
         public bool PKC = true;
         public bool PQC = true;
         //test
+        public bool PC_DONE = false;
+        public bool MC_DONE = false;
+
         public int eva;
 
         private static int[] PawnTable = new int[] {
                 0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                7   ,   7   ,   13  ,   23  ,   26  ,   13  ,   7   ,   7   ,
-                -2  ,   -2  ,   4   ,   12  ,   15  ,   4   ,   -2  ,   -2  ,
-                -3  ,   -3  ,   2   ,   9   ,   11  ,   2   ,   -3  ,   -3  ,
-                -4  ,   -4  ,   0   ,   6   ,   8   ,   0   ,   -4  ,   -4  ,
+                7   ,   7   ,   13  ,   33  ,   36  ,   13  ,   7   ,   7   ,
+                -2  ,   -2  ,   4   ,   22  ,   25  ,   4   ,   -2  ,   -2  ,
+                -3  ,   -3  ,   2   ,   19   ,   21  ,   2   ,   -3  ,   -3  ,
+                -4  ,   -4  ,   0   ,   16   ,   18   ,   0   ,   -4  ,   -4  ,
                 -4  ,   -4  ,   0   ,   4   ,   6   ,   0   ,   -4  ,   -4  ,
                 -1  ,   -1  ,   1   ,   5   ,   6   ,   1   ,   -1  ,   -1  ,
                 0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
                 };
+        
 
         private static int[] KnightTable = new int[] {
                 -2  ,   2   ,   7   ,   9   ,   9   ,   7   ,   2   ,   -2  ,
@@ -117,7 +119,7 @@ namespace ChessBoardUI.AIAlgorithm
                 };
 
 
-        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move move=null , bool MKC= true, bool MQC =true, bool PKC= true, bool PQC=true)
+        public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move move , bool MKC, bool MQC, bool PKC, bool PQC, bool PC_DONE, bool MC_DONE)
         {
             this.WP = WP;
             this.WN = WN;
@@ -136,6 +138,8 @@ namespace ChessBoardUI.AIAlgorithm
             this.MQC = MQC;
             this.PKC = PKC;
             this.PQC = PQC;
+            this.PC_DONE = PC_DONE;
+            this.MC_DONE = MC_DONE;
             //this.player = currentPlayer;
 
             createUsefullBitboards();
@@ -167,12 +171,12 @@ namespace ChessBoardUI.AIAlgorithm
             ArrayList moves;
 
             //
-            if (leaf_chessboard.move.PKC || leaf_chessboard.move.PQC)
+            if (leaf_chessboard.PC_DONE)
             {
                 Player_Points += 100;
             }
-            if (leaf_chessboard.move.MKC || leaf_chessboard.move.MQC)
-            {
+            if (leaf_chessboard.MC_DONE)
+            { 
                 Machine_Points += 100;
             }
 
@@ -406,7 +410,7 @@ namespace ChessBoardUI.AIAlgorithm
             else if (min_max)
             {
 
-                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC);
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC, this.PC_DONE, this.MC_DONE);
                 
                 foreach (ChessBoard CB in chessboards)
                 {
@@ -441,7 +445,7 @@ namespace ChessBoardUI.AIAlgorithm
             else
             {
                
-                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC);
+                List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC, this.PC_DONE, this.MC_DONE);
                 foreach (ChessBoard CB in chessboards)
                 {
                     if (DateTime.Compare(DateTime.Now, MoveGenerator.end_time) > 0)

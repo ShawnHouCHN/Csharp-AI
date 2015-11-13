@@ -23,7 +23,6 @@ namespace ChessBoardUI.ViewModel
         private ObservableCollection<ChessPiece> pieces_collection;
         HMPlayer human_player;
         AIPlayer machine_player;
-        AIPlayer human_player_simu;
         private Dictionary<int, ChessPiece> pieces_dict;
         
 
@@ -137,13 +136,7 @@ namespace ChessBoardUI.ViewModel
             this.pieces_dict.Add(player_king.Coor_X * 10 + player_king.Coor_Y, player_king);                this.pieces_dict.Add(machine_king.Coor_X * 10 + machine_king.Coor_Y, machine_king);
 
             this.human_player = new HMPlayer(this.pieces_collection, this.pieces_dict);
-            if (!mode)
-            {
-                this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict);
-            }
-              
-            else
-                this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict, mode);
+            this.machine_player = new AIPlayer(this.pieces_collection, this.pieces_dict, mode, color);
 
             //add difficulty
             if (difficulty.Equals("Easy"))

@@ -24,6 +24,7 @@ namespace ChessBoardUI.AIAlgorithm
         public bool PQC = false;
 
 
+
         public Move(int from_x, int from_y, int to_x, int to_y)
         {
             this.from_rank = from_x;
@@ -2799,15 +2800,11 @@ namespace ChessBoardUI.AIAlgorithm
             empty = ~ pieces_occupied;
         }
 
-        public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K, Move history_move=null, bool MKC=true, bool MQC=true, bool PKC=true, bool PQC=true)
+        public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K, Move history_move, bool MKC, bool MQC, bool PKC, bool PQC, bool PC_DONE, bool MC_DONE)
         {
             List<ChessBoard> theList = new List<ChessBoard>();
-
-            
-
             if (min_max)  // if it is an ai max node
             {
-                //Console.WriteLine("---------------");
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
                 setCurrentBitboardsHistoryMove(history_move);
                 setCurrentCastlingCondition(MKC, MQC, PKC, PQC);        
@@ -2871,7 +2868,8 @@ namespace ChessBoardUI.AIAlgorithm
                             WR |= (ulong)0x0100000000000000;
                         }
                         M_Q_C = false; M_K_C = false;
-                        ChessBoard castling_b = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C);
+                        MC_DONE = true;
+                        ChessBoard castling_b = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C, PC_DONE, MC_DONE);
                         theList.Add(castling_b);
                         continue;
                     }
@@ -2893,7 +2891,8 @@ namespace ChessBoardUI.AIAlgorithm
                             WR |= (ulong)0x0400000000000000;
                         }
                         M_Q_C = false; M_K_C = false;
-                        ChessBoard castling_b = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C);
+                        MC_DONE = true;
+                        ChessBoard castling_b = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C, PC_DONE, MC_DONE);
                         theList.Add(castling_b);
                         continue;
                     }
@@ -3040,7 +3039,7 @@ namespace ChessBoardUI.AIAlgorithm
 
                     }
                     // Switch case for special events! promotion, enpassant etc.
-                    ChessBoard cb = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C);
+                    ChessBoard cb = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C, PC_DONE, MC_DONE);
                     theList.Add(cb);
                 }
             }
@@ -3094,7 +3093,8 @@ namespace ChessBoardUI.AIAlgorithm
                             BR |= (ulong)0x0000000000000010;
                         }
                         P_Q_C = false; P_K_C = false;
-                        ChessBoard castling_b = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C);
+                        PC_DONE = true;
+                        ChessBoard castling_b = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C, PC_DONE, MC_DONE);
                         theList.Add(castling_b);
                         continue;
                     }
@@ -3114,7 +3114,8 @@ namespace ChessBoardUI.AIAlgorithm
                             BR |= (ulong)0x0000000000000004;
                         }
                         P_Q_C = false; P_K_C = false;
-                        ChessBoard castling_b = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C);
+                        PC_DONE = true;
+                        ChessBoard castling_b = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C, PC_DONE, MC_DONE);
                         theList.Add(castling_b);
                         continue;
                     }
@@ -3263,7 +3264,7 @@ namespace ChessBoardUI.AIAlgorithm
 
                     }
                     // switch for special events
-                    ChessBoard cb = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C);
+                    ChessBoard cb = new ChessBoard(WP, WN, WB, WQ, WR, WK, BP, BN, BB, BQ, BR, BK, move, M_K_C, M_Q_C, P_K_C, P_Q_C, PC_DONE, MC_DONE);
                     theList.Add(cb);
                 }
             }

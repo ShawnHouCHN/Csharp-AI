@@ -30,11 +30,11 @@ namespace ChessBoardUI.Players
         MoveGenerator move_generator;
         private Image cap_piece_image;
         private static int time_interval;
-        private bool simu;
-       
+        private bool min_max;
+
         //Player ai_color;
 
-        public AIPlayer(ObservableCollection<ChessPiece> pieces_collection, Dictionary<int, ChessPiece> pieces_dict, bool mode=false)
+        public AIPlayer(ObservableCollection<ChessPiece> pieces_collection, Dictionary<int, ChessPiece> pieces_dict, bool mode, bool color)
         {
             move_generator = new MoveGenerator();
 
@@ -64,16 +64,21 @@ namespace ChessBoardUI.Players
             //algorithm thread instantiation
             if (!mode)
             {
-                algo_thread = new Thread(new ThreadStart(AlgorithmThread));
+                turn = !color;
+                min_max = true;
+                algo_thread = new Thread(new ThreadStart(AlgorithmThread));              
                 algo_thread.IsBackground = true; //terminate thread when window is closed 
                 algo_thread.Start();
             }
             else
             {
+                if (color)
+                    min_max = false;
+                else
+                    min_max = true;
                 algo_thread = new Thread(new ThreadStart(MVMAlgorithmThread));
                 algo_thread.IsBackground = true; //terminate thread when window is closed 
                 algo_thread.Start();
-                simu = mode;
                 turn = true;
             }
 
@@ -84,12 +89,6 @@ namespace ChessBoardUI.Players
             get { return time_interval; }
             set { time_interval = value; }
         }
-        public bool Simu
-        {
-            get { return simu; }
-            set { simu = value; }
-        }
-
         public SPCapturedViewModel MachineCaptureStack  //stack of pieces captured by human player(collection of images)
         {
             get { return machine_stack; }
@@ -297,7 +296,7 @@ namespace ChessBoardUI.Players
 
         public void MVMAlgorithmThread()
         {
-            bool min_max = true;  //tsest
+            //bool min_max = true;  //tsest
 
             try
             {
@@ -310,7 +309,7 @@ namespace ChessBoardUI.Players
                     
                     // this is the current chess board state
                     
-                    ChessBoard curr_board_state = new ChessBoard(MoveGenerator.white_pawns, MoveGenerator.white_knights, MoveGenerator.white_bishops, MoveGenerator.white_queens, MoveGenerator.white_rooks, MoveGenerator.white_king, MoveGenerator.black_pawns, MoveGenerator.black_knights, MoveGenerator.black_bishops, MoveGenerator.black_queens, MoveGenerator.black_rooks, MoveGenerator.black_king, MoveGenerator.history_move, MoveGenerator.MKC, MoveGenerator.MQC, MoveGenerator.PKC, MoveGenerator.PQC);
+                    ChessBoard curr_board_state = new ChessBoard(MoveGenerator.white_pawns, MoveGenerator.white_knights, MoveGenerator.white_bishops, MoveGenerator.white_queens, MoveGenerator.white_rooks, MoveGenerator.white_king, MoveGenerator.black_pawns, MoveGenerator.black_knights, MoveGenerator.black_bishops, MoveGenerator.black_queens, MoveGenerator.black_rooks, MoveGenerator.black_king, MoveGenerator.history_move, MoveGenerator.MKC, MoveGenerator.MQC, MoveGenerator.PKC, MoveGenerator.PQC, false, false);
                     
 
                    Move ai_move = getNextMove(curr_board_state, min_max);
@@ -372,7 +371,7 @@ namespace ChessBoardUI.Players
 
         public void AlgorithmThread()
         {
-            bool min_max= true;  //tsest
+           // min_max= true;  //tsest
 
             try
             {
@@ -383,7 +382,7 @@ namespace ChessBoardUI.Players
                         this.MachineTimer.startClock();
 
                         // this is the current chess board state
-                        ChessBoard curr_board_state = new ChessBoard(MoveGenerator.white_pawns, MoveGenerator.white_knights, MoveGenerator.white_bishops, MoveGenerator.white_queens, MoveGenerator.white_rooks, MoveGenerator.white_king, MoveGenerator.black_pawns, MoveGenerator.black_knights, MoveGenerator.black_bishops, MoveGenerator.black_queens, MoveGenerator.black_rooks, MoveGenerator.black_king, MoveGenerator.history_move, MoveGenerator.MKC, MoveGenerator.MQC, MoveGenerator.PKC, MoveGenerator.PQC);
+                        ChessBoard curr_board_state = new ChessBoard(MoveGenerator.white_pawns, MoveGenerator.white_knights, MoveGenerator.white_bishops, MoveGenerator.white_queens, MoveGenerator.white_rooks, MoveGenerator.white_king, MoveGenerator.black_pawns, MoveGenerator.black_knights, MoveGenerator.black_bishops, MoveGenerator.black_queens, MoveGenerator.black_rooks, MoveGenerator.black_king, MoveGenerator.history_move, MoveGenerator.MKC, MoveGenerator.MQC, MoveGenerator.PKC, MoveGenerator.PQC,false,false);
 
   
 
