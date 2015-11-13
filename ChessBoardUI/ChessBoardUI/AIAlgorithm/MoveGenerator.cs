@@ -1947,6 +1947,50 @@ namespace ChessBoardUI.AIAlgorithm
             return k_move_list;
         }
 
+        public static bool isKingInCheck(bool min_max)
+        {
+            ulong king_check=0L;
+            if (player_color)
+            {
+                if(min_max)
+                {
+                    king_check = black_king & ~(PossibleBishopAttack(white_bishops, black_occupied) | PossibleKnightAttack(white_knights, black_occupied) | PossibleRookAttack(white_rooks, black_occupied) | PossiblePawnAttackMachine(white_pawns) | PossibleKingAttack(white_king, black_occupied) | PossibleQueenAttack(white_queens, black_occupied));
+                    if (king_check != 0)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                {
+                    king_check = white_king & ~(PossibleBishopAttack(black_bishops, white_occupied) | PossibleKnightAttack(black_knights, white_occupied) | PossibleRookAttack(black_rooks, white_occupied) | PossiblePawnAttackMachine(black_pawns) | PossibleKingAttack(black_king, white_occupied) | PossibleQueenAttack(black_queens, white_occupied));
+                    if (king_check != 0)
+                        return true;
+                    else
+                        return false;
+                }
+
+            }
+            else
+            {
+                if (!min_max)
+                {
+                    king_check = black_king & ~(PossibleBishopAttack(white_bishops, black_occupied) | PossibleKnightAttack(white_knights, black_occupied) | PossibleRookAttack(white_rooks, black_occupied) | PossiblePawnAttackMachine(white_pawns) | PossibleKingAttack(white_king, black_occupied) | PossibleQueenAttack(white_queens, black_occupied));
+                    if (king_check != 0)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                {
+                    king_check = white_king & ~(PossibleBishopAttack(black_bishops, white_occupied) | PossibleKnightAttack(black_knights, white_occupied) | PossibleRookAttack(black_rooks, white_occupied) | PossiblePawnAttackMachine(black_pawns) | PossibleKingAttack(black_king, white_occupied) | PossibleQueenAttack(black_queens, white_occupied));
+                    if (king_check != 0)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+        }
+
         public static ulong PossiblePawnAttackMachine(ulong machine_pawns)
         {
 
@@ -2803,6 +2847,12 @@ namespace ChessBoardUI.AIAlgorithm
         public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K, Move history_move, bool MKC, bool MQC, bool PKC, bool PQC, bool PC_DONE, bool MC_DONE)
         {
             List<ChessBoard> theList = new List<ChessBoard>();
+            //this is a test
+            ArrayList lastMovedCaptured = new ArrayList();
+            ArrayList captureMoves = new ArrayList();
+            ArrayList otherMoves = new ArrayList();
+            //test over
+
             if (min_max)  // if it is an ai max node
             {
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
@@ -2814,8 +2864,11 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     last_time_best = best_move_queue.Dequeue();
                     //Console.WriteLine("Best Move is " + last_time_best.from_rank + " " + last_time_best.from_file + " " + last_time_best.to_rank + " " + last_time_best.to_file);
-                }                   
-                //Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
+                }
+                //else
+                //    last_time_best = history_move;
+                ////Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
+                //teset
                 moves.Sort(new MoveCompare(last_time_best));
 
                 // else
@@ -2824,12 +2877,33 @@ namespace ChessBoardUI.AIAlgorithm
                 // moves.Sort(new MoveCompare()); //move ordering
                 //moves.Sort(new MoveCompare(last_best));
                 //}
-                
+
                 //foreach (Move move in moves)
                 //{
                 //    Console.WriteLine("Move is " + move.from_rank + " " + move.from_file + " " + move.to_rank + " " + move.to_file);
                 //}
 
+                //foreach (Move move in moves)
+                //{
+                //    if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank)
+                //        continue;
+                //    if (move.cap_type != null)
+                //    {
+                //        if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
+                //            lastMovedCaptured.Add(move);
+                //        else
+                //            captureMoves.Add(move);
+                //    }
+                //    else
+                //        otherMoves.Add(move);
+
+                //}
+
+                //moves.Clear();
+                //moves.Add(last_time_best);
+                //moves.AddRange(lastMovedCaptured);
+                //moves.AddRange(captureMoves);
+                //moves.AddRange(otherMoves);
 
                 foreach (Move move in moves)
                 {
@@ -3056,8 +3130,34 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     last_time_best = best_move_queue.Dequeue();
                 }
-                //Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
+                //else
+                //    last_time_best = history_move;
+                ////Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
                 moves.Sort(new MoveCompare(last_time_best));
+
+                //foreach (Move move in moves)
+                //{
+                //    if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank)
+                //        continue;
+                //    if (move.cap_type != null)
+                //    {
+                //        if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
+                //            lastMovedCaptured.Add(move);
+                //        else
+                //            captureMoves.Add(move);
+                //    }
+                //    else
+                //        otherMoves.Add(move);
+
+                //}
+
+                //Console.WriteLine("Move length before: "+moves.Count);
+                //moves.Clear();
+                //moves.Add(last_time_best);
+                //moves.AddRange(lastMovedCaptured);
+                //moves.AddRange(captureMoves);
+                //moves.AddRange(otherMoves);
+                //Console.WriteLine("Move length after: " + moves.Count);
 
                 foreach (Move move in moves)
                 {
