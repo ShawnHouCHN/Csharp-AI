@@ -886,6 +886,10 @@ namespace ChessBoardUI.AIAlgorithm
         static ArrayList player_castling_move_list;
         public static Queue<Move> best_move_queue;
 
+        public static double searchcounter;
+        public static double states;
+        public static double branchingfactor = 0;
+
         public MoveGenerator()
         {
             //white_occupied = white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king;
@@ -1377,7 +1381,7 @@ namespace ChessBoardUI.AIAlgorithm
             //Console.WriteLine(Convert.ToString((long)wp_1_upward_moves, 2));
 
 
-            ulong wp_2_upward_moves = (ulong)(player_pawns << 16) & empty & (empty >> 8) & rank3;
+            ulong wp_2_upward_moves = (ulong)(player_pawns << 16) & empty & (empty << 8) & rank3;
             for (int i = 0; i < 64; i++)
             {
                 if (((wp_2_upward_moves >> i) & 1) == 1)
@@ -1387,7 +1391,7 @@ namespace ChessBoardUI.AIAlgorithm
 
             }
 
-           // Console.WriteLine(Convert.ToString((long)wp_2_upward_moves, 2));
+            //Console.WriteLine("2 steps forward move for human "+Convert.ToString((long)wp_2_upward_moves, 2));
 
             //promotion move needs to be add in later..........
             ulong wp_promote_right_cap_moves = (player_pawns << 9) & enemy_occupied & rank7 & ~file0;        //promote by right capture;
@@ -2851,7 +2855,13 @@ namespace ChessBoardUI.AIAlgorithm
             ArrayList lastMovedCaptured = new ArrayList();
             ArrayList captureMoves = new ArrayList();
             ArrayList otherMoves = new ArrayList();
+            bool useHistory = true;
+            bool useBestMove = false;
             //test over
+            if (history_move.to_file == history_move.from_file && history_move.to_rank == history_move.from_rank)
+            {
+                useHistory = false;
+            }
 
             if (min_max)  // if it is an ai max node
             {
@@ -2863,47 +2873,42 @@ namespace ChessBoardUI.AIAlgorithm
                 if (best_move_queue.Count!=0)
                 {
                     last_time_best = best_move_queue.Dequeue();
+                    useBestMove = true;
                     //Console.WriteLine("Best Move is " + last_time_best.from_rank + " " + last_time_best.from_file + " " + last_time_best.to_rank + " " + last_time_best.to_file);
                 }
-                //else
-                //    last_time_best = history_move;
-                ////Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
-                //teset
-                moves.Sort(new MoveCompare(last_time_best));
 
-                // else
-                // {
-                //Move last_best = best_move_queue.Dequeue();
-                // moves.Sort(new MoveCompare()); //move ordering
-                //moves.Sort(new MoveCompare(last_best));
-                //}
+        
+                foreach (Move move in moves)
+                {
+                    if (useBestMove)
+                    {
+                        if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank && last_time_best.from_file == move.from_file && last_time_best.from_rank == move.from_rank)
+                            continue;
+                    }
+                    if (move.cap_type != null)
+                    {
+                        if (useHistory)
+                        {
+                            if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
+                                lastMovedCaptured.Add(move);
+                            else
+                                captureMoves.Add(move);
+                        }
 
-                //foreach (Move move in moves)
-                //{
-                //    Console.WriteLine("Move is " + move.from_rank + " " + move.from_file + " " + move.to_rank + " " + move.to_file);
-                //}
+                    }
+                    else
+                        otherMoves.Add(move);
 
-                //foreach (Move move in moves)
-                //{
-                //    if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank)
-                //        continue;
-                //    if (move.cap_type != null)
-                //    {
-                //        if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
-                //            lastMovedCaptured.Add(move);
-                //        else
-                //            captureMoves.Add(move);
-                //    }
-                //    else
-                //        otherMoves.Add(move);
+                }
 
-                //}
-
-                //moves.Clear();
-                //moves.Add(last_time_best);
-                //moves.AddRange(lastMovedCaptured);
-                //moves.AddRange(captureMoves);
-                //moves.AddRange(otherMoves);
+                moves.Clear();
+                if (useBestMove)
+                {
+                    moves.Add(last_time_best);
+                }
+                moves.AddRange(lastMovedCaptured);
+                moves.AddRange(captureMoves);
+                moves.AddRange(otherMoves);
 
                 foreach (Move move in moves)
                 {
@@ -3129,35 +3134,42 @@ namespace ChessBoardUI.AIAlgorithm
                 if (best_move_queue.Count != 0)
                 {
                     last_time_best = best_move_queue.Dequeue();
+                    useBestMove = true;
+                    //Console.WriteLine("Best Move is " + last_time_best.from_rank + " " + last_time_best.from_file + " " + last_time_best.to_rank + " " + last_time_best.to_file);
                 }
-                //else
-                //    last_time_best = history_move;
-                ////Console.WriteLine("Best move is " + last_time_best.from_rank + last_time_best.from_file + last_time_best.to_rank + last_time_best.to_file);
-                moves.Sort(new MoveCompare(last_time_best));
+            
+                //moves.Sort(new MoveCompare(last_time_best));
 
-                //foreach (Move move in moves)
-                //{
-                //    if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank)
-                //        continue;
-                //    if (move.cap_type != null)
-                //    {
-                //        if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
-                //            lastMovedCaptured.Add(move);
-                //        else
-                //            captureMoves.Add(move);
-                //    }
-                //    else
-                //        otherMoves.Add(move);
+                foreach (Move move in moves)
+                {
+                    if (useBestMove)
+                    {
+                        if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank && last_time_best.from_file == move.from_file && last_time_best.from_rank == move.from_rank)
+                            continue;
+                    }
+                    if (move.cap_type != null)
+                    {
+                        if (useHistory)
+                        {
+                            if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
+                                lastMovedCaptured.Add(move);
+                            else
+                                captureMoves.Add(move);
+                        }
+                    }
+                    else
+                        otherMoves.Add(move);
 
-                //}
+                }
 
-                //Console.WriteLine("Move length before: "+moves.Count);
-                //moves.Clear();
-                //moves.Add(last_time_best);
-                //moves.AddRange(lastMovedCaptured);
-                //moves.AddRange(captureMoves);
-                //moves.AddRange(otherMoves);
-                //Console.WriteLine("Move length after: " + moves.Count);
+                moves.Clear();
+                if (useBestMove)
+                {
+                    moves.Add(last_time_best);
+                }
+                moves.AddRange(lastMovedCaptured);
+                moves.AddRange(captureMoves);
+                moves.AddRange(otherMoves);
 
                 foreach (Move move in moves)
                 {

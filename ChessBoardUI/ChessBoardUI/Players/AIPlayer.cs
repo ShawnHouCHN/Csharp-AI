@@ -356,6 +356,7 @@ namespace ChessBoardUI.Players
                             Console.WriteLine("AI 2 Move is " + ai_move.from_rank + ai_move.from_file + ai_move.to_rank + ai_move.to_file);  //!!!!!!!
                         }
                         min_max = !min_max;
+                        Console.WriteLine(" board state is " + Convert.ToString((long)MoveGenerator.pieces_occupied, 2));  //!!!!!!!
 
                     }
                 }
@@ -437,26 +438,28 @@ namespace ChessBoardUI.Players
             DateTime start_time = DateTime.Now;
             MoveGenerator.end_time = start_time.AddSeconds(this.Interval); //set iterative deepning end time;
             int i = 1;
+            MoveGenerator.best_move_queue.Clear();
 
             while (DateTime.Compare(DateTime.Now , MoveGenerator.end_time)<=0)
             //while (i <= 2)
             {
                 //Thread.Sleep(2000);
+                MoveGenerator.states = 0;
                 Console.WriteLine("Depth is "+i);
                 init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, min_max);
                 ChessBoard bestState = init.bestState;
                 //drawArray(bestState.WP, bestState.WN, bestState.WB, bestState.WQ, bestState.WR, bestState.WK, bestState.BP, bestState.BN, bestState.BB, bestState.BQ, bestState.BR, bestState.BK);
                 MoveGenerator.best_move_queue.Clear();
+
                 while (bestState != null)
                 {                
                    MoveGenerator.addAIBestMoveQueue(bestState.move);
                    bestState = bestState.bestState;
                  }
 
-                //foreach (Move move in MoveGenerator.best_move_queue)
-                //{
-                //    Console.WriteLine("Best move is " + move.from_rank + move.from_file + move.to_rank + move.to_file);
-                //}
+                Console.WriteLine("Searching in layer: {0} through {1} boardstates with an average branching factor of {2}", i, MoveGenerator.states, (Math.Pow(MoveGenerator.states, (1 / (double)i))));
+                MoveGenerator.branchingfactor += (Math.Pow(MoveGenerator.states, (1 / (double)i)));
+                MoveGenerator.searchcounter += 1;
                 i++;
             }
             return;
