@@ -395,7 +395,7 @@ namespace ChessBoardUI.AIAlgorithm
 
             return Machine_Points - Player_Points;  //(machine point - player point)
         }
-
+         
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
             MoveGenerator.states += 1;
