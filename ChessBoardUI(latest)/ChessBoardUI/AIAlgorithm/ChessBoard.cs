@@ -30,48 +30,80 @@ namespace ChessBoardUI.AIAlgorithm
         public int eva;
 
         private static int[] PawnTable = new int[] {
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                7   ,   7   ,   13  ,   33  ,   36  ,   13  ,   7   ,   7   ,
-                -2  ,   -2  ,   4   ,   22  ,   25  ,   4   ,   -2  ,   -2  ,
-                -3  ,   -3  ,   2   ,   19   ,   21  ,   2   ,   -3  ,   -3  ,
-                -4  ,   -4  ,   0   ,   16   ,   18   ,   0   ,   -4  ,   -4  ,
-                -4  ,   -4  ,   0   ,   4   ,   6   ,   0   ,   -4  ,   -4  ,
-                -1  ,   -1  ,   1   ,   5   ,   6   ,   1   ,   -1  ,   -1  ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                //17   ,   17   ,   23   ,   43   ,   46   ,   23   ,   17   ,   17   ,
+                //7   ,   7   ,   13  ,   33  ,   36  ,   13  ,   7   ,   7   ,
+                //-2  ,   -2  ,   4   ,   22  ,   25  ,   4   ,   -2  ,   -2  ,
+                //-3  ,   -3  ,   2   ,   19   ,   21  ,   2   ,   -3  ,   -3  ,
+                //-4  ,   -4  ,   0   ,   16   ,   18   ,   0   ,   -4  ,   -4  ,
+                //-4  ,   -4  ,   0   ,   4   ,   6   ,   0   ,   -4  ,   -4  ,
+                //-1  ,   -1  ,   1   ,   5   ,   6   ,   1   ,   -1  ,   -1  ,
+                //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                  0,  0,  0,  0,  0,  0,  0,  0,
+                50, 50, 50, 50, 50, 50, 50, 50,
+ 10, 10, 20, 30, 30, 20, 10, 10,
+  5,  5, 10, 27, 27, 10,  5,  5,
+  0,  0,  0, 25, 25,  0,  0,  0,
+  5, -5,-10,  0,  0,-10, -5,  5,
+  5, 10, 10,-25,-25, 10, 10,  5,
+  0,  0,  0,  0,  0,  0,  0,  0
                 };
         
 
         private static int[] KnightTable = new int[] {
-                -2  ,   2   ,   7   ,   9   ,   9   ,   7   ,   2   ,   -2  ,
-                1   ,   4   ,   12  ,   13  ,   13  ,   12  ,   4   ,   1   ,
-                5   ,   11  ,   18  ,   19  ,   19  ,   18  ,   11  ,   5   ,
-                3   ,   5  ,   14  ,   14  ,   14  ,   14  ,   5  ,   3   ,
-                0   ,   3   ,   8   ,   9   ,   9   ,   8   ,   3   ,   0   ,
-                -5  ,   1   ,   3   ,   4   ,   4   ,   3   ,   1   ,   -5  ,
-                -5  ,   -3  ,   -1  ,   0   ,   0   ,   -1  ,   -3  ,   -5  ,
-                -7  ,   -5  ,   -4  ,   -2  ,   -2  ,   -4  ,   -5  ,   -7
+                //-2  ,   2   ,   7   ,   9   ,   9   ,   7   ,   2   ,   -2  ,
+                //1   ,   4   ,   12  ,   13  ,   13  ,   12  ,   4   ,   1   ,
+                //5   ,   11  ,   18  ,   19  ,   19  ,   18  ,   11  ,   5   ,
+                //3   ,   5  ,   14  ,   14  ,   14  ,   14  ,   5  ,   3   ,
+                //0   ,   3   ,   8   ,   9   ,   9   ,   8   ,   3   ,   0   ,
+                //-5  ,   1   ,   3   ,   4   ,   4   ,   3   ,   1   ,   -5  ,
+                //-5  ,   -3  ,   -1  ,   0   ,   0   ,   -1  ,   -3  ,   -5  ,
+                //-7  ,   -5  ,   -4  ,   -2  ,   -2  ,   -4  ,   -5  ,   -7
+                 -50,-40,-30,-30,-30,-30,-40,-50,
+ -40,-20,  0,  0,  0,  0,-20,-40,
+ -30,  0, 10, 15, 15, 10,  0,-30,
+ -30,  5, 15, 20, 20, 15,  5,-30,
+ -30,  0, 15, 20, 20, 15,  0,-30,
+ -30,  5, 10, 15, 15, 10,  5,-30,
+ -40,-20,  0,  5,  5,  0,-20,-40,
+ -50,-40,-20,-30,-30,-20,-40,-50,
                 };
 
         private static int[] BishopTable = new int[] {
-                2   ,   3   ,   4   ,   4   ,   4   ,   4   ,   3   ,   2   ,
-                4   ,   7   ,   7   ,   7   ,   7   ,   7   ,   7   ,   4   ,
-                3   ,   5   ,   6   ,   6   ,   6   ,   6   ,   5   ,   3   ,
-                3   ,   5   ,   7   ,   7   ,   7   ,   7   ,   5   ,   3   ,
-                4   ,   5   ,   6   ,   8   ,   8   ,   6   ,   5   ,   4   ,
-                4   ,   5   ,   5   ,   -2  ,   -2  ,   5   ,   5   ,   4   ,
-                5   ,   5   ,   5   ,   3   ,   3   ,   5   ,   5   ,   5   ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                //2   ,   3   ,   4   ,   4   ,   4   ,   4   ,   3   ,   2   ,
+                //4   ,   7   ,   7   ,   7   ,   7   ,   7   ,   7   ,   4   ,
+                //3   ,   5   ,   6   ,   6   ,   6   ,   6   ,   5   ,   3   ,
+                //3   ,   5   ,   7   ,   7   ,   7   ,   7   ,   5   ,   3   ,
+                //4   ,   5   ,   6   ,   8   ,   8   ,   6   ,   5   ,   4   ,
+                //4   ,   5   ,   5   ,   -2  ,   -2  ,   5   ,   5   ,   4   ,
+                //5   ,   5   ,   5   ,   3   ,   3   ,   5   ,   5   ,   5   ,
+                //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                 -20,-10,-10,-10,-10,-10,-10,-20,
+ -10,  0,  0,  0,  0,  0,  0,-10,
+ -10,  0,  5, 10, 10,  5,  0,-10,
+ -10,  5,  5, 10, 10,  5,  5,-10,
+ -10,  0, 10, 10, 10, 10,  0,-10,
+ -10, 10, 10, 10, 10, 10, 10,-10,
+ -10,  5,  0,  0,  0,  0,  5,-10,
+ -20,-10,-40,-10,-10,-40,-10,-20,
                 };
 
         private static int[] RookTable = new int[] {
-                9   ,   9   ,   11  ,   10  ,   11  ,   9   ,   9   ,   9   ,
-                4   ,   6   ,   7   ,   9   ,   9   ,   7   ,   6   ,   4   ,
-                9   ,   10  ,   10  ,   11  ,   11  ,   10  ,   10  ,   9   ,
-                8   ,   8   ,   8   ,   9   ,   9   ,   8   ,   8   ,   8   ,
-                6   ,   6   ,   5   ,   6   ,   6   ,   5   ,   6   ,   6   ,
-                4   ,   5   ,   5   ,   5   ,   5   ,   5   ,   5   ,   4   ,
-                3   ,   4   ,   4   ,   6   ,   6   ,   4   ,   4   ,   3  ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                //9   ,   9   ,   11  ,   10  ,   11  ,   9   ,   9   ,   9   ,
+                //4   ,   6   ,   7   ,   9   ,   9   ,   7   ,   6   ,   4   ,
+                //9   ,   10  ,   10  ,   11  ,   11  ,   10  ,   10  ,   9   ,
+                //8   ,   8   ,   8   ,   9   ,   9   ,   8   ,   8   ,   8   ,
+                //6   ,   6   ,   5   ,   6   ,   6   ,   5   ,   6   ,   6   ,
+                //4   ,   5   ,   5   ,   5   ,   5   ,   5   ,   5   ,   4   ,
+                //3   ,   4   ,   4   ,   6   ,   6   ,   4   ,   4   ,   3  ,
+                //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                  0,  0,  0,  0,  0,  0,  0,  0,
+  5, 10, 10, 10, 10, 10, 10,  5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+  0,  0,  0,  5,  5,  0,  0,  0
                 };
 
         private static int[] KingTableO = new int[] {
@@ -97,14 +129,22 @@ namespace ChessBoardUI.AIAlgorithm
                 };
 
         private static int[] QueenTable = new int[] {
-                2   ,   3   ,   4   ,   3   ,   4   ,   3   ,   3   ,   2   ,
-                2   ,   3   ,   4   ,   4   ,   4   ,   4   ,   3   ,   2   ,
-                3   ,   4   ,   4   ,   4   ,   4   ,   4   ,   4   ,   3   ,
-                3   ,   3   ,   4   ,   4   ,   4   ,   4   ,   3   ,   3   ,
-                2   ,   3   ,   3   ,   4   ,   4   ,   3   ,   3   ,   2   ,
-                2   ,   2   ,   2   ,   3   ,   3   ,   2   ,   2   ,   2   ,
-                2   ,   2   ,   2   ,   2   ,   2   ,   2   ,   2   ,   2   ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                //2   ,   3   ,   4   ,   3   ,   4   ,   3   ,   3   ,   2   ,
+                //2   ,   3   ,   4   ,   4   ,   4   ,   4   ,   3   ,   2   ,
+                //3   ,   4   ,   4   ,   4   ,   4   ,   4   ,   4   ,   3   ,
+                //3   ,   3   ,   4   ,   4   ,   4   ,   4   ,   3   ,   3   ,
+                //2   ,   3   ,   3   ,   4   ,   4   ,   3   ,   3   ,   2   ,
+                //2   ,   2   ,   2   ,   3   ,   3   ,   2   ,   2   ,   2   ,
+                //2   ,   2   ,   2   ,   2   ,   2   ,   2   ,   2   ,   2   ,
+                //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
+                -20,-10,-10, -5, -5,-10,-10,-20,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  5,  5,  5,  5,  0,-10,
+ -5,  0,  5,  5,  5,  5,  0, -5,
+  0,  0,  5,  5,  5,  5,  0, -5,
+-10,  5,  5,  5,  5,  5,  0,-10,
+-10,  0,  5,  0,  0,  0,  0,-10,
+-20,-10,-10, -5, -5,-10,-10,-20
                 };
 
         private static int[] Mirror64 = new int[] {
@@ -165,9 +205,11 @@ namespace ChessBoardUI.AIAlgorithm
             int Player_Points = 0;
 
             // Evaluate pieces under threat
+            ulong[] bitboards = MoveGenerator.getCurrentBitboards();
             MoveGenerator.setCurrentBitboards(leaf_chessboard.BP, leaf_chessboard.BR, leaf_chessboard.BN, leaf_chessboard.BB, leaf_chessboard.BQ, leaf_chessboard.BK, leaf_chessboard.WP, leaf_chessboard.WR, leaf_chessboard.WN, leaf_chessboard.WB, leaf_chessboard.WQ, leaf_chessboard.WK);
-            MoveGenerator.setCurrentBitboardsHistoryMove(leaf_chessboard.move);
-            MoveGenerator.setCurrentCastlingCondition(leaf_chessboard.MKC, leaf_chessboard.MQC, leaf_chessboard.PKC, leaf_chessboard.PQC);
+            //MoveGenerator.setCurrentBitboardsHistoryMove(leaf_chessboard.move);
+            //MoveGenerator.setCurrentCastlingCondition(leaf_chessboard.MKC, leaf_chessboard.MQC, leaf_chessboard.PKC, leaf_chessboard.PQC);
+
             ArrayList moves;
 
             //
@@ -392,7 +434,7 @@ namespace ChessBoardUI.AIAlgorithm
                 }
 
             }
-
+            MoveGenerator.setCurrentBitboards(bitboards[0], bitboards[1], bitboards[2], bitboards[3], bitboards[4], bitboards[5], bitboards[6], bitboards[7], bitboards[8], bitboards[9], bitboards[10], bitboards[11]);
             return Machine_Points - Player_Points;  //(machine point - player point)
         }
          
@@ -408,28 +450,26 @@ namespace ChessBoardUI.AIAlgorithm
             {             
                 return evaluateBoard(min_max, this);
             }
-            else if (min_max)
+            else if (min_max)  //max node
             {
 
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC, this.PC_DONE, this.MC_DONE);
-                // king check
                 if (chessboards.Count == 0)
                 {
                     if (MoveGenerator.isKingInCheck(min_max))
                     {
-                        return -10000;
+                        Console.WriteLine("Game over machine lost");
+                        bestState = null;
+                        return int.MinValue;
                     }
                     else
                     {
+                        Console.WriteLine("Game over draw");
+                        bestState = null;
                         return 0;
                     }
                 }
-                    //if (Movegenerator.isincheck(min_max))
-                //return -10000;
-                //else
-                //return 0;
 
-                
 
                 foreach (ChessBoard CB in chessboards)
                 {
@@ -444,6 +484,7 @@ namespace ChessBoardUI.AIAlgorithm
                     }
 
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
+                    
                     if (result > alpha)
                     {
                         alpha = result;
@@ -455,30 +496,40 @@ namespace ChessBoardUI.AIAlgorithm
                         break;
                     }
                 }
+                if (MoveGenerator.isKingInCheck(min_max) && alpha == int.MaxValue)
+                {
+                    Console.WriteLine("Game over machine lost");
+                    bestState = null;
+                    return int.MaxValue;
+                }
+                else if(!MoveGenerator.isKingInCheck(min_max) && alpha == int.MaxValue)
+                {
+                    Console.WriteLine("Game over draw");
+                    bestState = null;
+                    return 0;
+                }
+
                 return alpha;
             }
             else
             {
-
-
                 List<ChessBoard> chessboards = MoveGenerator.generateChessBoards(min_max, BP, BR, BN, BB, BQ, BK, WP, WR, WN, WB, WQ, WK, this.move, this.MKC, this.MQC, this.PKC, this.PQC, this.PC_DONE, this.MC_DONE);
 
                 if (chessboards.Count == 0)
                 {
                     if (MoveGenerator.isKingInCheck(min_max))
                     {
-                        return 10000;
+                        Console.WriteLine("Game over player lost");
+                        bestState = null;
+                        return int.MaxValue;
                     }
                     else
                     {
+                        Console.WriteLine("Game over draw");
+                        bestState = null;
                         return 0;
                     }
                 }
-                //chessbaord.Count ==0 
-                //if (Movegenerator.isincheck(min_max))
-                //return 10000;
-                //else ()
-                //return 0;
 
 
                 foreach (ChessBoard CB in chessboards)
@@ -487,13 +538,14 @@ namespace ChessBoardUI.AIAlgorithm
                     {
                         return int.MinValue;
                     }
+
                     if (CB.move.cap_type == PieceType.King)
                     {
                         bestState = CB;
                         return int.MinValue;
                     }
-
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
+                    
                     if (result < beta)
                     {
                         beta = result;
@@ -505,6 +557,21 @@ namespace ChessBoardUI.AIAlgorithm
                         break;
                     }
                 }
+               
+
+                if (MoveGenerator.isKingInCheck(min_max) && beta == int.MinValue)
+                {
+                    Console.WriteLine("Game over player lost");
+                    bestState = null;
+                    return int.MinValue;
+                }
+                else if (!MoveGenerator.isKingInCheck(min_max) && beta == int.MinValue)
+                {
+                    Console.WriteLine("Game over draw");
+                    bestState = null;
+                    return 0;
+                }
+
                 return beta;
             }
         }

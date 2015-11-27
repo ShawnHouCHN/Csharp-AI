@@ -68,8 +68,12 @@ namespace ChessBoardUI.ViewModel
                 machine_knight1 = new ChessPiece { Pos = new Point(6, 0), Type = PieceType.Knight, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
                 machine_rook1 = new ChessPiece { Pos = new Point(7, 0), Type = PieceType.Rook, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
 
-                MoveGenerator.setInitBitboards(color, 0x00ff000000000000, 0x8100000000000000, 0x4200000000000000, 0x2400000000000000, 0x0800000000000000, 0x1000000000000000, 0x000000000000ff00, 0x000000000000081, 0x000000000000042, 0x000000000000024, 0x0000000000000008, 0x0000000000000010);
+                //test
+                //MoveGenerator.setInitBitboards(color, 0x0000000000000000, 0x0000000000000200, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000040000, 0x0000000000000000, 0x000000000000000, 0x000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000001);
+                //MoveGenerator.setInitBitboards(color, 0x00ff000000000000, 0x8100000000000000, 0x4200000000000000, 0x2400000000000000, 0x0800000000000000, 0x1000000000000000, 0x000000000000ff00, 0x000000000000081, 0x000000000000042, 0x000000000000024, 0x0000000000000008, 0x0000000000000010);
 
+                //real
+                MoveGenerator.setInitBitboards(color, 0x00ff000000000000, 0x8100000000000000, 0x4200000000000000, 0x2400000000000000, 0x0800000000000000, 0x1000000000000000, 0x000000000000ff00, 0x000000000000081, 0x000000000000042, 0x000000000000024, 0x0000000000000008, 0x0000000000000010);
             }
             else
             {
@@ -106,6 +110,10 @@ namespace ChessBoardUI.ViewModel
                 player_knight1 = new ChessPiece { Pos = new Point(6, 7), Type = PieceType.Knight, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
                 player_rook1 = new ChessPiece { Pos = new Point(7, 7), Type = PieceType.Rook, Player = Player.Black, Ownership = !color, PieceClickCommand = null, PieceMoveCommand = null };
 
+                //test
+                //MoveGenerator.setRevertInitBitboards(color, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000001, 0x0000000000000000, 0x0000000000000400, 0x0000000000000000, 0x0000000000000000, 0x0000000000004000, 0x0800000000000000);
+
+                //real
                 MoveGenerator.setRevertInitBitboards(color, 0x000000000000ff00, 0x0000000000000081, 0x0000000000000042, 0x0000000000000024, 0x0000000000000010, 0x0000000000000008, 0x00ff000000000000, 0x8100000000000000, 0x4200000000000000, 0x2400000000000000, 0x1000000000000000, 0x0800000000000000);
 
             }

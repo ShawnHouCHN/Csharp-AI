@@ -32,9 +32,9 @@ namespace ChessBoardUI.Players
             human_timer = new TimerViewModel
             {
                 Participant = Participant.Player,
-                TimeSpan = TimeSpan.FromMinutes(30),
+                TimeSpan = TimeSpan.FromMinutes(50),
                 TimerDispatcher = new DispatcherTimer(),
-                Display = "00:30:00"
+                Display = "00:50:00"
             };
 
             Messenger.Default.Register<HumanMoveMessage>(this, (action) => HumanPiecePositionChangeHandler(action));
@@ -42,7 +42,13 @@ namespace ChessBoardUI.Players
             human_capture = new SPCapturedViewModel { CapturedPiecesCollection = new ObservableCollection<BitmapImage>() };
             this.pieces_collection = pieces_collection;
             this.pieces_dict = pieces_dict;
-
+            foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)
+            {
+                if (item.Value.Player == Player.Black && !MoveGenerator.player_color)
+                {
+                 item.Value.Ownership = false;
+                }
+            }
         }
 
         public Dictionary<int, ChessPiece> PieceDictionary
@@ -80,14 +86,14 @@ namespace ChessBoardUI.Players
             //lock the entire board so that use cannot click on piece when it is machine's turn.
             foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)
             {
-                if (item.Value.Player == Player.White && MoveGenerator.player_color)
-                {
+                //if (item.Value.Player == Player.White && MoveGenerator.player_color)
+                //{
                     item.Value.Ownership = false;
-                }
-                else if (item.Value.Player == Player.Black && !MoveGenerator.player_color)
-                {
-                    item.Value.Ownership = false;
-                }
+                //}
+                //else if (item.Value.Player == Player.Black && !MoveGenerator.player_color)
+                //{
+                    //item.Value.Ownership = false;
+                //}
             }
         }
 
@@ -215,10 +221,17 @@ namespace ChessBoardUI.Players
             }
 
 
+            if (action.Promotion)
+            {
+                moved.Type = PieceType.Queen;
+
+            }
+
             //this is capture
+            ChessPiece to_piece_location= null;
             if (this.pieces_dict.ContainsKey(to_loca_index))
             {
-                ChessPiece to_piece_location = this.pieces_dict[to_loca_index];
+                to_piece_location = this.pieces_dict[to_loca_index];
                 Application.Current.Dispatcher.Invoke((Action)(() => this.pieces_collection.Remove(to_piece_location)));
                 this.pieces_dict.Remove(to_loca_index); 
 
@@ -236,11 +249,8 @@ namespace ChessBoardUI.Players
                     human_capture.CapturedPiecesCollection.Add(hm_cap_img);
                 }));
 
-            }
 
-            if (action.Promotion)
-            {
-                moved.Type = PieceType.Queen;
+
             }
 
             moved.Pos_X = action.To_File;
@@ -249,9 +259,17 @@ namespace ChessBoardUI.Players
             this.pieces_dict.Remove(from_loca_index);
             this.pieces_dict.Add(to_loca_index, moved);
 
+            if(to_piece_location!=null && to_piece_location.Type == PieceType.King)
+            {
+                MessageBoxResult result = MessageBox.Show("Player lost the game", "Confirmation", MessageBoxButton.OK);                
+                //this.HumanTimer.startClock();
+                if (result == MessageBoxResult.OK)
+                {
+                    Application.Current.Dispatcher.Invoke((Action)(() => { Application.Current.Shutdown(); }));              
+                }
+            }
 
-
-
+           
             this.HumanTimer.startClock();
 
         }

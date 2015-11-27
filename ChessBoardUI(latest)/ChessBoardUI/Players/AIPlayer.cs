@@ -45,9 +45,9 @@ namespace ChessBoardUI.Players
             machine_timer = new TimerViewModel
             {
                 Participant = Participant.PC,
-                TimeSpan = TimeSpan.FromMinutes(30),
+                TimeSpan = TimeSpan.FromMinutes(50),
                 TimerDispatcher = new DispatcherTimer(),
-                Display = "00:30:00"
+                Display = "00:50:00"
             };
 
             //human move messenger registration
@@ -317,12 +317,13 @@ namespace ChessBoardUI.Players
                         {
                             if (ai_move.MKC || ai_move.MQC)
                             {
-                                //Console.WriteLine("AI moves Castling");
+                                Console.WriteLine("AI 1 moves Castling");
                                 Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank = ai_move.from_rank, From_File = ai_move.from_file, MKC = ai_move.MKC, MQC = ai_move.MQC });
                             }
                             else if (ai_move.promote)
                             {
-                                Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank = ai_move.from_rank, From_File = ai_move.from_file, Promotion=ai_move.promote});
+                                Console.WriteLine("AI 1 moves promotion");
+                                Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank = ai_move.from_rank, From_File = ai_move.from_file, To_Rank=ai_move.to_rank, To_File=ai_move.to_file, Promotion=ai_move.promote});
                             }
 
                             else
@@ -404,14 +405,20 @@ namespace ChessBoardUI.Players
 
                         else
                         {
-
                             //Console.WriteLine("AI Move " + ai_move.moved_type + " from " + ai_move.from_rank + " " + ai_move.from_file + " to " + ai_move.to_rank + " " + ai_move.to_file + " Cap " + ai_move.cap_type);
                             Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank = ai_move.from_rank, From_File = ai_move.from_file, To_Rank = ai_move.to_rank, To_File = ai_move.to_file });
                             this.MachineTimer.stopClock();
                             this.turn = false;
                         }
                         Console.WriteLine(" board state is " + Convert.ToString((long)MoveGenerator.pieces_occupied, 2));  //!!!!!!!
+
+                        //if(MoveGenerator.isKingInCheck(false) && curr_board_state.bestState.AlphaBetaSearch(int.MinValue, int.MaxValue, 3, false)==int.MaxValue){
+                        //    Console.WriteLine("Game over player lost game");
+                        //    return;
+                        //}
+
                     }
+
                 }
 
             }
@@ -425,7 +432,11 @@ namespace ChessBoardUI.Players
         public Move getNextMove(ChessBoard curr_board_state, bool min_max)
         {
             startIterativeSearch(curr_board_state, min_max);
-           
+
+            //this is game over
+            if (curr_board_state.bestState == null)
+                return null;
+
             MoveGenerator.setCurrentBitboards(curr_board_state.bestState.BP, curr_board_state.bestState.BR, curr_board_state.bestState.BN, curr_board_state.bestState.BB, curr_board_state.bestState.BQ, curr_board_state.bestState.BK, curr_board_state.bestState.WP, curr_board_state.bestState.WR, curr_board_state.bestState.WN, curr_board_state.bestState.WB, curr_board_state.bestState.WQ, curr_board_state.bestState.WK);
             MoveGenerator.setCurrentBitboardsHistoryMove(curr_board_state.bestState.move);            
             MoveGenerator.setCurrentCastlingCondition(curr_board_state.bestState.MKC, curr_board_state.bestState.MQC, curr_board_state.bestState.PKC, curr_board_state.bestState.PQC);
@@ -441,14 +452,23 @@ namespace ChessBoardUI.Players
             MoveGenerator.best_move_queue.Clear();
 
             while (DateTime.Compare(DateTime.Now , MoveGenerator.end_time)<=0)
-            //while (i <= 2)
+            //while (i <= 4)
             {
-                //Thread.Sleep(2000);
                 MoveGenerator.states = 0;
                 Console.WriteLine("Depth is "+i);
-                init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, min_max);
+                int alpha_beta= init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, min_max);
                 ChessBoard bestState = init.bestState;
                 //drawArray(bestState.WP, bestState.WN, bestState.WB, bestState.WQ, bestState.WR, bestState.WK, bestState.BP, bestState.BN, bestState.BB, bestState.BQ, bestState.BR, bestState.BK);
+
+                //some code here to check if game is over!!!!!!!
+                if (bestState == null)
+                {
+                    Console.WriteLine("Game over!!!");
+                    
+                    return;
+                }
+
+
                 MoveGenerator.best_move_queue.Clear();
 
                 while (bestState != null)
