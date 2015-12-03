@@ -38,14 +38,14 @@ namespace ChessBoardUI.AIAlgorithm
                 //-4  ,   -4  ,   0   ,   4   ,   6   ,   0   ,   -4  ,   -4  ,
                 //-1  ,   -1  ,   1   ,   5   ,   6   ,   1   ,   -1  ,   -1  ,
                 //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
-                  0,  0,  0,  0,  0,  0,  0,  0,
+                0,  0,  0,  0,  0,  0,  0,  0,
                 50, 50, 50, 50, 50, 50, 50, 50,
- 10, 10, 20, 30, 30, 20, 10, 10,
-  5,  5, 10, 27, 27, 10,  5,  5,
-  0,  0,  0, 25, 25,  0,  0,  0,
-  5, -5,-10,  0,  0,-10, -5,  5,
-  5, 10, 10,-25,-25, 10, 10,  5,
-  0,  0,  0,  0,  0,  0,  0,  0
+                10, 10, 20, 30, 30, 20, 10, 10,
+                5,  5, 10, 27, 27, 10,  5,  5,
+                0,  0,  0, 25, 25,  0,  0,  0,
+                5, -5,-10,  0,  0,-10, -5,  5,
+                5, 10, 10,-25,-25, 10, 10,  5,
+                0,  0,  0,  0,  0,  0,  0,  0
                 };
         
 
@@ -464,7 +464,7 @@ namespace ChessBoardUI.AIAlgorithm
                     }
                     else
                     {
-                        Console.WriteLine("Game over draw");
+                        Console.WriteLine("Game over draw (max) 1");
                         bestState = null;
                         return 0;
                     }
@@ -480,7 +480,7 @@ namespace ChessBoardUI.AIAlgorithm
                     if (CB.move.cap_type == PieceType.King)
                     {
                         bestState = CB;
-                        return int.MaxValue;
+                        return int.MaxValue;  //just change it to min, it was max
                     }
 
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
@@ -496,15 +496,15 @@ namespace ChessBoardUI.AIAlgorithm
                         break;
                     }
                 }
-                if (MoveGenerator.isKingInCheck(min_max) && alpha == int.MaxValue)
+                if (MoveGenerator.isKingInCheck(min_max) && alpha == int.MinValue)
                 {
                     Console.WriteLine("Game over machine lost");
                     bestState = null;
-                    return int.MaxValue;
+                    return int.MinValue;
                 }
-                else if(!MoveGenerator.isKingInCheck(min_max) && alpha == int.MaxValue)
+                else if(!MoveGenerator.isKingInCheck(min_max) && alpha == int.MinValue)
                 {
-                    Console.WriteLine("Game over draw");
+                    Console.WriteLine("Game over draw (max) 2");
                     bestState = null;
                     return 0;
                 }
@@ -525,13 +525,13 @@ namespace ChessBoardUI.AIAlgorithm
                     }
                     else
                     {
-                        Console.WriteLine("Game over draw");
+                        Console.WriteLine("Game over draw (min) 1");
                         bestState = null;
                         return 0;
                     }
                 }
 
-
+               
                 foreach (ChessBoard CB in chessboards)
                 {
                     if (DateTime.Compare(DateTime.Now, MoveGenerator.end_time) > 0)
@@ -556,18 +556,20 @@ namespace ChessBoardUI.AIAlgorithm
                     {
                         break;
                     }
+
+
                 }
                
 
-                if (MoveGenerator.isKingInCheck(min_max) && beta == int.MinValue)
+                if (MoveGenerator.isKingInCheck(min_max) && beta == int.MaxValue)
                 {
                     Console.WriteLine("Game over player lost");
                     bestState = null;
-                    return int.MinValue;
+                    return int.MaxValue;
                 }
-                else if (!MoveGenerator.isKingInCheck(min_max) && beta == int.MinValue)
+                else if (!MoveGenerator.isKingInCheck(min_max) && beta == int.MaxValue)
                 {
-                    Console.WriteLine("Game over draw");
+                    Console.WriteLine("Game over draw (min) 2");
                     bestState = null;
                     return 0;
                 }

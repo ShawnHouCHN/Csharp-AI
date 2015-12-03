@@ -259,15 +259,26 @@ namespace ChessBoardUI.Players
             this.pieces_dict.Remove(from_loca_index);
             this.pieces_dict.Add(to_loca_index, moved);
 
-            if(to_piece_location!=null && to_piece_location.Type == PieceType.King)
+            if (MoveGenerator.isPlayerKingCheckmate())
             {
-                MessageBoxResult result = MessageBox.Show("Player lost the game", "Confirmation", MessageBoxButton.OK);                
+                MessageBoxResult result = MessageBox.Show("Player lost the game", "Confirmation", MessageBoxButton.OK);
                 //this.HumanTimer.startClock();
                 if (result == MessageBoxResult.OK)
                 {
-                    Application.Current.Dispatcher.Invoke((Action)(() => { Application.Current.Shutdown(); }));              
+                    Application.Current.Dispatcher.Invoke((Action)(() => { Application.Current.Shutdown(); }));
                 }
             }
+            //return 
+
+            //if(to_piece_location!=null && to_piece_location.Type == PieceType.King)
+            //{
+            //    MessageBoxResult result = MessageBox.Show("Player lost the game", "Confirmation", MessageBoxButton.OK);                
+            //    //this.HumanTimer.startClock();
+            //    if (result == MessageBoxResult.OK)
+            //    {
+            //        Application.Current.Dispatcher.Invoke((Action)(() => { Application.Current.Shutdown(); }));              
+            //    }
+            //}
 
            
             this.HumanTimer.startClock();
