@@ -45,9 +45,9 @@ namespace ChessBoardUI.Players
             machine_timer = new TimerViewModel
             {
                 Participant = Participant.PC,
-                TimeSpan = TimeSpan.FromMinutes(50),
+                TimeSpan = TimeSpan.FromMinutes(0),
                 TimerDispatcher = new DispatcherTimer(),
-                Display = "00:50:00"
+                Display = "00:00:00"
             };
 
             //human move messenger registration
@@ -461,8 +461,12 @@ namespace ChessBoardUI.Players
                 if (bestState == null)
                 {
                     Console.WriteLine("Game over!!!");
-                    
-                    return;
+                    MessageBoxResult result = MessageBox.Show("Game over", "Confirmation", MessageBoxButton.OK);
+                    //this.HumanTimer.startClock();
+                    if (result == MessageBoxResult.OK)
+                    {
+                        Application.Current.Dispatcher.Invoke((Action)(() => { Application.Current.Shutdown(); }));
+                    }
                 }
 
 

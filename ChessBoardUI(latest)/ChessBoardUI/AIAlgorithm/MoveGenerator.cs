@@ -2042,7 +2042,12 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     knight_index = i;
                     knight_bitboard = knight_board_set[i];
-                    knight_moves = knight_board_set[i] & (empty | enemy_occupied);
+
+                    //test code
+                    knight_moves = knight_bitboard;
+
+                    //real code
+                    //knight_moves = knight_board_set[i] & (empty | enemy_occupied);
                 }
                 all_moves |= knight_moves;
             }
@@ -2086,10 +2091,17 @@ namespace ChessBoardUI.AIAlgorithm
                     rook_up_moves = rook_up_moves & rook_up;
                     rook_down_moves = rook_down_moves & rook_down;
 
-                    rook_right_moves = (rook_right_moves ^ rook_right) & (empty | enemy_occupied);
-                    rook_left_moves = (rook_left_moves ^ rook_left) & (empty | enemy_occupied);
-                    rook_up_moves = (rook_up_moves ^ rook_up) & (empty | enemy_occupied);
-                    rook_down_moves = (rook_down_moves ^ rook_down) & (empty | enemy_occupied);
+                    //test code
+                    rook_right_moves = (rook_right_moves ^ rook_right);
+                    rook_left_moves = (rook_left_moves ^ rook_left);
+                    rook_up_moves = (rook_up_moves ^ rook_up);
+                    rook_down_moves = (rook_down_moves ^ rook_down);
+
+                    //real code
+                    //rook_right_moves = (rook_right_moves ^ rook_right) & (empty | enemy_occupied);
+                    //rook_left_moves = (rook_left_moves ^ rook_left) & (empty | enemy_occupied);
+                    //rook_up_moves = (rook_up_moves ^ rook_up) & (empty | enemy_occupied);
+                    //rook_down_moves = (rook_down_moves ^ rook_down) & (empty | enemy_occupied);
 
                     rook_moves = rook_right_moves | rook_left_moves | rook_up_moves | rook_down_moves;
                 }
@@ -2133,10 +2145,17 @@ namespace ChessBoardUI.AIAlgorithm
                     bishop_225_moves = bishop_225_moves & bishop_225;
                     bishop_315_moves = bishop_315_moves & bishop_315;
 
-                    bishop_45_moves = (bishop_45_moves ^ bishop_45) & (empty | enemy_occupied);
-                    bishop_135_moves = (bishop_135_moves ^ bishop_135) & (empty | enemy_occupied);
-                    bishop_225_moves = (bishop_225_moves ^ bishop_225) & (empty | enemy_occupied);
-                    bishop_315_moves = (bishop_315_moves ^ bishop_315) & (empty | enemy_occupied);
+                    //test code
+                    bishop_45_moves = (bishop_45_moves ^ bishop_45);
+                    bishop_135_moves = (bishop_135_moves ^ bishop_135);
+                    bishop_225_moves = (bishop_225_moves ^ bishop_225);
+                    bishop_315_moves = (bishop_315_moves ^ bishop_315);
+
+                    //real code
+                    //bishop_45_moves = (bishop_45_moves ^ bishop_45) & (empty | enemy_occupied);
+                    //bishop_135_moves = (bishop_135_moves ^ bishop_135) & (empty | enemy_occupied);
+                    //bishop_225_moves = (bishop_225_moves ^ bishop_225) & (empty | enemy_occupied);
+                    //bishop_315_moves = (bishop_315_moves ^ bishop_315) & (empty | enemy_occupied);
 
                     bishop_moves = bishop_45_moves | bishop_135_moves | bishop_225_moves | bishop_315_moves;
                     bishop_cap_moves = bishop_moves & enemy_occupied;
@@ -2201,17 +2220,27 @@ namespace ChessBoardUI.AIAlgorithm
                     queen_225_moves = queen_225_moves & queen_225;
                     queen_315_moves = queen_315_moves & queen_315;
 
-                    queen_right_moves = (queen_right_moves ^ queen_right) & (empty | enemy_occupied);
-                    queen_left_moves = (queen_left_moves ^ queen_left) & (empty | enemy_occupied);
-                    queen_up_moves = (queen_up_moves ^ queen_up) & (empty | enemy_occupied);
-                    queen_down_moves = (queen_down_moves ^ queen_down) & (empty | enemy_occupied);
-                    queen_45_moves = (queen_45_moves ^ queen_45) & (empty | enemy_occupied);
-                    queen_135_moves = (queen_135_moves ^ queen_135) & (empty | enemy_occupied);
-                    queen_225_moves = (queen_225_moves ^ queen_225) & (empty | enemy_occupied);
-                    queen_315_moves = (queen_315_moves ^ queen_315) & (empty | enemy_occupied);
+                    //test code
+                    queen_right_moves = (queen_right_moves ^ queen_right);
+                    queen_left_moves = (queen_left_moves ^ queen_left) ;
+                    queen_up_moves = (queen_up_moves ^ queen_up) ;
+                    queen_down_moves = (queen_down_moves ^ queen_down);
+                    queen_45_moves = (queen_45_moves ^ queen_45);
+                    queen_135_moves = (queen_135_moves ^ queen_135);
+                    queen_225_moves = (queen_225_moves ^ queen_225);
+                    queen_315_moves = (queen_315_moves ^ queen_315);
+
+                    //real code
+                    //queen_right_moves = (queen_right_moves ^ queen_right) & (empty | enemy_occupied);
+                    //queen_left_moves = (queen_left_moves ^ queen_left) & (empty | enemy_occupied);
+                    //queen_up_moves = (queen_up_moves ^ queen_up) & (empty | enemy_occupied);
+                    //queen_down_moves = (queen_down_moves ^ queen_down) & (empty | enemy_occupied);
+                    //queen_45_moves = (queen_45_moves ^ queen_45) & (empty | enemy_occupied);
+                    //queen_135_moves = (queen_135_moves ^ queen_135) & (empty | enemy_occupied);
+                    //queen_225_moves = (queen_225_moves ^ queen_225) & (empty | enemy_occupied);
+                    //queen_315_moves = (queen_315_moves ^ queen_315) & (empty | enemy_occupied);
 
                     queen_moves = queen_right_moves | queen_left_moves | queen_up_moves | queen_down_moves | queen_45_moves | queen_135_moves | queen_225_moves | queen_315_moves;
-                    queen_cap_moves = queen_moves & enemy_occupied;
                 }
                 all_moves |= queen_moves;
             }
@@ -2228,7 +2257,11 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     king_index = i;
                     king_bitboard = king_board_set[i];
-                    king_moves = king_board_set[i] & (empty | enemy_occupied);
+
+                    //test code
+                    king_moves = king_bitboard;
+                    //real code
+                    //king_moves = king_board_set[i] & (empty | enemy_occupied);
                     break;
                 }
             }

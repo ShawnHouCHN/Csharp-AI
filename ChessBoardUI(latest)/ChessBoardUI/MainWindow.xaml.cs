@@ -39,6 +39,11 @@ namespace ChessBoardUI
         private void StartGame_Click(object sender, RoutedEventArgs e)
         {
             board_layout = new Dictionary<int, ChessPiece>();
+            if ((ComboBoxItem)ChooseColor.SelectedItem==null || (ComboBoxItem)ChooseLevel.SelectedItem==null)
+            {
+                MessageBoxResult result = MessageBox.Show("Please choose the color or level", "Confirmation", MessageBoxButton.OK);
+                return; 
+            }
 
             if ((String)((ComboBoxItem)ChooseColor.SelectedItem).Content == "Black")
             {
@@ -70,6 +75,11 @@ namespace ChessBoardUI
         private void SimulateGame_Click(object sender, RoutedEventArgs e)
         {
             board_layout = new Dictionary<int, ChessPiece>();
+            if ((ComboBoxItem)ChooseColor.SelectedItem == null || (ComboBoxItem)ChooseLevel.SelectedItem == null)
+            {
+                MessageBoxResult result = MessageBox.Show("Please choose the color or level", "Confirmation", MessageBoxButton.OK);
+                return;
+            }
 
             if ((String)((ComboBoxItem)ChooseColor.SelectedItem).Content == "Black")
                 board = new MainControl(false, (String)((ComboBoxItem)ChooseLevel.SelectedItem).Content, true);

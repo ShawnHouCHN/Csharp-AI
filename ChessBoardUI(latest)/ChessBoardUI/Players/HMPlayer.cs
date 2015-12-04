@@ -32,9 +32,9 @@ namespace ChessBoardUI.Players
             human_timer = new TimerViewModel
             {
                 Participant = Participant.Player,
-                TimeSpan = TimeSpan.FromMinutes(50),
+                TimeSpan = TimeSpan.FromMinutes(0),
                 TimerDispatcher = new DispatcherTimer(),
-                Display = "00:50:00"
+                Display = "00:00:00"
             };
 
             Messenger.Default.Register<HumanMoveMessage>(this, (action) => HumanPiecePositionChangeHandler(action));
