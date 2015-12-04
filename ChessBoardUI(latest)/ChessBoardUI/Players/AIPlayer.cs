@@ -45,9 +45,9 @@ namespace ChessBoardUI.Players
             machine_timer = new TimerViewModel
             {
                 Participant = Participant.PC,
-                TimeSpan = TimeSpan.FromMinutes(0),
+                TimeSpan = TimeSpan.FromMinutes(50),
                 TimerDispatcher = new DispatcherTimer(),
-                Display = "00:00:00"
+                Display = "00:50:00"
             };
 
             //human move messenger registration
@@ -478,9 +478,10 @@ namespace ChessBoardUI.Players
                    bestState = bestState.bestState;
                  }
 
-                Console.WriteLine("Searching in layer: {0} through {1} boardstates with an average branching factor of {2}", i, MoveGenerator.states, (Math.Pow(MoveGenerator.states, (1 / (double)i))));
+                Console.WriteLine("Searching in layer: {0} through {1} evaluations with an average branching factor of {2}", i, MoveGenerator.states, (Math.Pow(MoveGenerator.states, (1 / (double)i))));
                 MoveGenerator.branchingfactor += (Math.Pow(MoveGenerator.states, (1 / (double)i)));
                 MoveGenerator.searchcounter += 1;
+                //Console.WriteLine("Average branching factor of the algorithm: "+ (MoveGenerator.branchingfactor/ MoveGenerator.searchcounter));
                 i++;
             }
             return;

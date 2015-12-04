@@ -15,8 +15,8 @@ namespace ChessBoardUI.AIAlgorithm
         public int to_rank;
         public int to_file;
         public PieceType moved_type;
-        public PieceType? cap_type=null;
-        
+        public PieceType? cap_type = null;
+
         public bool promote = false;
         public bool MKC = false;
         public bool MQC = false;
@@ -33,7 +33,7 @@ namespace ChessBoardUI.AIAlgorithm
             this.to_file = to_y;
         }
 
-        public Move(int from_x, int from_y, bool MKC, bool MQC , bool PKC, bool PQC)
+        public Move(int from_x, int from_y, bool MKC, bool MQC, bool PKC, bool PQC)
         {
             this.from_rank = from_x;
             this.from_file = from_y;
@@ -65,7 +65,7 @@ namespace ChessBoardUI.AIAlgorithm
         }
     }
 
-    class MoveCompare: IComparer
+    class MoveCompare : IComparer
     {
         Move last_move;
         public MoveCompare()
@@ -73,7 +73,7 @@ namespace ChessBoardUI.AIAlgorithm
             this.last_move = null;
         }
 
-        public MoveCompare(Move last_move=null)
+        public MoveCompare(Move last_move = null)
         {
             this.last_move = last_move;
         }
@@ -108,11 +108,11 @@ namespace ChessBoardUI.AIAlgorithm
             else
             {
 
-                if (item_one.from_rank == last_move.from_rank && item_one.from_file == last_move.from_file&& item_one.to_rank==last_move.to_rank&& item_one.to_file==last_move.to_file)
+                if (item_one.from_rank == last_move.from_rank && item_one.from_file == last_move.from_file && item_one.to_rank == last_move.to_rank && item_one.to_file == last_move.to_file)
                 {
                     return -1;
                 }
-                else if (item_two.from_rank == last_move.from_rank && item_two.from_file == last_move.from_file&& item_two.to_rank == last_move.to_rank && item_two.to_file == last_move.to_file)
+                else if (item_two.from_rank == last_move.from_rank && item_two.from_file == last_move.from_file && item_two.to_rank == last_move.to_rank && item_two.to_file == last_move.to_file)
                 {
                     return 1;
                 }
@@ -1033,7 +1033,7 @@ namespace ChessBoardUI.AIAlgorithm
 
 
 
-        public static void setCurrentBitboardsHistoryMove(Move historymove=null)
+        public static void setCurrentBitboardsHistoryMove(Move historymove = null)
         {
             history_move = historymove;
         }
@@ -1045,7 +1045,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         }
 
-        public static void setCurrentCastlingCondition(bool _MKC=true, bool _MQC=true, bool _PKC=true, bool _PQC=true)
+        public static void setCurrentCastlingCondition(bool _MKC = true, bool _MQC = true, bool _PKC = true, bool _PQC = true)
         {
             MKC = _MKC;
             MQC = _MQC;
@@ -1057,17 +1057,17 @@ namespace ChessBoardUI.AIAlgorithm
         {
             return history_move;
         }
-        
+
         //castling is not made yet, but bool is kept in the parameters.
-        public static ArrayList PossibleMovesMachine(string history="")
+        public static ArrayList PossibleMovesMachine(string history = "")
         {
 
             not_black_occupied = ~(white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king | black_king);
             black_occupied_noking = (black_pawns | black_rooks | black_knights | black_bishops | black_queens);
-            black_occupied = (black_pawns | black_rooks | black_knights | black_bishops | black_queens| black_king);
+            black_occupied = (black_pawns | black_rooks | black_knights | black_bishops | black_queens | black_king);
             white_occupied = (white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king);
             ArrayList bp_list;
-  
+
             if (player_color)
             {
                 bp_list = PossibleKing(black_king, white_occupied);
@@ -1095,7 +1095,7 @@ namespace ChessBoardUI.AIAlgorithm
         }
 
 
-        public static ArrayList PossibleMovesPlayer(string history="")
+        public static ArrayList PossibleMovesPlayer(string history = "")
         {
 
             not_black_occupied = ~(white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king | black_king);
@@ -1124,7 +1124,7 @@ namespace ChessBoardUI.AIAlgorithm
                 wp_list.AddRange(PossiblePawnPlayer(history, black_pawns));
                 wp_list.AddRange(PossibleCastlingPlayer());
             }
-            
+
 
 
             return wp_list; // test
@@ -1157,17 +1157,17 @@ namespace ChessBoardUI.AIAlgorithm
             {
                 if (((bp_cap_right_moves >> i) & 1) == 1)
                 {
-                    if(((enemy_pawns >> i) & 1) == 1)
+                    if (((enemy_pawns >> i) & 1) == 1)
                         bp_move_list.Add(new Move((i / 8 + 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Pawn, false));
-                    else if(((enemy_knights >> i) & 1) == 1)
+                    else if (((enemy_knights >> i) & 1) == 1)
                         bp_move_list.Add(new Move((i / 8 + 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Knight, false));
-                    else if(((enemy_bishops >> i) & 1) == 1)
+                    else if (((enemy_bishops >> i) & 1) == 1)
                         bp_move_list.Add(new Move((i / 8 + 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Bishop, false));
-                    else if(((enemy_rooks >> i) & 1) == 1)
+                    else if (((enemy_rooks >> i) & 1) == 1)
                         bp_move_list.Add(new Move((i / 8 + 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Rook, false));
-                    else if(((enemy_queens >> i) & 1) == 1)
+                    else if (((enemy_queens >> i) & 1) == 1)
                         bp_move_list.Add(new Move((i / 8 + 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.Queen, false));
-                    else if(((enemy_king >> i) & 1) == 1)
+                    else if (((enemy_king >> i) & 1) == 1)
                         bp_move_list.Add(new Move((i / 8 + 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, false));
                 }
 
@@ -1200,12 +1200,12 @@ namespace ChessBoardUI.AIAlgorithm
             {
                 if (((bp_1_downward_moves >> i) & 1) == 1)
                 {
-                   bp_move_list.Add(new Move((i / 8 + 1), (i % 8), (i / 8), (i % 8), PieceType.Pawn,false));
+                    bp_move_list.Add(new Move((i / 8 + 1), (i % 8), (i / 8), (i % 8), PieceType.Pawn, false));
                 }
 
             }
 
-           // Console.WriteLine(Convert.ToString((long)bp_1_downward_moves, 2));
+            // Console.WriteLine(Convert.ToString((long)bp_1_downward_moves, 2));
 
             ulong bp_2_downward_moves = (ulong)(machine_pawns >> 16) & empty & (empty >> 8) & rank4;
             for (int i = 0; i < 64; i++)
@@ -1239,7 +1239,7 @@ namespace ChessBoardUI.AIAlgorithm
                         bp_move_list.Add(new Move((i / 8 + 1), (i % 8 - 1), (i / 8), (i % 8), PieceType.Pawn, PieceType.King, true));
                 }
             }
-           // Console.WriteLine(Convert.ToString((long)bp_promote_right_cap_moves, 2));
+            // Console.WriteLine(Convert.ToString((long)bp_promote_right_cap_moves, 2));
 
             ulong bp_promote_left_cap_moves = (machine_pawns >> 9) & enemy_occupied & rank0 & ~file7;        //promote by left capture;
             for (int i = 0; i < 64; i++)
@@ -1277,12 +1277,12 @@ namespace ChessBoardUI.AIAlgorithm
             {
                 if (history_move.from_rank == 1 && history_move.to_rank == 3 && history_move.moved_type == PieceType.Pawn && history_move.from_file == history_move.to_file)
                 {
-                   
+
                     ulong passent_right = (machine_pawns << 1) & enemy_pawns & rank3 & ~file0 & file_mask[history_move.from_file];  //right en passent capture
                     //Console.WriteLine("Hallo!! "+Convert.ToString((long)passent_right,2));
                     if (passent_right != 0)
                     {
-                        
+
                         for (int i = 24; i < 32; i++)
                         {
                             if (((passent_right >> i) & 1) == 1)
@@ -1321,7 +1321,7 @@ namespace ChessBoardUI.AIAlgorithm
             if (player_pawns == black_pawns)
             {
                 enemy_pawns = white_pawns; enemy_bishops = white_bishops; enemy_knights = white_knights; enemy_rooks = white_rooks; enemy_king = white_king; enemy_queens = white_queens;
-                
+
                 enemy_occupied = white_occupied;
             }
             else
@@ -1355,7 +1355,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
 
             ulong wp_cap_left_moves = (player_pawns << 7) & enemy_occupied & ~rank7 & ~file7;
-           // Console.WriteLine(Convert.ToString((long)wp_cap_left_moves, 2));
+            // Console.WriteLine(Convert.ToString((long)wp_cap_left_moves, 2));
             for (int i = 0; i < 64; i++)
             {
                 if (((wp_cap_left_moves >> i) & 1) == 1)
@@ -1881,7 +1881,7 @@ namespace ChessBoardUI.AIAlgorithm
             }
             return q_move_list;
         }
-     
+
         public static ArrayList PossibleKing(ulong BK, ulong enemy_occupied)
         {
             k_move_list.Clear();
@@ -1951,16 +1951,16 @@ namespace ChessBoardUI.AIAlgorithm
                 }
 
             }
-            
+
             return k_move_list;
         }
 
         public static bool isKingInCheck(bool min_max)
         {
-            ulong king_check=0L;
+            ulong king_check = 0L;
             if (player_color)
             {
-                if(min_max)
+                if (min_max)
                 {
                     king_check = black_king & (PossibleBishopAttack(white_bishops, black_occupied) | PossibleKnightAttack(white_knights, black_occupied) | PossibleRookAttack(white_rooks, black_occupied) | PossiblePawnAttackMachine(white_pawns) | PossibleKingAttack(white_king, black_occupied) | PossibleQueenAttack(white_queens, black_occupied));
                     //Console.WriteLine("Machine king check "+Convert.ToString((long)king_check, 2));
@@ -1971,7 +1971,7 @@ namespace ChessBoardUI.AIAlgorithm
                 }
                 else
                 {
-                    
+
                     king_check = white_king & (PossibleBishopAttack(black_bishops, white_occupied) | PossibleKnightAttack(black_knights, white_occupied) | PossibleRookAttack(black_rooks, white_occupied) | PossiblePawnAttackMachine(black_pawns) | PossibleKingAttack(black_king, white_occupied) | PossibleQueenAttack(black_queens, white_occupied));
                     //Console.WriteLine("player white king check " + Convert.ToString((long)king_check, 2));
                     if (king_check != 0)
@@ -2006,7 +2006,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         public static bool isPlayerKingCheckmate()
         {
-            if(player_color && isKingInCheck(false) && PossibleKing(white_king,black_occupied)==null)
+            if (player_color && isKingInCheck(false) && PossibleKing(white_king, black_occupied) == null)
                 return true;
             if (!player_color && isKingInCheck(false) && PossibleKing(white_king, black_occupied) == null)
                 return true;
@@ -2222,8 +2222,8 @@ namespace ChessBoardUI.AIAlgorithm
 
                     //test code
                     queen_right_moves = (queen_right_moves ^ queen_right);
-                    queen_left_moves = (queen_left_moves ^ queen_left) ;
-                    queen_up_moves = (queen_up_moves ^ queen_up) ;
+                    queen_left_moves = (queen_left_moves ^ queen_left);
+                    queen_up_moves = (queen_up_moves ^ queen_up);
                     queen_down_moves = (queen_down_moves ^ queen_down);
                     queen_45_moves = (queen_45_moves ^ queen_45);
                     queen_135_moves = (queen_135_moves ^ queen_135);
@@ -2296,7 +2296,7 @@ namespace ChessBoardUI.AIAlgorithm
 
             if (PKC && !PQC)
             {
-               //player king side castlig
+                //player king side castlig
                 if (player_color && ((lowest_rank_occupied >> 5) & 1) != 1 && ((lowest_rank_occupied >> 6) & 1) != 1 && ((white_rooks >> 7) & 1) == 1)
                 {
                     if ((unsafe_lowest_rank & ply_white_safe_zone) == 0)
@@ -2316,9 +2316,9 @@ namespace ChessBoardUI.AIAlgorithm
             {
 
                 //player queen side castling
-                if (player_color && ((lowest_rank_occupied >> 1) & 1) != 1 && ((lowest_rank_occupied >> 2) & 1) != 1 && ((lowest_rank_occupied >> 3) & 1) != 1 && (white_rooks & 1) ==1)
+                if (player_color && ((lowest_rank_occupied >> 1) & 1) != 1 && ((lowest_rank_occupied >> 2) & 1) != 1 && ((lowest_rank_occupied >> 3) & 1) != 1 && (white_rooks & 1) == 1)
                 {
-                    if((unsafe_lowest_rank & ply_white_safe_zone)==0)
+                    if ((unsafe_lowest_rank & ply_white_safe_zone) == 0)
                         player_castling_move_list.Add(new Move(0, 4, false, false, false, true));
                 }
                 //player king side castlig
@@ -2329,7 +2329,7 @@ namespace ChessBoardUI.AIAlgorithm
                 }
 
                 //player king side castling
-                else if (!player_color && ((lowest_rank_occupied >> 1) & 1) != 1 && ((lowest_rank_occupied >> 2) & 1) != 1 && (black_rooks & 1)==1)
+                else if (!player_color && ((lowest_rank_occupied >> 1) & 1) != 1 && ((lowest_rank_occupied >> 2) & 1) != 1 && (black_rooks & 1) == 1)
                 {
                     if ((unsafe_lowest_rank & ply_black_safe_zone) == 0)
                         player_castling_move_list.Add(new Move(0, 3, false, false, true, false));
@@ -2371,7 +2371,7 @@ namespace ChessBoardUI.AIAlgorithm
 
             if (MKC && !MQC)
             {
-               if (player_color && ((highest_rank_occupied >> 61) & 1) != 1 && ((highest_rank_occupied >> 62) & 1) != 1 && ((black_rooks >> 63) & 1) == 1)
+                if (player_color && ((highest_rank_occupied >> 61) & 1) != 1 && ((highest_rank_occupied >> 62) & 1) != 1 && ((black_rooks >> 63) & 1) == 1)
                 {
                     if ((mac_black_safe_zone & unsafe_highest_rank) == 0)
                         machine_castling_move_list.Add(new Move(7, 4, true, false, false, false));
@@ -2386,11 +2386,11 @@ namespace ChessBoardUI.AIAlgorithm
 
             if (MKC && MQC)
             {
-                
-                if (player_color && ((highest_rank_occupied >> 57) & 1) != 1 && ((highest_rank_occupied >> 58) & 1) != 1 && ((highest_rank_occupied >> 59) & 1) != 1 && ((black_rooks >>56)&1)==1)
+
+                if (player_color && ((highest_rank_occupied >> 57) & 1) != 1 && ((highest_rank_occupied >> 58) & 1) != 1 && ((highest_rank_occupied >> 59) & 1) != 1 && ((black_rooks >> 56) & 1) == 1)
                 {
-                    
-                    if ((mac_black_safe_zone & unsafe_highest_rank) ==0)                
+
+                    if ((mac_black_safe_zone & unsafe_highest_rank) == 0)
                         machine_castling_move_list.Add(new Move(7, 4, false, true, false, false));
                 }
                 else if (player_color && ((highest_rank_occupied >> 61) & 1) != 1 && ((highest_rank_occupied >> 62) & 1) != 1 && ((black_rooks >> 63) & 1) == 1)
@@ -2459,7 +2459,7 @@ namespace ChessBoardUI.AIAlgorithm
             fridl_pesu_occupied |= ((ulong)1 << new_index);
             pieces_occupied = fridl_pesu_occupied | enemy_occupied;
             ulong machine_attack = PossiblePawnAttackMachine(enemy_pawn) | PossibleKnightAttack(enemy_knight, fridl_pesu_occupied) | PossibleRookAttack(enemy_rook, fridl_pesu_occupied) | PossibleBishopAttack(enemy_bishop, fridl_pesu_occupied) | PossibleQueenAttack(enemy_queen, fridl_pesu_occupied);
-            
+
             //Console.WriteLine("Machine attack " + Convert.ToString((long)machine_attack, 2));
             //Console.WriteLine("Queen attack " + Convert.ToString((long)PossibleQueenAttack(enemy_queen, fridl_pesu_occupied),2));
             pieces_occupied = fridl_occupied | enemy_occupied;
@@ -2481,8 +2481,8 @@ namespace ChessBoardUI.AIAlgorithm
             switch (piece_type)
             {
                 case PieceType.Pawn:
-                    return LegalSinglePawnMove(white_occupied, black_occupied,  x,  y,  new_x,  new_y);
-                    
+                    return LegalSinglePawnMove(white_occupied, black_occupied, x, y, new_x, new_y);
+
                 case PieceType.Knight:
                     return LegalSingleKnightMove(my_knights, enemy_occupied, x, y, new_x, new_y);
 
@@ -2506,13 +2506,13 @@ namespace ChessBoardUI.AIAlgorithm
         {
             int pawn_index = (7 - y) * 8 + x;
             //one step forward
-            if ((((~(white_occupied | black_occupied)) >> (pawn_index+8)) & 1) == 1 && new_x==x && new_y == y-1)
+            if ((((~(white_occupied | black_occupied)) >> (pawn_index + 8)) & 1) == 1 && new_x == x && new_y == y - 1)
             {
                 Console.WriteLine("One step forward");
                 return true;
             }
 
-            else if((((~(white_occupied | black_occupied)) >> (pawn_index + 8)) & 1) == 1 && (((~(white_occupied | black_occupied)) >> (pawn_index + 16)) & 1) == 1 && y==6 && new_x==x && new_y==4)
+            else if ((((~(white_occupied | black_occupied)) >> (pawn_index + 8)) & 1) == 1 && (((~(white_occupied | black_occupied)) >> (pawn_index + 16)) & 1) == 1 && y == 6 && new_x == x && new_y == 4)
             {
                 Console.WriteLine("two step forward");
                 return true;
@@ -2551,19 +2551,19 @@ namespace ChessBoardUI.AIAlgorithm
         {
             int knight_index = (7 - y) * 8 + x;
             int new_knight_index = (7 - new_y) * 8 + new_x;
-            Move player_move = new Move((7 - y),x , (7 - new_y), new_x);
+            Move player_move = new Move((7 - y), x, (7 - new_y), new_x);
             //Console.WriteLine("index " + knight_index);
 
-            if(((white_knight >> knight_index) & 1) == 1)
+            if (((white_knight >> knight_index) & 1) == 1)
             {
                 ArrayList pos_moves = PossibleKnight(white_knight, black_occupied);
-                foreach(Move move in pos_moves)
+                foreach (Move move in pos_moves)
                 {
                     if (move.from_rank == (7 - y) && move.from_file == x && move.to_rank == (7 - new_y) && move.to_file == new_x)
                     {
                         return true;
                     }
-                    
+
                 }
                 return false;
             }
@@ -2571,7 +2571,7 @@ namespace ChessBoardUI.AIAlgorithm
             {
                 return false;
             }
-                
+
         }
 
         public static bool LegalSingleQueenMove(ulong white_queen, ulong black_occupied, int x, int y, int new_x, int new_y)
@@ -2674,7 +2674,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         public static bool LegalEnPassentPawnMove(int x, int y, int new_x, int new_y, PieceType moved_type)
         {
-            if (moved_type == PieceType.Pawn && history_move!=null)
+            if (moved_type == PieceType.Pawn && history_move != null)
             {
                 if (history_move.moved_type == PieceType.Pawn && history_move.to_file == history_move.from_file && history_move.from_rank == 6 && history_move.to_rank == 4 && (7 - y) == 4)
                 {
@@ -2696,7 +2696,7 @@ namespace ChessBoardUI.AIAlgorithm
 
             if (!player_color)
             {
-                enemy_pawn= black_pawns; enemy_rook = black_rooks; enemy_knight = black_knights; enemy_bishop = black_bishops; enemy_queen = black_queens; enemy_king = black_king;
+                enemy_pawn = black_pawns; enemy_rook = black_rooks; enemy_knight = black_knights; enemy_bishop = black_bishops; enemy_queen = black_queens; enemy_king = black_king;
                 fridl_pawn = white_pawns; fridl_rook = white_rooks; fridl_knight = white_knights; fridl_bishop = white_bishops; fridl_queen = white_queens; fridl_king = white_king;
             }
             else
@@ -2733,7 +2733,7 @@ namespace ChessBoardUI.AIAlgorithm
             fridl_pieces = fridl_pawn | fridl_rook | fridl_knight | fridl_bishop | fridl_queen | fridl_king;
 
             _unsafe = PossiblePawnAttackMachine(enemy_pawn) | PossibleKnightAttack(enemy_knight, fridl_pieces) | PossibleRookAttack(enemy_rook, fridl_pieces) | PossibleBishopAttack(enemy_bishop, fridl_pieces) | PossibleQueenAttack(enemy_queen, fridl_pieces) | PossibleKingAttack(enemy_king, fridl_pieces);
-            
+
             _unsafe_lowest_rank = _unsafe & rank0;
 
             return _unsafe_lowest_rank;
@@ -2747,7 +2747,7 @@ namespace ChessBoardUI.AIAlgorithm
             //Console.WriteLine(" black is before check " + Convert.ToString((long)black_occupied, 2));  //!!!!!!!
             ulong _unsafe_lowest_rank = UnsafePlayerKingMove();
             ulong player_king_castle_zone, player_king, player_rooks;
-   
+
             if (type != PieceType.King)
                 return false;
             if (Math.Abs(king_index - new_king_index) != 3 && Math.Abs(king_index - new_king_index) != 4)
@@ -2761,9 +2761,9 @@ namespace ChessBoardUI.AIAlgorithm
                 player_rooks = white_rooks;
 
 
-                if(Math.Abs(king_index-new_king_index)==3) // player plays white & king side castling
+                if (Math.Abs(king_index - new_king_index) == 3) // player plays white & king side castling
                 {
-                    if(((white_occupied >> (king_index+1)) & 1) == 1 || ((white_occupied >> (king_index + 2)) & 1) == 1)
+                    if (((white_occupied >> (king_index + 1)) & 1) == 1 || ((white_occupied >> (king_index + 2)) & 1) == 1)
                     {
                         return false;
                     }
@@ -2772,7 +2772,7 @@ namespace ChessBoardUI.AIAlgorithm
                         return false;
                     }
                 }
-                if(Math.Abs(king_index - new_king_index) == 4) // player plays white & queen side castling
+                if (Math.Abs(king_index - new_king_index) == 4) // player plays white & queen side castling
                 {
                     if (((white_occupied >> (king_index - 1)) & 1) == 1 || ((white_occupied >> (king_index - 2)) & 1) == 1 && ((white_occupied >> (king_index - 3)) & 1) == 1)
                     {
@@ -2789,13 +2789,13 @@ namespace ChessBoardUI.AIAlgorithm
             }
             else
             {
-                
+
                 player_king_castle_zone = 0x000000000000003E;
                 player_king = black_king;
                 player_rooks = black_rooks;
                 if (Math.Abs(king_index - new_king_index) == 3) // player plays black & king side castling
                 {
-                    
+
                     if (((black_occupied >> (king_index - 1)) & 1) == 1 || ((black_occupied >> (king_index - 2)) & 1) == 1)
                     {
                         return false;
@@ -2825,7 +2825,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         public static void updatePromotionMovedBitboard(ulong moved_place, ulong new_place)
         {
-            if(player_color)
+            if (player_color)
             {
                 white_pawns &= moved_place;
                 white_queens |= new_place;
@@ -2896,7 +2896,7 @@ namespace ChessBoardUI.AIAlgorithm
                     case PieceType.Bishop:
                         black_bishops &= moved_place;
                         black_bishops |= new_place;
-                        
+
                         break;
                     case PieceType.Rook:
                         black_rooks &= moved_place;
@@ -2905,13 +2905,13 @@ namespace ChessBoardUI.AIAlgorithm
                     default:  //reserved for castling
                         break;
                 }
-                
+
                 black_occupied = black_pawns | black_bishops | black_rooks | black_queens | black_knights | black_king;
-               
+
 
             }
             pieces_occupied = white_occupied | black_occupied;
-            empty = ~ pieces_occupied;
+            empty = ~pieces_occupied;
         }
 
         public static void updateCastlingMovedBitboard(int rook_new_index, bool side)
@@ -2923,7 +2923,7 @@ namespace ChessBoardUI.AIAlgorithm
                     white_king = white_king << 2;
                     white_rooks &= 0xffffffffffffff7f;
                     white_rooks |= ((ulong)1 << rook_new_index);
-                   
+
                 }
                 else // left side rook
                 {
@@ -2940,7 +2940,7 @@ namespace ChessBoardUI.AIAlgorithm
                     black_king = black_king << 2;
                     black_rooks &= 0xffffffffffffff7f;
                     black_rooks |= ((ulong)1 << rook_new_index);
-                    
+
                 }
                 else // left side rook
                 {
@@ -2990,7 +2990,7 @@ namespace ChessBoardUI.AIAlgorithm
                 switch (piece_type)
                 {
                     case PieceType.Pawn:
-                        white_pawns &= (~moved_place);                      
+                        white_pawns &= (~moved_place);
                         break;
                     case PieceType.Knight:
                         white_knights &= (~moved_place);
@@ -3013,7 +3013,7 @@ namespace ChessBoardUI.AIAlgorithm
                 white_occupied = white_pawns | white_bishops | white_rooks | white_queens | white_knights | white_king;
             }
             pieces_occupied = white_occupied | black_occupied;
-            empty = ~ pieces_occupied;
+            empty = ~pieces_occupied;
         }
 
         public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K, Move history_move, bool MKC, bool MQC, bool PKC, bool PQC, bool PC_DONE, bool MC_DONE)
@@ -3036,17 +3036,17 @@ namespace ChessBoardUI.AIAlgorithm
             {
                 setCurrentBitboards(B_P, B_R, B_N, B_B, B_Q, B_K, W_P, W_R, W_N, W_B, W_Q, W_K);
                 setCurrentBitboardsHistoryMove(history_move);
-                setCurrentCastlingCondition(MKC, MQC, PKC, PQC);        
+                setCurrentCastlingCondition(MKC, MQC, PKC, PQC);
                 ArrayList moves = PossibleMovesMachine();
-                Move last_time_best=null;
-                if (best_move_queue.Count!=0)
+                Move last_time_best = null;
+                if (best_move_queue.Count != 0)
                 {
                     last_time_best = best_move_queue.Dequeue();
                     useBestMove = true;
                     //Console.WriteLine("Best Move is " + last_time_best.from_rank + " " + last_time_best.from_file + " " + last_time_best.to_rank + " " + last_time_best.to_file);
                 }
 
-        
+
                 foreach (Move move in moves)
                 {
                     if (useBestMove)
@@ -3081,12 +3081,12 @@ namespace ChessBoardUI.AIAlgorithm
 
                 foreach (Move move in moves)
                 {
-                    ulong BP = B_P;         ulong WP = W_P;
-                    ulong BR = B_R;         ulong WR = W_R;
-                    ulong BN = B_N;         ulong WN = W_N;
-                    ulong BQ = B_Q;         ulong WQ = W_Q;
-                    ulong BB = B_B;         ulong WB = W_B;
-                    ulong BK = B_K;         ulong WK = W_K;
+                    ulong BP = B_P; ulong WP = W_P;
+                    ulong BR = B_R; ulong WR = W_R;
+                    ulong BN = B_N; ulong WN = W_N;
+                    ulong BQ = B_Q; ulong WQ = W_Q;
+                    ulong BB = B_B; ulong WB = W_B;
+                    ulong BK = B_K; ulong WK = W_K;
                     bool M_K_C = MKC;
                     bool M_Q_C = MQC;
                     bool P_K_C = PKC;
@@ -3100,9 +3100,9 @@ namespace ChessBoardUI.AIAlgorithm
 
                     if (move.MQC) // if move is a machine queen side castling
                     {
-                        
+
                         int king_index = move.from_rank * 8 + move.from_file;
-                        if(player_color)
+                        if (player_color)
                         {
                             BK = (BK >> 2);
                             BR &= ~((ulong)0x0100000000000000);
@@ -3124,7 +3124,7 @@ namespace ChessBoardUI.AIAlgorithm
 
                     if (move.MKC) // if the move is a machine king side castling
                     {
-                        
+
                         int king_index = move.from_rank * 8 + move.from_file;
                         if (player_color)
                         {
@@ -3174,7 +3174,7 @@ namespace ChessBoardUI.AIAlgorithm
                             if (player_color)
                                 WN &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
                             else
-                                BN &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));                           
+                                BN &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
                             break;
                         case PieceType.Bishop:
                             if (player_color)
@@ -3238,11 +3238,11 @@ namespace ChessBoardUI.AIAlgorithm
                                 if (move.from_file == 7)
                                     M_Q_C = false;
                             }
-                            
+
                             break;
                         case PieceType.Knight:
                             if (player_color)
-                            { 
+                            {
                                 BN |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
                                 BN &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
                             }
@@ -3266,7 +3266,7 @@ namespace ChessBoardUI.AIAlgorithm
                             break;
                         case PieceType.Pawn:
                             if (player_color)
-                            {                              
+                            {
                                 BP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
                                 if (move.promote) //if the pawn got promoted, then update a new piece in queen bitboard
                                     BQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
@@ -3299,7 +3299,7 @@ namespace ChessBoardUI.AIAlgorithm
                 setCurrentBitboardsHistoryMove(history_move);
                 setCurrentCastlingCondition(MKC, MQC, PKC, PQC);
                 ArrayList moves = PossibleMovesPlayer();
-               
+
                 Move last_time_best = null;
                 if (best_move_queue.Count != 0)
                 {
@@ -3307,7 +3307,7 @@ namespace ChessBoardUI.AIAlgorithm
                     useBestMove = true;
                     //Console.WriteLine("Best Move is " + last_time_best.from_rank + " " + last_time_best.from_file + " " + last_time_best.to_rank + " " + last_time_best.to_file);
                 }
-            
+
                 //moves.Sort(new MoveCompare(last_time_best));
 
                 foreach (Move move in moves)
@@ -3408,7 +3408,7 @@ namespace ChessBoardUI.AIAlgorithm
                     switch (move.cap_type)
                     {
                         case PieceType.King:
-                            if(player_color) // if player use black
+                            if (player_color) // if player use black
                                 BK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
                             else
                                 WK &= ~((ulong)1 << (move.to_rank * 8 + move.to_file));
@@ -3525,11 +3525,11 @@ namespace ChessBoardUI.AIAlgorithm
                             if (player_color)
                             {
                                 WP &= ~((ulong)1 << (move.from_rank * 8 + move.from_file));
-                                if(move.promote) //if the pawn got promoted, then update a new piece in queen bitboard
+                                if (move.promote) //if the pawn got promoted, then update a new piece in queen bitboard
                                     WQ |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
                                 else
                                     WP |= ((ulong)1 << (move.to_rank * 8 + move.to_file));
-                               
+
                             }
                             else
                             {
