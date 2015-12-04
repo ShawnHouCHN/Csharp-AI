@@ -3006,38 +3006,38 @@ namespace ChessBoardUI.AIAlgorithm
                     //Console.WriteLine("Best Move is " + last_time_best.from_rank + " " + last_time_best.from_file + " " + last_time_best.to_rank + " " + last_time_best.to_file);
                 }
 
-        
-                foreach (Move move in moves)
-                {
-                    if (useBestMove)
-                    {
-                        if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank && last_time_best.from_file == move.from_file && last_time_best.from_rank == move.from_rank)
-                            continue;
-                    }
-                    if (move.cap_type != null)
-                    {
-                        if (useHistory)
-                        {
-                            if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
-                                lastMovedCaptured.Add(move);
-                            else
-                                captureMoves.Add(move);
-                        }
 
-                    }
-                    else
-                        otherMoves.Add(move);
+                //foreach (Move move in moves)
+                //{
+                //    if (useBestMove)
+                //    {
+                //        if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank && last_time_best.from_file == move.from_file && last_time_best.from_rank == move.from_rank)
+                //            continue;
+                //    }
+                //    if (move.cap_type != null)
+                //    {
+                //        if (useHistory)
+                //        {
+                //            if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
+                //                lastMovedCaptured.Add(move);
+                //            else
+                //                captureMoves.Add(move);
+                //        }
 
-                }
+                //    }
+                //    else
+                //        otherMoves.Add(move);
 
-                moves.Clear();
-                if (useBestMove)
-                {
-                    moves.Add(last_time_best);
-                }
-                moves.AddRange(lastMovedCaptured);
-                moves.AddRange(captureMoves);
-                moves.AddRange(otherMoves);
+                //}
+
+                //moves.Clear();
+                //if (useBestMove)
+                //{
+                //    moves.Add(last_time_best);
+                //}
+                //moves.AddRange(lastMovedCaptured);
+                //moves.AddRange(captureMoves);
+                //moves.AddRange(otherMoves);
 
                 foreach (Move move in moves)
                 {
@@ -3267,39 +3267,37 @@ namespace ChessBoardUI.AIAlgorithm
                     useBestMove = true;
                     //Console.WriteLine("Best Move is " + last_time_best.from_rank + " " + last_time_best.from_file + " " + last_time_best.to_rank + " " + last_time_best.to_file);
                 }
-            
-                //moves.Sort(new MoveCompare(last_time_best));
 
-                foreach (Move move in moves)
-                {
-                    if (useBestMove)
-                    {
-                        if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank && last_time_best.from_file == move.from_file && last_time_best.from_rank == move.from_rank)
-                            continue;
-                    }
-                    if (move.cap_type != null)
-                    {
-                        if (useHistory)
-                        {
-                            if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
-                                lastMovedCaptured.Add(move);
-                            else
-                                captureMoves.Add(move);
-                        }
-                    }
-                    else
-                        otherMoves.Add(move);
+                //foreach (Move move in moves)
+                //{
+                //    if (useBestMove)
+                //    {
+                //        if (last_time_best.to_file == move.to_file && last_time_best.to_rank == move.to_rank && last_time_best.from_file == move.from_file && last_time_best.from_rank == move.from_rank)
+                //            continue;
+                //    }
+                //    if (move.cap_type != null)
+                //    {
+                //        if (useHistory)
+                //        {
+                //            if (history_move.to_file == move.to_file && history_move.to_rank == move.to_rank)
+                //                lastMovedCaptured.Add(move);
+                //            else
+                //                captureMoves.Add(move);
+                //        }
+                //    }
+                //    else
+                //        otherMoves.Add(move);
 
-                }
+                //}
 
-                moves.Clear();
-                if (useBestMove)
-                {
-                    moves.Add(last_time_best);
-                }
-                moves.AddRange(lastMovedCaptured);
-                moves.AddRange(captureMoves);
-                moves.AddRange(otherMoves);
+                //moves.Clear();
+                //if (useBestMove)
+                //{
+                //    moves.Add(last_time_best);
+                //}
+                //moves.AddRange(lastMovedCaptured);
+                //moves.AddRange(captureMoves);
+                //moves.AddRange(otherMoves);
 
                 //Console.WriteLine("player move size" + moves.Count);
                 foreach (Move move in moves)

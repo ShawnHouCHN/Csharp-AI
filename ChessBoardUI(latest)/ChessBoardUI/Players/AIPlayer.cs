@@ -477,9 +477,10 @@ namespace ChessBoardUI.Players
                    bestState = bestState.bestState;
                  }
 
-                Console.WriteLine("Searching in layer: {0} through {1} boardstates with an average branching factor of {2}", i, MoveGenerator.states, (Math.Pow(MoveGenerator.states, (1 / (double)i))));
+                Console.WriteLine("Searching in layer: {0} through {1} evaluations with an average branching factor of {2}", i, MoveGenerator.states, (Math.Pow(MoveGenerator.states, (1 / (double)i))));
                 MoveGenerator.branchingfactor += (Math.Pow(MoveGenerator.states, (1 / (double)i)));
                 MoveGenerator.searchcounter += 1;
+                //Console.WriteLine("Average branching factor of the algorithm: "+ (MoveGenerator.branchingfactor/ MoveGenerator.searchcounter));
                 i++;
             }
             return;
