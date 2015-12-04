@@ -396,11 +396,13 @@ namespace ChessBoardUI.Players
                             Console.WriteLine("AI moves Castling");
                             Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank = ai_move.from_rank, From_File = ai_move.from_file, MKC = ai_move.MKC, MQC = ai_move.MQC });
                             this.MachineTimer.stopClock();
-                            this.turn = false;  //commetn out for test
+                            this.turn = false;  
                          }
                         else if (ai_move.promote)
                         {
-                            Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank = ai_move.from_rank, From_File = ai_move.from_file, Promotion = ai_move.promote });
+                            Messenger.Default.Send(new MachineMoveMessage { Turn = this.turn, From_Rank = ai_move.from_rank, From_File = ai_move.from_file, To_Rank=ai_move.to_rank, To_File=ai_move.to_file, Promotion = ai_move.promote });
+                            this.MachineTimer.stopClock();
+                            this.turn = false;  
                         }
 
                         else
@@ -411,11 +413,6 @@ namespace ChessBoardUI.Players
                             this.turn = false;
                         }
                         Console.WriteLine(" board state is " + Convert.ToString((long)MoveGenerator.pieces_occupied, 2));  //!!!!!!!
-
-                        //if(MoveGenerator.isKingInCheck(false) && curr_board_state.bestState.AlphaBetaSearch(int.MinValue, int.MaxValue, 3, false)==int.MaxValue){
-                        //    Console.WriteLine("Game over player lost game");
-                        //    return;
-                        //}
 
                     }
 

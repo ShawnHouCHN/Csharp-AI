@@ -38,14 +38,14 @@ namespace ChessBoardUI.AIAlgorithm
                 //-4  ,   -4  ,   0   ,   4   ,   6   ,   0   ,   -4  ,   -4  ,
                 //-1  ,   -1  ,   1   ,   5   ,   6   ,   1   ,   -1  ,   -1  ,
                 //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
-                  0,  0,  0,  0,  0,  0,  0,  0,
-                 50, 50, 50, 50, 50, 50, 50, 50,
-                 10, 10, 20, 30, 30, 20, 10, 10,
-                  5,  5, 10, 27, 27, 10,  5,  5,
-                  0,  0,  0, 25, 25,  0,  0,  0,
-                  5, -5,-10,  0,  0,-10, -5,  5,
-                  5, 10, 10,-25,-25, 10, 10,  5,
-                  0,  0,  0,  0,  0,  0,  0,  0
+                0,  0,  0,  0,  0,  0,  0,  0,
+                50, 50, 50, 50, 50, 50, 50, 50,
+                10, 10, 20, 30, 30, 20, 10, 10,
+                5,  5, 10, 27, 27, 10,  5,  5,
+                0,  0,  0, 25, 25,  0,  0,  0,
+                5, -5,-10,  0,  0,-10, -5,  5,
+                5, 10, 10,-25,-25, 10, 10,  5,
+                0,  0,  0,  0,  0,  0,  0,  0
                 };
         
 
@@ -59,13 +59,13 @@ namespace ChessBoardUI.AIAlgorithm
                 //-5  ,   -3  ,   -1  ,   0   ,   0   ,   -1  ,   -3  ,   -5  ,
                 //-7  ,   -5  ,   -4  ,   -2  ,   -2  ,   -4  ,   -5  ,   -7
                  -50,-40,-30,-30,-30,-30,-40,-50,
-                 -40,-20,  0,  0,  0,  0,-20,-40,
-                 -30,  0, 10, 15, 15, 10,  0,-30,
-                 -30,  5, 15, 20, 20, 15,  5,-30,
-                 -30,  0, 15, 20, 20, 15,  0,-30,
-                 -30,  5, 10, 15, 15, 10,  5,-30,
-                 -40,-20,  0,  5,  5,  0,-20,-40,
-                 -50,-40,-20,-30,-30,-20,-40,-50,
+ -40,-20,  0,  0,  0,  0,-20,-40,
+ -30,  0, 10, 15, 15, 10,  0,-30,
+ -30,  5, 15, 20, 20, 15,  5,-30,
+ -30,  0, 15, 20, 20, 15,  0,-30,
+ -30,  5, 10, 15, 15, 10,  5,-30,
+ -40,-20,  0,  5,  5,  0,-20,-40,
+ -50,-40,-20,-30,-30,-20,-40,-50,
                 };
 
         private static int[] BishopTable = new int[] {
@@ -78,13 +78,13 @@ namespace ChessBoardUI.AIAlgorithm
                 //5   ,   5   ,   5   ,   3   ,   3   ,   5   ,   5   ,   5   ,
                 //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
                  -20,-10,-10,-10,-10,-10,-10,-20,
-                 -10,  0,  0,  0,  0,  0,  0,-10,
-                 -10,  0,  5, 10, 10,  5,  0,-10,
-                 -10,  5,  5, 10, 10,  5,  5,-10,
-                 -10,  0, 10, 10, 10, 10,  0,-10,
-                 -10, 10, 10, 10, 10, 10, 10,-10,
-                 -10,  5,  0,  0,  0,  0,  5,-10,
-                 -20,-10,-40,-10,-10,-40,-10,-20,
+ -10,  0,  0,  0,  0,  0,  0,-10,
+ -10,  0,  5, 10, 10,  5,  0,-10,
+ -10,  5,  5, 10, 10,  5,  5,-10,
+ -10,  0, 10, 10, 10, 10,  0,-10,
+ -10, 10, 10, 10, 10, 10, 10,-10,
+ -10,  5,  0,  0,  0,  0,  5,-10,
+ -20,-10,-40,-10,-10,-40,-10,-20,
                 };
 
         private static int[] RookTable = new int[] {
@@ -97,13 +97,13 @@ namespace ChessBoardUI.AIAlgorithm
                 //3   ,   4   ,   4   ,   6   ,   6   ,   4   ,   4   ,   3  ,
                 //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
                   0,  0,  0,  0,  0,  0,  0,  0,
-                  5, 10, 10, 10, 10, 10, 10,  5,
-                 -5,  0,  0,  0,  0,  0,  0, -5,
-                 -5,  0,  0,  0,  0,  0,  0, -5,
-                 -5,  0,  0,  0,  0,  0,  0, -5,
-                 -5,  0,  0,  0,  0,  0,  0, -5,
-                 -5,  0,  0,  0,  0,  0,  0, -5,
-                  0,  0,  0,  5,  5,  0,  0,  0
+  5, 10, 10, 10, 10, 10, 10,  5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+  0,  0,  0,  5,  5,  0,  0,  0
                 };
 
         private static int[] KingTableO = new int[] {
@@ -138,13 +138,13 @@ namespace ChessBoardUI.AIAlgorithm
                 //2   ,   2   ,   2   ,   2   ,   2   ,   2   ,   2   ,   2   ,
                 //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
                 -20,-10,-10, -5, -5,-10,-10,-20,
-                -10,  0,  0,  0,  0,  0,  0,-10,
-                -10,  0,  5,  5,  5,  5,  0,-10,
-                 -5,  0,  5,  5,  5,  5,  0, -5,
-                  0,  0,  5,  5,  5,  5,  0, -5,
-                -10,  5,  5,  5,  5,  5,  0,-10,
-                -10,  0,  5,  0,  0,  0,  0,-10,
-                -20,-10,-10, -5, -5,-10,-10,-20
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  5,  5,  5,  5,  0,-10,
+ -5,  0,  5,  5,  5,  5,  0, -5,
+  0,  0,  5,  5,  5,  5,  0, -5,
+-10,  5,  5,  5,  5,  5,  0,-10,
+-10,  0,  5,  0,  0,  0,  0,-10,
+-20,-10,-10, -5, -5,-10,-10,-20
                 };
 
         private static int[] Mirror64 = new int[] {
@@ -201,18 +201,18 @@ namespace ChessBoardUI.AIAlgorithm
         // TO DO
         public int evaluateBoard(bool min_max, ChessBoard leaf_chessboard)
         {
-            MoveGenerator.states += 1;
-
             int Machine_Points = 0;
             int Player_Points = 0;
 
             // Evaluate pieces under threat
             ulong[] bitboards = MoveGenerator.getCurrentBitboards();
             MoveGenerator.setCurrentBitboards(leaf_chessboard.BP, leaf_chessboard.BR, leaf_chessboard.BN, leaf_chessboard.BB, leaf_chessboard.BQ, leaf_chessboard.BK, leaf_chessboard.WP, leaf_chessboard.WR, leaf_chessboard.WN, leaf_chessboard.WB, leaf_chessboard.WQ, leaf_chessboard.WK);
-            
+            //MoveGenerator.setCurrentBitboardsHistoryMove(leaf_chessboard.move);
+            //MoveGenerator.setCurrentCastlingCondition(leaf_chessboard.MKC, leaf_chessboard.MQC, leaf_chessboard.PKC, leaf_chessboard.PQC);
+
             ArrayList moves;
 
-            //this is castling move bonus
+            //
             if (leaf_chessboard.PC_DONE)
             {
                 Player_Points += 100;
@@ -236,6 +236,10 @@ namespace ChessBoardUI.AIAlgorithm
             Nullable<PieceType> piece_cap = null;
             foreach (Move leaf_move in moves)
             {
+
+                //this is castling move bonus
+
+
                 if (leaf_move.cap_type != piece_cap)
                 {
                     if (min_max) //if it is a max leaf node, add value to machine's value;
@@ -436,7 +440,7 @@ namespace ChessBoardUI.AIAlgorithm
          
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
-            //MoveGenerator.states += 1;
+            MoveGenerator.states += 1;
             if (move == null)
             {
                 move = new Move(0, 0, 0, 0);
@@ -460,7 +464,7 @@ namespace ChessBoardUI.AIAlgorithm
                     }
                     else
                     {
-                        Console.WriteLine("Game over draw");
+                        Console.WriteLine("Game over draw (max) 1");
                         bestState = null;
                         return 0;
                     }
@@ -476,7 +480,7 @@ namespace ChessBoardUI.AIAlgorithm
                     if (CB.move.cap_type == PieceType.King)
                     {
                         bestState = CB;
-                        return int.MaxValue;
+                        return int.MaxValue;  //just change it to min, it was max
                     }
 
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
@@ -492,15 +496,15 @@ namespace ChessBoardUI.AIAlgorithm
                         break;
                     }
                 }
-                if (MoveGenerator.isKingInCheck(min_max) && alpha == int.MaxValue)
+                if (MoveGenerator.isKingInCheck(min_max) && alpha == int.MinValue)
                 {
                     Console.WriteLine("Game over machine lost");
                     bestState = null;
-                    return int.MaxValue;
+                    return int.MinValue;
                 }
-                else if(!MoveGenerator.isKingInCheck(min_max) && alpha == int.MaxValue)
+                else if(!MoveGenerator.isKingInCheck(min_max) && alpha == int.MinValue)
                 {
-                    Console.WriteLine("Game over draw");
+                    Console.WriteLine("Game over draw (max) 2");
                     bestState = null;
                     return 0;
                 }
@@ -517,17 +521,17 @@ namespace ChessBoardUI.AIAlgorithm
                     {
                         Console.WriteLine("Game over player lost");
                         bestState = null;
-                        return int.MaxValue-1;
+                        return int.MaxValue;
                     }
                     else
                     {
-                        Console.WriteLine("Game over draw");
+                        Console.WriteLine("Game over draw (min) 1");
                         bestState = null;
                         return 0;
                     }
                 }
 
-
+               
                 foreach (ChessBoard CB in chessboards)
                 {
                     if (DateTime.Compare(DateTime.Now, MoveGenerator.end_time) > 0)
@@ -552,18 +556,20 @@ namespace ChessBoardUI.AIAlgorithm
                     {
                         break;
                     }
+
+
                 }
                
 
-                if (MoveGenerator.isKingInCheck(min_max) && beta == int.MinValue)
+                if (MoveGenerator.isKingInCheck(min_max) && beta == int.MaxValue)
                 {
                     Console.WriteLine("Game over player lost");
                     bestState = null;
-                    return int.MinValue;
+                    return int.MaxValue;
                 }
-                else if (!MoveGenerator.isKingInCheck(min_max) && beta == int.MinValue)
+                else if (!MoveGenerator.isKingInCheck(min_max) && beta == int.MaxValue)
                 {
-                    Console.WriteLine("Game over draw");
+                    Console.WriteLine("Game over draw (min) 2");
                     bestState = null;
                     return 0;
                 }

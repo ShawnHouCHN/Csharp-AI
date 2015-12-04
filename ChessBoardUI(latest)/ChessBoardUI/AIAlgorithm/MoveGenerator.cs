@@ -1973,9 +1973,7 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     
                     king_check = white_king & (PossibleBishopAttack(black_bishops, white_occupied) | PossibleKnightAttack(black_knights, white_occupied) | PossibleRookAttack(black_rooks, white_occupied) | PossiblePawnAttackMachine(black_pawns) | PossibleKingAttack(black_king, white_occupied) | PossibleQueenAttack(black_queens, white_occupied));
-                    //Console.WriteLine("A~Player rook  " + Convert.ToString((long)(black_rooks), 2));
-                    
-                    //Console.WriteLine("A~Player king check " + Convert.ToString((long)(king_check), 2));
+                    //Console.WriteLine("player white king check " + Convert.ToString((long)king_check, 2));
                     if (king_check != 0)
                         return true;
                     else
@@ -2004,6 +2002,16 @@ namespace ChessBoardUI.AIAlgorithm
                         return false;
                 }
             }
+        }
+
+        public static bool isPlayerKingCheckmate()
+        {
+            if(player_color && isKingInCheck(false) && PossibleKing(white_king,black_occupied)==null)
+                return true;
+            if (!player_color && isKingInCheck(false) && PossibleKing(white_king, black_occupied) == null)
+                return true;
+            else
+                return false;
         }
 
         public static ulong PossiblePawnAttackMachine(ulong machine_pawns)
@@ -2077,7 +2085,6 @@ namespace ChessBoardUI.AIAlgorithm
                     rook_left_moves = rook_left_moves & rook_left;
                     rook_up_moves = rook_up_moves & rook_up;
                     rook_down_moves = rook_down_moves & rook_down;
-
 
                     rook_right_moves = (rook_right_moves ^ rook_right) & (empty | enemy_occupied);
                     rook_left_moves = (rook_left_moves ^ rook_left) & (empty | enemy_occupied);
@@ -2978,7 +2985,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         public static List<ChessBoard> generateChessBoards(bool min_max, ulong B_P, ulong B_R, ulong B_N, ulong B_B, ulong B_Q, ulong B_K, ulong W_P, ulong W_R, ulong W_N, ulong W_B, ulong W_Q, ulong W_K, Move history_move, bool MKC, bool MQC, bool PKC, bool PQC, bool PC_DONE, bool MC_DONE)
         {
-            ulong[] bitboards = getCurrentBitboards();
+            //ulong[] bitboards = getCurrentBitboards();
             List<ChessBoard> theList = new List<ChessBoard>();
             //this is a test
             ArrayList lastMovedCaptured = new ArrayList();
@@ -3509,7 +3516,7 @@ namespace ChessBoardUI.AIAlgorithm
                     theList.Add(cb);
                 }
             }
-            MoveGenerator.setCurrentBitboards(bitboards[0], bitboards[1], bitboards[2], bitboards[3], bitboards[4], bitboards[5], bitboards[6], bitboards[7], bitboards[8], bitboards[9], bitboards[10], bitboards[11]);
+            //MoveGenerator.setCurrentBitboards(bitboards[0], bitboards[1], bitboards[2], bitboards[3], bitboards[4], bitboards[5], bitboards[6], bitboards[7], bitboards[8], bitboards[9], bitboards[10], bitboards[11]);
             return theList;
         }
 
