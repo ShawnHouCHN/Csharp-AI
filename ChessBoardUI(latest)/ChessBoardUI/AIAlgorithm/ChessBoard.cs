@@ -201,6 +201,7 @@ namespace ChessBoardUI.AIAlgorithm
         // TO DO
         public int evaluateBoard(bool min_max, ChessBoard leaf_chessboard)
         {
+            //MoveGenerator.states += 1;
             int Machine_Points = 0;
             int Player_Points = 0;
 
@@ -440,7 +441,7 @@ namespace ChessBoardUI.AIAlgorithm
          
         public int AlphaBetaSearch(int alpha, int beta, int layer, bool min_max)
         {
-            MoveGenerator.states += 1;
+            
             if (move == null)
             {
                 move = new Move(0, 0, 0, 0);
@@ -458,13 +459,13 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     if (MoveGenerator.isKingInCheck(min_max))
                     {
-                        Console.WriteLine("Game over machine lost");
+                        //Console.WriteLine("Game over machine lost");
                         bestState = null;
                         return int.MinValue;
                     }
                     else
                     {
-                        Console.WriteLine("Game over draw (max) 1");
+                        //Console.WriteLine("Game over draw (max) 1");
                         bestState = null;
                         return 0;
                     }
@@ -519,13 +520,13 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     if (MoveGenerator.isKingInCheck(min_max))
                     {
-                        Console.WriteLine("Game over player lost");
+                        //Console.WriteLine("Game over player lost");
                         bestState = null;
                         return int.MaxValue;
                     }
                     else
                     {
-                        Console.WriteLine("Game over draw (min) 1");
+                        //Console.WriteLine("Game over draw (min) 1");
                         bestState = null;
                         return 0;
                     }
@@ -563,13 +564,13 @@ namespace ChessBoardUI.AIAlgorithm
 
                 if (MoveGenerator.isKingInCheck(min_max) && beta == int.MaxValue)
                 {
-                    Console.WriteLine("Game over player lost");
+                    //Console.WriteLine("Game over player lost");
                     bestState = null;
                     return int.MaxValue;
                 }
                 else if (!MoveGenerator.isKingInCheck(min_max) && beta == int.MaxValue)
                 {
-                    Console.WriteLine("Game over draw (min) 2");
+                    //Console.WriteLine("Game over draw (min) 2");
                     bestState = null;
                     return 0;
                 }

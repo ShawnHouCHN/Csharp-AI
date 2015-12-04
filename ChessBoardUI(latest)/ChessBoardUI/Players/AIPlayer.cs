@@ -452,7 +452,7 @@ namespace ChessBoardUI.Players
             //while (i <= 4)
             {
                 MoveGenerator.states = 0;
-                Console.WriteLine("Depth is "+i);
+                //Console.WriteLine("Depth is "+i);
                 int alpha_beta= init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, min_max);
                 ChessBoard bestState = init.bestState;
                 //drawArray(bestState.WP, bestState.WN, bestState.WB, bestState.WQ, bestState.WR, bestState.WK, bestState.BP, bestState.BN, bestState.BB, bestState.BQ, bestState.BR, bestState.BK);
@@ -474,9 +474,9 @@ namespace ChessBoardUI.Players
                    bestState = bestState.bestState;
                  }
 
-                Console.WriteLine("Searching in layer: {0} through {1} evaluations with an average branching factor of {2}", i, MoveGenerator.states, (Math.Pow(MoveGenerator.states, (1 / (double)i))));
-                MoveGenerator.branchingfactor += (Math.Pow(MoveGenerator.states, (1 / (double)i)));
-                MoveGenerator.searchcounter += 1;
+                //Console.WriteLine("Searching in layer: {0} through {1} evaluations with an average branching factor of {2}", i, MoveGenerator.states, (Math.Pow(MoveGenerator.states, (1 / (double)i))));
+                //MoveGenerator.branchingfactor += (Math.Pow(MoveGenerator.states, (1 / (double)i)));
+                //MoveGenerator.searchcounter += 1;
                 //Console.WriteLine("Average branching factor of the algorithm: "+ (MoveGenerator.branchingfactor/ MoveGenerator.searchcounter));
                 i++;
             }
