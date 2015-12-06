@@ -461,7 +461,7 @@ namespace ChessBoardUI.AIAlgorithm
                     {
                         //Console.WriteLine("Game over machine lost");
                         bestState = null;
-                        return int.MinValue;
+                        return int.MinValue+1;
                     }
                     else
                     {
@@ -476,12 +476,12 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     if (DateTime.Compare(DateTime.Now, MoveGenerator.end_time) > 0)
                     {
-                        return int.MaxValue;
+                        return int.MaxValue-1;
                     }
                     if (CB.move.cap_type == PieceType.King)
                     {
                         bestState = CB;
-                        return int.MaxValue;  //just change it to min, it was max
+                        return int.MaxValue-1;  //just change it to min, it was max
                     }
 
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
@@ -501,7 +501,7 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     Console.WriteLine("Game over machine lost");
                     bestState = null;
-                    return int.MinValue;
+                    return int.MinValue+1;
                 }
                 else if(!MoveGenerator.isKingInCheck(min_max) && alpha == int.MinValue)
                 {
@@ -522,7 +522,7 @@ namespace ChessBoardUI.AIAlgorithm
                     {
                         //Console.WriteLine("Game over player lost");
                         bestState = null;
-                        return int.MaxValue;
+                        return int.MaxValue-1;
                     }
                     else
                     {
@@ -543,7 +543,7 @@ namespace ChessBoardUI.AIAlgorithm
                     if (CB.move.cap_type == PieceType.King)
                     {
                         bestState = CB;
-                        return int.MinValue;
+                        return int.MinValue+1;
                     }
                     int result = CB.AlphaBetaSearch(alpha, beta, layer - 1, !min_max);
                     
@@ -566,7 +566,7 @@ namespace ChessBoardUI.AIAlgorithm
                 {
                     //Console.WriteLine("Game over player lost");
                     bestState = null;
-                    return int.MaxValue;
+                    return int.MaxValue-1;
                 }
                 else if (!MoveGenerator.isKingInCheck(min_max) && beta == int.MaxValue)
                 {

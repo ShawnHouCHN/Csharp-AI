@@ -45,9 +45,9 @@ namespace ChessBoardUI.Players
             machine_timer = new TimerViewModel
             {
                 Participant = Participant.PC,
-                TimeSpan = TimeSpan.FromMinutes(50),
+                TimeSpan = TimeSpan.FromMinutes(0),
                 TimerDispatcher = new DispatcherTimer(),
-                Display = "00:50:00"
+                Display = "00:00:00"
             };
 
             //human move messenger registration
@@ -366,6 +366,7 @@ namespace ChessBoardUI.Players
             catch (Exception ex)
             {
                 Console.WriteLine("Something wrong with the algorithm. check the code!!!");
+                Console.WriteLine(ex);
             }
         }
 
@@ -422,6 +423,7 @@ namespace ChessBoardUI.Players
             catch (Exception ex)
             {
                 Console.WriteLine("Something wrong with the algorithm. check the code!!!");
+                Console.WriteLine(ex);
             }
             
         }
@@ -449,26 +451,21 @@ namespace ChessBoardUI.Players
             MoveGenerator.best_move_queue.Clear();
 
             while (DateTime.Compare(DateTime.Now , MoveGenerator.end_time)<=0)
-            //while (i <= 4)
             {
                 MoveGenerator.states = 0;
                 Console.WriteLine("Depth is "+i);
                 int alpha_beta= init.AlphaBetaSearch(int.MinValue, int.MaxValue, i, min_max);
                 ChessBoard bestState = init.bestState;
-                //drawArray(bestState.WP, bestState.WN, bestState.WB, bestState.WQ, bestState.WR, bestState.WK, bestState.BP, bestState.BN, bestState.BB, bestState.BQ, bestState.BR, bestState.BK);
 
-                //some code here to check if game is over!!!!!!!
                 if (bestState == null)
                 {
                     Console.WriteLine("Game over!!!");
                     MessageBoxResult result = MessageBox.Show("Game over", "Confirmation", MessageBoxButton.OK);
-                    //this.HumanTimer.startClock();
                     if (result == MessageBoxResult.OK)
                     {
                         Application.Current.Dispatcher.Invoke((Action)(() => { Application.Current.Shutdown(); }));
                     }
                 }
-
 
                 MoveGenerator.best_move_queue.Clear();
 
@@ -478,7 +475,7 @@ namespace ChessBoardUI.Players
                    bestState = bestState.bestState;
                  }
 
-                Console.WriteLine("Searching in layer: {0} through {1} evaluations with an average branching factor of {2}", i, MoveGenerator.states, (Math.Pow(MoveGenerator.states, (1 / (double)i))));
+                //Console.WriteLine("Searching in layer: {0} through {1} evaluations with an average branching factor of {2}", i, MoveGenerator.states, (Math.Pow(MoveGenerator.states, (1 / (double)i))));
                 MoveGenerator.branchingfactor += (Math.Pow(MoveGenerator.states, (1 / (double)i)));
                 MoveGenerator.searchcounter += 1;
                 //Console.WriteLine("Average branching factor of the algorithm: "+ (MoveGenerator.branchingfactor/ MoveGenerator.searchcounter));
