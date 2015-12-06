@@ -29,134 +29,7 @@ namespace ChessBoardUI.AIAlgorithm
 
         public int eva;
 
-        private static int[] PawnTable = new int[] {
-                //17   ,   17   ,   23   ,   43   ,   46   ,   23   ,   17   ,   17   ,
-                //7   ,   7   ,   13  ,   33  ,   36  ,   13  ,   7   ,   7   ,
-                //-2  ,   -2  ,   4   ,   22  ,   25  ,   4   ,   -2  ,   -2  ,
-                //-3  ,   -3  ,   2   ,   19   ,   21  ,   2   ,   -3  ,   -3  ,
-                //-4  ,   -4  ,   0   ,   16   ,   18   ,   0   ,   -4  ,   -4  ,
-                //-4  ,   -4  ,   0   ,   4   ,   6   ,   0   ,   -4  ,   -4  ,
-                //-1  ,   -1  ,   1   ,   5   ,   6   ,   1   ,   -1  ,   -1  ,
-                //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
-                0,  0,  0,  0,  0,  0,  0,  0,
-                50, 50, 50, 50, 50, 50, 50, 50,
-                10, 10, 20, 30, 30, 20, 10, 10,
-                5,  5, 10, 27, 27, 10,  5,  5,
-                0,  0,  0, 25, 25,  0,  0,  0,
-                5, -5,-10,  0,  0,-10, -5,  5,
-                5, 10, 10,-25,-25, 10, 10,  5,
-                0,  0,  0,  0,  0,  0,  0,  0
-                };
         
-
-        private static int[] KnightTable = new int[] {
-                //-2  ,   2   ,   7   ,   9   ,   9   ,   7   ,   2   ,   -2  ,
-                //1   ,   4   ,   12  ,   13  ,   13  ,   12  ,   4   ,   1   ,
-                //5   ,   11  ,   18  ,   19  ,   19  ,   18  ,   11  ,   5   ,
-                //3   ,   5  ,   14  ,   14  ,   14  ,   14  ,   5  ,   3   ,
-                //0   ,   3   ,   8   ,   9   ,   9   ,   8   ,   3   ,   0   ,
-                //-5  ,   1   ,   3   ,   4   ,   4   ,   3   ,   1   ,   -5  ,
-                //-5  ,   -3  ,   -1  ,   0   ,   0   ,   -1  ,   -3  ,   -5  ,
-                //-7  ,   -5  ,   -4  ,   -2  ,   -2  ,   -4  ,   -5  ,   -7
-                 -50,-40,-30,-30,-30,-30,-40,-50,
- -40,-20,  0,  0,  0,  0,-20,-40,
- -30,  0, 10, 15, 15, 10,  0,-30,
- -30,  5, 15, 20, 20, 15,  5,-30,
- -30,  0, 15, 20, 20, 15,  0,-30,
- -30,  5, 10, 15, 15, 10,  5,-30,
- -40,-20,  0,  5,  5,  0,-20,-40,
- -50,-40,-20,-30,-30,-20,-40,-50,
-                };
-
-        private static int[] BishopTable = new int[] {
-                //2   ,   3   ,   4   ,   4   ,   4   ,   4   ,   3   ,   2   ,
-                //4   ,   7   ,   7   ,   7   ,   7   ,   7   ,   7   ,   4   ,
-                //3   ,   5   ,   6   ,   6   ,   6   ,   6   ,   5   ,   3   ,
-                //3   ,   5   ,   7   ,   7   ,   7   ,   7   ,   5   ,   3   ,
-                //4   ,   5   ,   6   ,   8   ,   8   ,   6   ,   5   ,   4   ,
-                //4   ,   5   ,   5   ,   -2  ,   -2  ,   5   ,   5   ,   4   ,
-                //5   ,   5   ,   5   ,   3   ,   3   ,   5   ,   5   ,   5   ,
-                //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
-                 -20,-10,-10,-10,-10,-10,-10,-20,
- -10,  0,  0,  0,  0,  0,  0,-10,
- -10,  0,  5, 10, 10,  5,  0,-10,
- -10,  5,  5, 10, 10,  5,  5,-10,
- -10,  0, 10, 10, 10, 10,  0,-10,
- -10, 10, 10, 10, 10, 10, 10,-10,
- -10,  5,  0,  0,  0,  0,  5,-10,
- -20,-10,-40,-10,-10,-40,-10,-20,
-                };
-
-        private static int[] RookTable = new int[] {
-                //9   ,   9   ,   11  ,   10  ,   11  ,   9   ,   9   ,   9   ,
-                //4   ,   6   ,   7   ,   9   ,   9   ,   7   ,   6   ,   4   ,
-                //9   ,   10  ,   10  ,   11  ,   11  ,   10  ,   10  ,   9   ,
-                //8   ,   8   ,   8   ,   9   ,   9   ,   8   ,   8   ,   8   ,
-                //6   ,   6   ,   5   ,   6   ,   6   ,   5   ,   6   ,   6   ,
-                //4   ,   5   ,   5   ,   5   ,   5   ,   5   ,   5   ,   4   ,
-                //3   ,   4   ,   4   ,   6   ,   6   ,   4   ,   4   ,   3  ,
-                //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
-                  0,  0,  0,  0,  0,  0,  0,  0,
-  5, 10, 10, 10, 10, 10, 10,  5,
- -5,  0,  0,  0,  0,  0,  0, -5,
- -5,  0,  0,  0,  0,  0,  0, -5,
- -5,  0,  0,  0,  0,  0,  0, -5,
- -5,  0,  0,  0,  0,  0,  0, -5,
- -5,  0,  0,  0,  0,  0,  0, -5,
-  0,  0,  0,  5,  5,  0,  0,  0
-                };
-
-        private static int[] KingTableO = new int[] {
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
-                };
-
-        private static int[] KingTableE = new int[] {
-                -50 ,   -10 ,   0   ,   0   ,   0   ,   0   ,   -10 ,   -50 ,
-                -10 ,    0  ,   10  ,   10  ,   10  ,   10  ,   0   ,   -10 ,
-                0   ,   10  ,   20  ,   20  ,   20  ,   20  ,   10  ,   0   ,
-                0   ,   10  ,   20  ,   40  ,   40  ,   20  ,   10  ,   0   ,
-                0   ,   10  ,   20  ,   40  ,   40  ,   20  ,   10  ,   0   ,
-                0   ,   10  ,   20  ,   20  ,   20  ,   20  ,   10  ,   0   ,
-                -10,    0   ,   10  ,   10  ,   10  ,   10  ,   0   ,   -10 ,
-                -50 ,   -10 ,   0   ,   0   ,   0   ,   0   ,   -10 ,   -50
-                };
-
-        private static int[] QueenTable = new int[] {
-                //2   ,   3   ,   4   ,   3   ,   4   ,   3   ,   3   ,   2   ,
-                //2   ,   3   ,   4   ,   4   ,   4   ,   4   ,   3   ,   2   ,
-                //3   ,   4   ,   4   ,   4   ,   4   ,   4   ,   4   ,   3   ,
-                //3   ,   3   ,   4   ,   4   ,   4   ,   4   ,   3   ,   3   ,
-                //2   ,   3   ,   3   ,   4   ,   4   ,   3   ,   3   ,   2   ,
-                //2   ,   2   ,   2   ,   3   ,   3   ,   2   ,   2   ,   2   ,
-                //2   ,   2   ,   2   ,   2   ,   2   ,   2   ,   2   ,   2   ,
-                //0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0
-                -20,-10,-10, -5, -5,-10,-10,-20,
--10,  0,  0,  0,  0,  0,  0,-10,
--10,  0,  5,  5,  5,  5,  0,-10,
- -5,  0,  5,  5,  5,  5,  0, -5,
-  0,  0,  5,  5,  5,  5,  0, -5,
--10,  5,  5,  5,  5,  5,  0,-10,
--10,  0,  5,  0,  0,  0,  0,-10,
--20,-10,-10, -5, -5,-10,-10,-20
-                };
-
-        private static int[] Mirror64 = new int[] {
-                56  ,   57  ,   58  ,   59  ,   60  ,   61  ,   62  ,   63  ,
-                48  ,   49  ,   50  ,   51  ,   52  ,   53  ,   54  ,   55  ,
-                40  ,   41  ,   42  ,   43  ,   44  ,   45  ,   46  ,   47  ,
-                32  ,   33  ,   34  ,   35  ,   36  ,   37  ,   38  ,   39  ,
-                24  ,   25  ,   26  ,   27  ,   28  ,   29  ,   30  ,   31  ,
-                16  ,   17  ,   18  ,   19  ,   20  ,   21  ,   22  ,   23  ,
-                8   ,   9   ,   10  ,   11  ,   12  ,   13  ,   14  ,   15  ,
-                0   ,   1   ,   2   ,   3   ,   4   ,   5   ,   6   ,   7
-                };
 
 
         public ChessBoard(ulong WP, ulong WN, ulong WB, ulong WQ, ulong WR, ulong WK, ulong BP, ulong BN, ulong BB, ulong BQ, ulong BR, ulong BK, Move move , bool MKC, bool MQC, bool PKC, bool PQC, bool PC_DONE, bool MC_DONE)
@@ -265,25 +138,25 @@ namespace ChessBoardUI.AIAlgorithm
                         if (((leaf_chessboard.WB >> i) & 1) == 1)
                         {
                             //Evaluation of White Bishop
-                            Player_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.BISHOP_WEIGHT+ Constants.Constants.BishopTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WK >> i) & 1) == 1)
                         {
                             //Evaluation of White King
-                            Player_Points += (Constants.Constants.KING_WEIGHT+ KingTableO[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.KING_WEIGHT+ Constants.Constants.KingTableO[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WN >> i) & 1) == 1)
                         {
                             //Evaluation of White Knight 
-                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT+ KnightTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT+ Constants.Constants.KnightTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WP >> i) & 1) == 1)
                         {
                             //Evaluation of White Pawns 
-                            Player_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.PAWN_WEIGHT+ Constants.Constants.PawnTable[(8 * (7 - i / 8) + i % 8)]);
 
                             //evaluate of dobble pawn weakness
                             for (int rank= (7- i/8); rank >=0 ; rank--)
@@ -295,36 +168,36 @@ namespace ChessBoardUI.AIAlgorithm
                         else if (((leaf_chessboard.WQ >> i) & 1) == 1)
                         {
                             //Evaluation of White Queen 
-                            Player_Points += (Constants.Constants.QUEEN_WEIGHT+ QueenTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.QUEEN_WEIGHT+ Constants.Constants.QueenTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.WR >> i) & 1) == 1)
                         {
                             //Evaluation of White Rook 
-                            Player_Points += (Constants.Constants.ROOK_WEIGHT+ RookTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.ROOK_WEIGHT+ Constants.Constants.RookTable[(8 * (7 - i / 8) + i % 8)]);
                         }
                         else if (((leaf_chessboard.BB >> i) & 1) == 1)
                         {
                             //Evaluation of Black Bishop 
-                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT+ Constants.Constants.BishopTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BK >> i) & 1) == 1)
                         {
                             //Evaluation of Black King 
-                            Machine_Points += (Constants.Constants.KING_WEIGHT + KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.KING_WEIGHT + Constants.Constants.KingTableO[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BN >> i) & 1) == 1)
                         {
                             //Evaluation of Black Knight 
-                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT + KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT + Constants.Constants.KnightTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BP >> i) & 1) == 1)
                         {
                             //Evaluation of Black Pawns 
-                            Machine_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.PAWN_WEIGHT+ Constants.Constants.PawnTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                             //evaluate of dobble pawn weakness
                             for (int rank = (7 - i / 8); rank >= 0; rank--)
@@ -336,13 +209,13 @@ namespace ChessBoardUI.AIAlgorithm
                         else if (((leaf_chessboard.BQ >> i) & 1) == 1)
                         {
                             //Evaluation of Black Queen 
-                            Machine_Points += (Constants.Constants.QUEEN_WEIGHT+ QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.QUEEN_WEIGHT+ Constants.Constants.QueenTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.BR >> i) & 1) == 1)
                         {
                             //Evaluation of Black Rook 
-                            Machine_Points += (Constants.Constants.ROOK_WEIGHT + RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.ROOK_WEIGHT + Constants.Constants.RookTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
                         }
                     }
 
@@ -352,25 +225,25 @@ namespace ChessBoardUI.AIAlgorithm
                         if (((leaf_chessboard.WB >> i) & 1) == 1)
                         {
                             //Evaluation of White Bishop
-                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.BISHOP_WEIGHT+ Constants.Constants.BishopTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.WK >> i) & 1) == 1)
                         {
                             //Evaluation of White King
-                            Machine_Points += (Constants.Constants.KING_WEIGHT+ KingTableO[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.KING_WEIGHT+ Constants.Constants.KingTableO[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.WN >> i) & 1) == 1)
                         {
                             //Evaluation of White Knight 
-                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT+ KnightTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.KNIGHT_WEIGHT+ Constants.Constants.KnightTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.WP >> i) & 1) == 1)
                         {
                             //Evaluation of White Pawns 
-                            Machine_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.PAWN_WEIGHT+ Constants.Constants.PawnTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                             //evaluate of dobble pawn weakness
                             for (int rank = (7 - i / 8); rank >= 0; rank--)
@@ -382,36 +255,36 @@ namespace ChessBoardUI.AIAlgorithm
                         else if (((leaf_chessboard.WQ >> i) & 1) == 1)
                         {
                             //Evaluation of White Queen 
-                            Machine_Points +=(Constants.Constants.QUEEN_WEIGHT+ QueenTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points +=(Constants.Constants.QUEEN_WEIGHT+ Constants.Constants.QueenTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
 
                         }
                         else if (((leaf_chessboard.WR >> i) & 1) == 1)
                         {
                             //Evaluation of White Rook 
-                            Machine_Points += (Constants.Constants.ROOK_WEIGHT+ RookTable[Mirror64[(8 * (7 - i / 8) + i % 8)]]);
+                            Machine_Points += (Constants.Constants.ROOK_WEIGHT+ Constants.Constants.RookTable[Constants.Constants.Mirror64[(8 * (7 - i / 8) + i % 8)]]);
                         }
                         else if (((leaf_chessboard.BB >> i) & 1) == 1)
                         {
                             //Evaluation of Black Bishop 
-                            Player_Points += (Constants.Constants.BISHOP_WEIGHT+ BishopTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.BISHOP_WEIGHT+ Constants.Constants.BishopTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.BK >> i) & 1) == 1)
                         {
                             //Evaluation of Black King 
-                            Player_Points += (Constants.Constants.KING_WEIGHT+ KingTableO[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.KING_WEIGHT+ Constants.Constants.KingTableO[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.BN >> i) & 1) == 1)
                         {
                             //Evaluation of Black Knight 
-                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT+ KnightTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.KNIGHT_WEIGHT+ Constants.Constants.KnightTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.BP >> i) & 1) == 1)
                         {
                             //Evaluation of Black Pawns 
-                            Player_Points += (Constants.Constants.PAWN_WEIGHT+ PawnTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.PAWN_WEIGHT+ Constants.Constants.PawnTable[(8 * (7 - i / 8) + i % 8)]);
 
                             //evaluate of dobble pawn weakness
                             for (int rank = (7 - i / 8); rank >= 0; rank--)
@@ -423,13 +296,13 @@ namespace ChessBoardUI.AIAlgorithm
                         else if (((leaf_chessboard.BQ >> i) & 1) == 1)
                         {
                             //Evaluation of Black Queen 
-                            Player_Points +=(Constants.Constants.QUEEN_WEIGHT+ QueenTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points +=(Constants.Constants.QUEEN_WEIGHT+ Constants.Constants.QueenTable[(8 * (7 - i / 8) + i % 8)]);
 
                         }
                         else if (((leaf_chessboard.BR >> i) & 1) == 1)
                         {
                             //Evaluation of Black Rook 
-                            Player_Points += (Constants.Constants.ROOK_WEIGHT+ RookTable[(8 * (7 - i / 8) + i % 8)]);
+                            Player_Points += (Constants.Constants.ROOK_WEIGHT+ Constants.Constants.RookTable[(8 * (7 - i / 8) + i % 8)]);
                         }
                     }
                 }
