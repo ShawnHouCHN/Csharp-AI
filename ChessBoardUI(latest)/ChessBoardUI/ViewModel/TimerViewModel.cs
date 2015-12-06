@@ -86,11 +86,8 @@ namespace ChessBoardUI.ViewModel
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-           
-            //if (this._time == TimeSpan.Zero) this._timer.Stop();
             this._time = this._time.Add(TimeSpan.FromSeconds(1));
             this.Display = this._time.ToString("c");   //change the text of the propeerty that are binding with a dependencyobject
-           
         }
     }
 }

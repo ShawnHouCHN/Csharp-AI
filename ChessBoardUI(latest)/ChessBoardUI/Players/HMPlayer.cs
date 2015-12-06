@@ -22,10 +22,6 @@ namespace ChessBoardUI.Players
         private SPCapturedViewModel human_capture;
         private Dictionary<int, ChessPiece> pieces_dict;
         private ObservableCollection<ChessPiece> pieces_collection;
-        //private Image cap_piece_image;
-
-        //servableCollection<ChessPiece> all_pieces;
-        //ctionary<int, ChessPiece> board_layout;
 
         public HMPlayer(ObservableCollection<ChessPiece> pieces_collection, Dictionary<int, ChessPiece> pieces_dict)
         {
@@ -86,14 +82,7 @@ namespace ChessBoardUI.Players
             //lock the entire board so that use cannot click on piece when it is machine's turn.
             foreach (KeyValuePair<int, ChessPiece> item in this.pieces_dict)
             {
-                //if (item.Value.Player == Player.White && MoveGenerator.player_color)
-                //{
                     item.Value.Ownership = false;
-                //}
-                //else if (item.Value.Player == Player.Black && !MoveGenerator.player_color)
-                //{
-                    //item.Value.Ownership = false;
-                //}
             }
         }
 
@@ -237,10 +226,8 @@ namespace ChessBoardUI.Players
 
                 Application.Current.Dispatcher.Invoke((Action)(() => {
                     String cap_piece_img = "/PieceImg/chess_piece_" + to_piece_location.Player.ToString() + "_" + to_piece_location.Type.ToString()+".png";
-                    //Console.WriteLine(cap_piece_img);
                     Uri uri_cap_piece_img = new Uri(cap_piece_img, UriKind.Relative);
                     BitmapImage hm_cap_img = new BitmapImage();
-                    // BitmapImage resized_img = new BitmapImage();
                     hm_cap_img.BeginInit();
                     hm_cap_img.UriSource = uri_cap_piece_img;
                     hm_cap_img.DecodePixelHeight = 70;
@@ -262,30 +249,12 @@ namespace ChessBoardUI.Players
             if (MoveGenerator.isPlayerKingCheckmate())
             {
                 MessageBoxResult result = MessageBox.Show("Player lost the game", "Confirmation", MessageBoxButton.OK);
-                //this.HumanTimer.startClock();
                 if (result == MessageBoxResult.OK)
                 {
                     Application.Current.Dispatcher.Invoke((Action)(() => { Application.Current.Shutdown(); }));
                 }
             }
-            //return 
-
-            //if(to_piece_location!=null && to_piece_location.Type == PieceType.King)
-            //{
-            //    MessageBoxResult result = MessageBox.Show("Player lost the game", "Confirmation", MessageBoxButton.OK);                
-            //    //this.HumanTimer.startClock();
-            //    if (result == MessageBoxResult.OK)
-            //    {
-            //        Application.Current.Dispatcher.Invoke((Action)(() => { Application.Current.Shutdown(); }));              
-            //    }
-            //}
-
-           
             this.HumanTimer.startClock();
-
         }
-
-
-
     }
 }
